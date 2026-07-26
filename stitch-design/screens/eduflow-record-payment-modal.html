@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Record Payment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2f1500",
+                        "surface-variant": "#d9e3f4",
+                        "surface-dim": "#d1dbec",
+                        "primary": "#00288e",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-tint": "#3755c3",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "inverse-surface": "#27313e",
+                        "surface-container-low": "#eef4ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "secondary-container": "#82f5c1",
+                        "on-secondary-container": "#00714e",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#532a00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc3",
+                        "on-primary-container": "#a8b8ff",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-background": "#121c28",
+                        "outline": "#757684",
+                        "on-primary-fixed-variant": "#173bab",
+                        "tertiary-container": "#743d00",
+                        "background": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary": "#006c4a",
+                        "on-secondary-fixed-variant": "#005137",
+                        "on-primary-fixed": "#001453",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b8c4ff",
+                        "outline-variant": "#c4c5d5",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-high": "#dfe9fa",
+                        "primary-container": "#1e40af",
+                        "on-tertiary-container": "#ffa85d",
+                        "secondary-fixed": "#85f8c4",
+                        "on-secondary-fixed": "#002114",
+                        "on-surface-variant": "#444653",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-surface": "#121c28"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {},
+                    "fontSize": {
+                        "h4": [
+                            "20px",
+                            {
+                                "lineHeight": "28px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h3": [
+                            "24px",
+                            {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "h2": [
+                            "30px",
+                            {
+                                "lineHeight": "38px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "caption": [
+                            "12px",
+                            {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "body-md": [
+                            "16px",
+                            {
+                                "lineHeight": "24px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "h1-mobile": [
+                            "28px",
+                            {
+                                "lineHeight": "36px",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "h1": [
+                            "36px",
+                            {
+                                "lineHeight": "44px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "label-md": [
+                            "14px",
+                            {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "body-sm": [
+                            "14px",
+                            {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                            }
+                        ],
+                        "body-lg": [
+                            "18px",
+                            {
+                                "lineHeight": "28px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                            }
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .modal-backdrop {
+            background-color: rgba(18, 28, 40, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .receipt-panel {
+            background-image: radial-gradient(#c4c5d5 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: -8px -8px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-sans min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center h-16 px-margin sticky top-0 z-40 w-full bg-surface-bright border-b border-outline-variant shadow-sm hidden md:flex">
+<div class="flex items-center gap-md">
+<span class="font-h4 text-h4 font-bold text-primary">EduFlow</span>
+</div>
+<div class="flex items-center bg-surface-container rounded-full px-4 py-2 w-1/3 border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none outline-none text-body-md w-full placeholder:text-on-surface-variant text-on-surface focus:ring-0" placeholder="Search students, payments..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-label-md font-label-md text-on-surface-variant hover:text-primary cursor-pointer transition-colors">EN/BN</span>
+<button aria-label="Translate" class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">translate</span>
+</button>
+<button aria-label="Notifications" class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md cursor-pointer shadow-sm hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Side Navigation Bar -->
+<nav class="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm bg-surface-container-lowest flex-col py-lg px-md hidden md:flex z-30">
+<div class="mb-xl px-sm">
+<h1 class="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
+<p class="font-caption text-caption text-on-surface-variant">Coaching Management</p>
+</div>
+<ul class="flex flex-col gap-sm flex-1">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Students</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Attendance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-semibold border-r-4 border-primary bg-primary-fixed active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-md text-label-md">Fees</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md text-label-md">Results</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Expenses</span>
+</a>
+</li>
+<li class="mt-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas (Blurred Background) -->
+<main class="flex-1 overflow-y-auto p-margin relative">
+<div class="mb-lg">
+<h1 class="font-h2 text-h2 text-on-background">Fee Collection</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage and record student payments.</p>
+</div>
+<!-- Dummy content to show context before modal -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-lg shadow-sm">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-h4 text-h4 text-on-surface">Recent Transactions</h3>
+<button class="bg-primary-container text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">add</span> Record Payment
+                     </button>
+</div>
+<div class="border-t border-outline-variant pt-md">
+<!-- Dummy table rows -->
+<div class="flex justify-between py-3 border-b border-outline-variant last:border-0 text-body-sm text-on-surface-variant">
+<div class="flex-1">STU-2023-001</div>
+<div class="flex-1 font-medium text-on-surface">Rahim Uddin</div>
+<div class="flex-1 text-right">৳ 2,500</div>
+<div class="flex-1 text-right"><span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-full text-xs">Paid</span></div>
+</div>
+<div class="flex justify-between py-3 border-b border-outline-variant last:border-0 text-body-sm text-on-surface-variant">
+<div class="flex-1">STU-2023-045</div>
+<div class="flex-1 font-medium text-on-surface">Karim Hasan</div>
+<div class="flex-1 text-right">৳ 1,500</div>
+<div class="flex-1 text-right"><span class="bg-error-container text-on-error-container px-2 py-1 rounded-full text-xs">Pending</span></div>
+</div>
+</div>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] w-full max-w-4xl flex flex-col md:flex-row overflow-hidden relative border border-outline-variant">
+<!-- Close Button -->
+<button aria-label="Close modal" class="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Left Section: Form -->
+<div class="flex-1 p-lg md:p-xl border-b md:border-b-0 md:border-r border-outline-variant bg-surface-bright flex flex-col justify-between">
+<div>
+<div class="mb-lg">
+<h2 class="font-h3 text-h3 text-on-background mb-1">Record Payment</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enter details to generate a receipt.</p>
+</div>
+<form class="space-y-6">
+<!-- Student Selection -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Student</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 appearance-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md text-on-surface pr-10 transition-colors">
+<option disabled="" selected="" value="">Select a student...</option>
+<option value="stu1">Rahim Uddin (Class 10)</option>
+<option value="stu2">Karim Hasan (Class 9)</option>
+<option value="stu3">Fatima Begum (Class 11)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Amount & Date Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Amount (৳)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant">payments</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md text-on-surface transition-colors" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Date</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant">calendar_today</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md text-on-surface transition-colors" type="date" value="2023-10-24"/>
+</div>
+</div>
+</div>
+<!-- Payment Method -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-3">Payment Method</label>
+<div class="flex gap-4">
+<!-- Cash (Green theme simulated with secondary colors) -->
+<label class="cursor-pointer relative flex flex-col items-center gap-2 group">
+<input checked="" class="peer sr-only" name="payment_method" type="radio" value="cash"/>
+<div class="w-14 h-14 rounded-full border-2 border-outline-variant bg-surface-container-lowest flex items-center justify-center peer-checked:border-secondary peer-checked:bg-secondary-container transition-all group-hover:border-secondary-fixed">
+<span class="material-symbols-outlined text-on-surface-variant peer-checked:text-on-secondary-container">money</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant peer-checked:text-on-surface font-medium">Cash</span>
+</label>
+<!-- bKash (Pink - mapped to a tertiary tint conceptually, using primary fixed for demo) -->
+<label class="cursor-pointer relative flex flex-col items-center gap-2 group">
+<input class="peer sr-only" name="payment_method" type="radio" value="bkash"/>
+<div class="w-14 h-14 rounded-full border-2 border-outline-variant bg-surface-container-lowest flex items-center justify-center peer-checked:border-error peer-checked:bg-error-container transition-all group-hover:border-error">
+<span class="material-symbols-outlined text-on-surface-variant peer-checked:text-on-error-container">send_money</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant peer-checked:text-on-surface font-medium">bKash</span>
+</label>
+<!-- Nagad (Orange - mapped to tertiary container) -->
+<label class="cursor-pointer relative flex flex-col items-center gap-2 group">
+<input class="peer sr-only" name="payment_method" type="radio" value="nagad"/>
+<div class="w-14 h-14 rounded-full border-2 border-outline-variant bg-surface-container-lowest flex items-center justify-center peer-checked:border-tertiary-container peer-checked:bg-tertiary-fixed transition-all group-hover:border-tertiary">
+<span class="material-symbols-outlined text-on-surface-variant peer-checked:text-on-tertiary-container">phone_iphone</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant peer-checked:text-on-surface font-medium">Nagad</span>
+</label>
+<!-- Bank (Blue) -->
+<label class="cursor-pointer relative flex flex-col items-center gap-2 group">
+<input class="peer sr-only" name="payment_method" type="radio" value="bank"/>
+<div class="w-14 h-14 rounded-full border-2 border-outline-variant bg-surface-container-lowest flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary-container transition-all group-hover:border-primary">
+<span class="material-symbols-outlined text-on-surface-variant peer-checked:text-on-primary">account_balance</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant peer-checked:text-on-surface font-medium">Bank</span>
+</label>
+</div>
+</div>
+<!-- Receipt Info (Auto-filled) -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-2">Receipt Number</label>
+<div class="flex items-center gap-2">
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2 text-body-sm text-on-surface-variant cursor-not-allowed" readonly="" type="text" value="RCPT-849201"/>
+<button class="p-2 text-primary hover:bg-surface-container rounded-lg" title="Generate New" type="button">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant">
+<button class="w-full bg-primary-container text-on-primary hover:bg-primary py-3 rounded-lg font-label-md text-label-md flex justify-center items-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                Confirm Payment
+                            </button>
+</div>
+</div>
+<!-- Right Section: Receipt Preview -->
+<div class="flex-1 bg-surface-container-low p-lg md:p-xl receipt-panel flex items-center justify-center">
+<!-- Digital Receipt Card -->
+<div class="bg-surface-container-lowest w-full max-w-sm rounded-lg shadow-md border border-outline-variant p-6 relative overflow-hidden">
+<!-- Decorative header strip -->
+<div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+<!-- Header -->
+<div class="text-center border-b border-outline-variant pb-4 mb-4 mt-2">
+<h3 class="font-h3 text-h3 font-bold text-primary mb-1">EduFlow</h3>
+<p class="font-caption text-caption text-on-surface-variant">Payment Receipt Preview</p>
+</div>
+<!-- Body -->
+<div class="space-y-3 mb-6">
+<div class="flex justify-between items-baseline">
+<span class="font-caption text-caption text-on-surface-variant">Receipt No:</span>
+<span class="font-label-md text-label-md text-on-surface font-mono">RCPT-849201</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="font-caption text-caption text-on-surface-variant">Date:</span>
+<span class="font-label-md text-label-md text-on-surface">24 Oct, 2023</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="font-caption text-caption text-on-surface-variant">Student:</span>
+<span class="font-label-md text-label-md text-on-surface font-medium text-right max-w-[150px] truncate">Select Student...</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="font-caption text-caption text-on-surface-variant">Method:</span>
+<span class="font-label-md text-label-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">money</span> Cash
+                                    </span>
+</div>
+</div>
+<!-- Amount -->
+<div class="bg-surface-bright rounded-lg p-4 border border-outline-variant mb-6 flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Total Amount</span>
+<span class="font-h3 text-h3 font-bold text-primary">৳ 0.00</span>
+</div>
+<!-- Footer & QR -->
+<div class="flex flex-col items-center border-t border-outline-variant pt-4 border-dashed">
+<div class="w-16 h-16 bg-surface-container flex items-center justify-center rounded mb-2 border border-outline-variant">
+<span class="material-symbols-outlined text-outline">qr_code_2</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant text-center">Scan to verify digital receipt.<br/>Thank you.</p>
+</div>
+<!-- Decorative cutouts -->
+<div class="absolute -left-2 top-1/2 w-4 h-4 bg-surface-container-low rounded-full border-r border-outline-variant"></div>
+<div class="absolute -right-2 top-1/2 w-4 h-4 bg-surface-container-low rounded-full border-l border-outline-variant"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

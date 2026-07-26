@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Teacher Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-secondary-fixed-variant": "#005137",
+                "surface-container": "#e5eeff",
+                "inverse-primary": "#b8c4ff",
+                "background": "#f8f9ff",
+                "primary": "#00288e",
+                "on-secondary-container": "#00714e",
+                "on-error": "#ffffff",
+                "surface-tint": "#3755c3",
+                "on-tertiary-fixed-variant": "#6e3900",
+                "on-secondary": "#ffffff",
+                "outline": "#757684",
+                "error": "#ba1a1a",
+                "primary-fixed": "#dde1ff",
+                "secondary-fixed-dim": "#68dba9",
+                "on-primary-fixed": "#001453",
+                "on-secondary-fixed": "#002114",
+                "surface-container-high": "#dfe9fa",
+                "tertiary-container": "#743d00",
+                "surface": "#f8f9ff",
+                "tertiary-fixed-dim": "#ffb77d",
+                "on-surface-variant": "#444653",
+                "on-tertiary": "#ffffff",
+                "secondary-fixed": "#85f8c4",
+                "on-primary": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "secondary": "#006c4a",
+                "surface-container-highest": "#d9e3f4",
+                "surface-variant": "#d9e3f4",
+                "primary-container": "#1e40af",
+                "tertiary": "#532a00",
+                "on-tertiary-container": "#ffa85d",
+                "on-background": "#121c28",
+                "surface-bright": "#f8f9ff",
+                "primary-fixed-dim": "#b8c4ff",
+                "on-primary-container": "#a8b8ff",
+                "secondary-container": "#82f5c1",
+                "on-tertiary-fixed": "#2f1500",
+                "on-primary-fixed-variant": "#173bab",
+                "surface-dim": "#d1dbec",
+                "error-container": "#ffdad6",
+                "on-error-container": "#93000a",
+                "outline-variant": "#c4c5d5",
+                "on-surface": "#121c28",
+                "tertiary-fixed": "#ffdcc3",
+                "surface-container-low": "#eef4ff",
+                "inverse-on-surface": "#eaf1ff",
+                "inverse-surface": "#27313e"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "lg": "24px",
+                "md": "16px",
+                "xs": "4px",
+                "xl": "32px",
+                "margin": "32px",
+                "gutter": "24px",
+                "xxl": "48px",
+                "base": "8px",
+                "sm": "8px"
+        },
+        "fontFamily": {},
+        "fontSize": {
+                "caption": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "h3": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "h1-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "36px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "h1": [
+                        "36px",
+                        {
+                                "lineHeight": "44px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                        }
+                ],
+                "h4": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "h2": [
+                        "30px",
+                        {
+                                "lineHeight": "38px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0em",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    body {
+        background-color: #f8f9ff;
+    }
+    .shadow-ambient {
+        box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.05);
+    }
+</style>
+</head>
+<body class="text-on-surface bg-surface min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full w-64 bg-surface-container-lowest border-r border-outline-variant shadow-sm py-lg px-md fixed left-0 top-0 z-40">
+<div class="flex items-center gap-sm mb-xl px-sm">
+<span class="material-symbols-outlined text-primary text-h1 font-bold">school</span>
+<div>
+<h1 class="font-h3 text-h3 font-bold text-primary leading-tight">EduFlow</h1>
+<p class="font-caption text-caption text-on-surface-variant">Green Valley Academy</p>
+</div>
+</div>
+<ul class="flex-1 space-y-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-semibold border-l-4 border-primary bg-primary-fixed transition-transform active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">My Batches</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Attendance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md text-label-md">Results</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-label-md text-label-md">Timetable</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-label-md text-label-md">Notices</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-margin sticky top-0 z-50 w-full bg-surface-bright border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-md md:hidden">
+<button class="text-on-surface-variant p-sm rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-h4 text-h4 font-bold text-primary">EduFlow</h1>
+</div>
+<div class="hidden md:flex items-center">
+<h2 class="font-h4 text-h4 font-semibold text-on-surface">Teacher Portal</h2>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant font-label-md text-label-md hover:text-primary hover:bg-surface-container p-sm rounded-lg transition-colors">
+                    EN/BN
+                </button>
+<button class="text-on-surface-variant p-sm rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer hover:opacity-80 transition-opacity">
+<img alt="Mrs. Sultana" class="object-cover w-full h-full" data-alt="A professional portrait of a female teacher in her 30s, wearing a subtle teal hijab and a professional blazer. She is smiling softly against a plain, light blue studio background. The lighting is soft and flattering, creating a trustworthy and competent mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKYnA5FcvkSS_zjxEiHP6qTPtkLW8zQSf_yxj4jyJmvS9sExsDjtt9EEq-CzvQXq0fs7ixE_9TYO5MJHpjakkvN81gEfVOkiJ0nuhJGZSYDeUhemAIeNMzyL9iHfpSzvODb_pJkzSfjGmlBAi_fDANL7wVDOCfajxmcq6tjB7_0SdaJTotL8h8uQc7PpbVM-F0IQ8LEzDRw91rEBr73omfQFYP-S2FuEcfftO5RbPgc1iqA0OGqjmS4RTEUcbr7kxdlczjq_m9o5AI"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-md md:p-margin max-w-7xl mx-auto w-full space-y-xl">
+<!-- Greeting Section -->
+<section class="mb-lg">
+<h1 class="font-h2 text-h2 font-bold text-on-surface mb-xs">Good morning, Mrs. Sultana</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">You have <span class="text-primary font-semibold">3 classes</span> scheduled for today.</p>
+</section>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
+<!-- Main Column (Classes & Batches) -->
+<div class="xl:col-span-2 space-y-xl">
+<!-- Today's Classes -->
+<section>
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-h4 text-h4 font-semibold text-on-surface">Today's Classes</h2>
+<a class="text-primary font-label-md text-label-md hover:underline flex items-center gap-xs" href="#">
+                                View Timetable <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="space-y-md">
+<!-- Class Card 1 (Active/Pending Action) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-ambient hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-sm">
+<span class="bg-error-container text-on-error-container font-label-md text-caption px-sm py-xs rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">error</span> Attendance Pending
+                                            </span>
+<span class="text-on-surface-variant font-caption text-caption flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 09:00 AM - 10:30 AM
+                                            </span>
+</div>
+<h3 class="font-h4 text-h4 font-semibold text-on-surface mb-xs">Class 10 - Science A</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Advanced Physics • Room 204 • 32 Students</p>
+</div>
+<div class="flex-shrink-0">
+<button class="w-full md:w-auto bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-lg hover:bg-opacity-90 active:scale-[0.98] transition-all">
+                                            Mark Attendance
+                                        </button>
+</div>
+</div>
+</div>
+<!-- Class Card 2 (Upcoming) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-ambient hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-sm">
+<span class="bg-surface-container text-primary font-label-md text-caption px-sm py-xs rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Upcoming
+                                            </span>
+<span class="text-on-surface-variant font-caption text-caption flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 11:00 AM - 12:30 PM
+                                            </span>
+</div>
+<h3 class="font-h4 text-h4 font-semibold text-on-surface mb-xs">HSC 1st Year</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Mechanics • Room 102 • 45 Students</p>
+</div>
+<div class="flex-shrink-0 hidden md:block">
+<button class="text-primary font-label-md text-label-md p-sm rounded-lg hover:bg-surface-container transition-colors border border-transparent">
+                                            Details
+                                        </button>
+</div>
+</div>
+</div>
+<!-- Class Card 3 (Upcoming) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg shadow-ambient hover:shadow-md transition-shadow">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-sm">
+<span class="bg-surface-container text-primary font-label-md text-caption px-sm py-xs rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Upcoming
+                                            </span>
+<span class="text-on-surface-variant font-caption text-caption flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 02:00 PM - 03:30 PM
+                                            </span>
+</div>
+<h3 class="font-h4 text-h4 font-semibold text-on-surface mb-xs">Class 9 - Day</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">General Science • Lab B • 28 Students</p>
+</div>
+<div class="flex-shrink-0 hidden md:block">
+<button class="text-primary font-label-md text-label-md p-sm rounded-lg hover:bg-surface-container transition-colors border border-transparent">
+                                            Details
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- My Batches Summary -->
+<section>
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-h4 text-h4 font-semibold text-on-surface">My Batches Overview</h2>
+<a class="text-primary font-label-md text-label-md hover:underline" href="#">View All</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-md">
+<!-- Batch Mini Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-ambient">
+<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-xs">Class 10 - Science A</h4>
+<div class="flex justify-between items-end mt-sm">
+<div>
+<p class="font-caption text-caption text-on-surface-variant">Students</p>
+<p class="font-body-md text-body-md font-semibold text-on-surface">32</p>
+</div>
+<div class="text-right">
+<p class="font-caption text-caption text-on-surface-variant">Avg. Attendance</p>
+<p class="font-body-md text-body-md font-semibold text-secondary">94%</p>
+</div>
+</div>
+</div>
+<!-- Batch Mini Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-ambient">
+<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-xs">HSC 1st Year</h4>
+<div class="flex justify-between items-end mt-sm">
+<div>
+<p class="font-caption text-caption text-on-surface-variant">Students</p>
+<p class="font-body-md text-body-md font-semibold text-on-surface">45</p>
+</div>
+<div class="text-right">
+<p class="font-caption text-caption text-on-surface-variant">Avg. Attendance</p>
+<p class="font-body-md text-body-md font-semibold text-secondary">88%</p>
+</div>
+</div>
+</div>
+<!-- Batch Mini Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-ambient">
+<h4 class="font-label-md text-label-md font-semibold text-on-surface mb-xs">Class 9 - Day</h4>
+<div class="flex justify-between items-end mt-sm">
+<div>
+<p class="font-caption text-caption text-on-surface-variant">Students</p>
+<p class="font-body-md text-body-md font-semibold text-on-surface">28</p>
+</div>
+<div class="text-right">
+<p class="font-caption text-caption text-on-surface-variant">Avg. Attendance</p>
+<p class="font-body-md text-body-md font-semibold text-secondary">91%</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column (Pending Tasks & Widgets) -->
+<div class="space-y-lg">
+<!-- Pending Tasks Widget -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-ambient overflow-hidden">
+<div class="bg-surface-container p-md border-b border-outline-variant">
+<h3 class="font-h4 text-h4 font-semibold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">task_alt</span> Action Required
+                            </h3>
+</div>
+<div class="p-md space-y-md">
+<!-- Task 1 -->
+<div class="flex items-start gap-md">
+<div class="bg-error-container text-on-error-container p-sm rounded-lg flex-shrink-0">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="font-body-sm text-body-sm text-on-surface mb-xs">Attendance not marked: Class 8 - Evening</p>
+<button class="text-primary font-label-md text-caption hover:underline font-medium">
+                                        Mark Now
+                                    </button>
+</div>
+</div>
+<hr class="border-outline-variant opacity-50"/>
+<!-- Task 2 -->
+<div class="flex items-start gap-md">
+<div class="bg-secondary-container text-on-secondary-container p-sm rounded-lg flex-shrink-0">
+<span class="material-symbols-outlined text-sm">analytics</span>
+</div>
+<div class="flex-1">
+<p class="font-body-sm text-body-sm text-on-surface mb-xs">Results due: Mid-term Physics (Class 10)</p>
+<button class="text-primary font-label-md text-caption hover:underline font-medium">
+                                        Enter Marks
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Links/Notice Widget (Filler for realistic layout) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-ambient p-md">
+<h3 class="font-h4 text-h4 font-semibold text-on-surface mb-md">Recent Notices</h3>
+<ul class="space-y-sm">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] mt-xs">campaign</span>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface">Staff Meeting at 4 PM</p>
+<p class="font-caption text-caption text-on-surface-variant">Today</p>
+</div>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] mt-xs">description</span>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface">Syllabus revision guidelines updated</p>
+<p class="font-caption text-caption text-on-surface-variant">Yesterday</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

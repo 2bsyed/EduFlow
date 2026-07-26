@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow Student Report Card</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with custom config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-surface": "#121c28",
+                    "secondary-container": "#82f5c1",
+                    "surface-dim": "#d1dbec",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-background": "#121c28",
+                    "on-primary-container": "#a8b8ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#dde1ff",
+                    "inverse-primary": "#b8c4ff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#eef4ff",
+                    "error-container": "#ffdad6",
+                    "secondary": "#006c4a",
+                    "inverse-surface": "#27313e",
+                    "on-secondary-fixed": "#002114",
+                    "surface-bright": "#f8f9ff",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "tertiary-container": "#743d00",
+                    "on-error": "#ffffff",
+                    "surface-container": "#e5eeff",
+                    "on-primary-fixed-variant": "#173bab",
+                    "tertiary-fixed": "#ffdcc3",
+                    "primary-container": "#1e40af",
+                    "on-primary-fixed": "#001453",
+                    "secondary-fixed": "#85f8c4",
+                    "on-tertiary-fixed": "#2f1500",
+                    "surface-container-highest": "#d9e3f4",
+                    "background": "#f8f9ff",
+                    "surface": "#f8f9ff",
+                    "secondary-fixed-dim": "#68dba9",
+                    "primary": "#00288e",
+                    "on-surface-variant": "#444653",
+                    "on-secondary": "#ffffff",
+                    "outline": "#757684",
+                    "on-tertiary-container": "#ffa85d",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#3755c3",
+                    "outline-variant": "#c4c5d5",
+                    "tertiary": "#532a00",
+                    "on-secondary-container": "#00714e",
+                    "surface-variant": "#d9e3f4",
+                    "surface-container-high": "#dfe9fa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin": "32px",
+                    "lg": "24px",
+                    "xxl": "48px",
+                    "gutter": "24px",
+                    "sm": "8px"
+            },
+            "fontFamily": {},
+            "fontSize": {
+                    "h2": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "h3": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "h1": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h4": ["20px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        @media print {
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .print-hidden { display: none !important; }
+            .a4-container {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen py-xl px-md flex flex-col items-center">
+<!-- Action Bar (Hidden in print) -->
+<div class="print-hidden w-full max-w-[210mm] flex justify-between items-center mb-lg">
+<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined">arrow_back</span>
+            Back to Dashboard
+        </button>
+<button class="flex items-center gap-sm bg-primary text-on-primary px-lg py-sm rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-md text-label-md shadow-sm" onclick="window.print()">
+<span class="material-symbols-outlined text-[18px]">print</span>
+            Print Report
+        </button>
+</div>
+<!-- A4 Document Container -->
+<!-- 210mm x 297mm is standard A4. Using roughly equivalent pixels for screen viewing -->
+<div class="a4-container bg-surface-container-lowest w-full max-w-[210mm] min-h-[297mm] shadow-xl border border-outline-variant p-[40px] flex flex-col relative">
+<!-- Header Section -->
+<div class="flex items-start justify-between border-b-2 border-primary pb-lg mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-[36px]">school</span>
+</div>
+<div>
+<h1 class="font-h3 text-h3 text-primary tracking-tight m-0">EduFlow Academy</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0 mt-xs">123 Education Boulevard, Knowledge City, ST 12345</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant m-0">contact@eduflow.edu | +1 (555) 019-8234</p>
+</div>
+</div>
+<div class="text-right">
+<div class="inline-block border border-outline-variant rounded px-md py-xs bg-surface-container-low mb-sm">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Academic Year</span>
+<p class="font-h4 text-h4 text-on-surface m-0">2023 - 2024</p>
+</div>
+</div>
+</div>
+<!-- Document Title -->
+<div class="text-center mb-lg">
+<h2 class="font-h4 text-h4 text-on-surface uppercase tracking-widest border-b border-outline-variant inline-block pb-xs">Student Performance Report</h2>
+</div>
+<!-- Student Bio Section -->
+<div class="grid grid-cols-2 gap-x-xl gap-y-md border border-outline-variant rounded-lg p-lg mb-xl bg-surface-bright">
+<div class="flex flex-col">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Student Name</span>
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">Sarah Jenkins</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Roll Number</span>
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">CS-2024-042</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Batch / Grade</span>
+<span class="font-body-md text-body-md text-on-surface">Advanced Science - Grade 11</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Examination</span>
+<span class="font-body-md text-body-md text-on-surface">Term 2 Final Assessment</span>
+</div>
+</div>
+<!-- Marks Table -->
+<div class="mb-xl flex-grow">
+<table class="w-full border-collapse border border-outline-variant text-left">
+<thead>
+<tr class="bg-surface-container border-b-2 border-outline-variant">
+<th class="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant w-1/3">Subject</th>
+<th class="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant text-center">Marks Obt.</th>
+<th class="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant text-center">Highest</th>
+<th class="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant text-center">Grade</th>
+<th class="font-label-md text-label-md text-on-surface py-sm px-md text-center">Remarks</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<tr class="border-b border-outline-variant">
+<td class="py-sm px-md border-r border-outline-variant font-medium">Advanced Mathematics</td>
+<td class="py-sm px-md border-r border-outline-variant text-center">92</td>
+<td class="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">98</td>
+<td class="py-sm px-md border-r border-outline-variant text-center font-bold text-primary">A</td>
+<td class="py-sm px-md text-center text-on-surface-variant">Excellent logical reasoning.</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-sm px-md border-r border-outline-variant font-medium">Physics</td>
+<td class="py-sm px-md border-r border-outline-variant text-center">88</td>
+<td class="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">95</td>
+<td class="py-sm px-md border-r border-outline-variant text-center font-bold text-primary">A</td>
+<td class="py-sm px-md text-center text-on-surface-variant">Good grasp of concepts.</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-sm px-md border-r border-outline-variant font-medium">Chemistry</td>
+<td class="py-sm px-md border-r border-outline-variant text-center">95</td>
+<td class="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">97</td>
+<td class="py-sm px-md border-r border-outline-variant text-center font-bold text-primary">A+</td>
+<td class="py-sm px-md text-center text-on-surface-variant">Outstanding practical work.</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-sm px-md border-r border-outline-variant font-medium">Computer Science</td>
+<td class="py-sm px-md border-r border-outline-variant text-center">100</td>
+<td class="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">100</td>
+<td class="py-sm px-md border-r border-outline-variant text-center font-bold text-primary">A+</td>
+<td class="py-sm px-md text-center text-on-surface-variant">Perfect score. Exceptional.</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-sm px-md border-r border-outline-variant font-medium">English Literature</td>
+<td class="py-sm px-md border-r border-outline-variant text-center">84</td>
+<td class="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">92</td>
+<td class="py-sm px-md border-r border-outline-variant text-center font-bold">B+</td>
+<td class="py-sm px-md text-center text-on-surface-variant">Needs more focus on essays.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Summary Section -->
+<div class="flex gap-md mb-xl justify-end">
+<div class="border border-outline-variant rounded-lg p-md bg-surface-container-low min-w-[120px] text-center">
+<span class="block font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Total Marks</span>
+<span class="block font-h4 text-h4 text-primary font-bold">459 <span class="text-on-surface-variant font-body-sm text-body-sm font-normal">/ 500</span></span>
+</div>
+<div class="border border-outline-variant rounded-lg p-md bg-surface-container-low min-w-[120px] text-center">
+<span class="block font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">GPA</span>
+<span class="block font-h4 text-h4 text-primary font-bold">3.85</span>
+</div>
+<div class="border border-outline-variant rounded-lg p-md bg-surface-container-low min-w-[120px] text-center">
+<span class="block font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">Attendance</span>
+<span class="block font-h4 text-h4 text-primary font-bold">96%</span>
+</div>
+</div>
+<!-- Teacher Remarks Box -->
+<div class="border border-outline-variant rounded-lg p-md mb-xl">
+<span class="block font-label-md text-label-md text-on-surface font-semibold mb-sm">Class Teacher's Remarks:</span>
+<p class="font-body-md text-body-md text-on-surface-variant italic m-0">"Sarah is a dedicated and highly motivated student. Her performance in STEM subjects is particularly commendable. With continued focus on humanities, she will achieve even greater overall success. Keep up the excellent work!"</p>
+</div>
+<!-- Signatures (Pushed to bottom) -->
+<div class="mt-auto pt-xxl flex justify-between items-end px-lg">
+<div class="flex flex-col items-center w-48">
+<div class="w-full border-b border-on-surface mb-sm"></div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Class Teacher</span>
+<span class="font-caption text-caption text-on-surface-variant">Mr. Robert Harrison</span>
+</div>
+<div class="flex flex-col items-center w-48">
+<!-- Decorative subtle stamp/seal placeholder -->
+<div class="w-16 h-16 rounded-full border border-outline-variant opacity-20 flex items-center justify-center mb-[-40px] z-0">
+<span class="material-symbols-outlined text-[32px] text-outline-variant">verified</span>
+</div>
+<div class="w-full border-b border-on-surface mb-sm relative z-10"></div>
+<span class="font-label-md text-label-md text-on-surface font-semibold relative z-10">Principal / Director</span>
+<span class="font-caption text-caption text-on-surface-variant relative z-10">Dr. Eleanor Vance</span>
+</div>
+</div>
+<!-- Footer Note -->
+<div class="mt-xl text-center border-t border-outline-variant pt-sm">
+<p class="font-caption text-caption text-on-surface-variant m-0">This document is electronically generated and does not require a physical seal to be considered valid for internal academic review.</p>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Language Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c4c5d5",
+                        "on-primary-fixed-variant": "#173bab",
+                        "primary": "#00288e",
+                        "secondary-container": "#82f5c1",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "primary-fixed": "#dde1ff",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "on-secondary-fixed-variant": "#005137",
+                        "surface-container-highest": "#d9e3f4",
+                        "inverse-primary": "#b8c4ff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d9e3f4",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#3755c3",
+                        "on-secondary-container": "#00714e",
+                        "surface-dim": "#d1dbec",
+                        "background": "#f8f9ff",
+                        "tertiary": "#532a00",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-background": "#121c28",
+                        "on-surface-variant": "#444653",
+                        "surface-container-low": "#eef4ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "inverse-surface": "#27313e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#2f1500",
+                        "tertiary-container": "#743d00",
+                        "primary-container": "#1e40af",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary-container": "#ffa85d",
+                        "outline": "#757684",
+                        "on-primary-container": "#a8b8ff",
+                        "surface-container-high": "#dfe9fa",
+                        "secondary-fixed": "#85f8c4",
+                        "on-surface": "#121c28",
+                        "on-secondary-fixed": "#002114",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "secondary": "#006c4a",
+                        "tertiary-fixed": "#ffdcc3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin": "32px",
+                        "xl": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h4": ["20px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "h1": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h2": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<aside class="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest z-40 hidden md:flex shrink-0">
+<div class="flex items-center gap-sm mb-margin px-sm">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary text-sm">school</span>
+</div>
+<div>
+<h1 class="font-h3 text-h3 font-bold text-primary leading-tight">EduFlow</h1>
+<p class="font-caption text-caption text-on-surface-variant">Coaching Management</p>
+</div>
+</div>
+<nav class="flex-1 space-y-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span>Home</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Students</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Attendance</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Fees</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Results</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Expenses</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-md px-sm">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A small circular avatar placeholder image showing a generic professional user portrait in a corporate setting. The image should be simple, clean, and fit well within a modern UI dashboard context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_v7qk7wZ8PBbSPsnTUiRtCZuzGPXwADwSav6tROB6grpAY7frPOU2okKJtzKuhSDuOjdZ8glkhlYZyn31B8U-N_fDanAfZE9xdO1Mjl02p4KByG_lqEv5fnAdequ2hQJzbLZQVwJgvMSnTh5Q9_p55B0vof79YpNthX4ItCn7io1UEo9UZv9d_dK_nM8uA1dBbrRDEDZwgqi-mTWhbZPp2ojsXC3CpqMDyAMZcW1sft8qUx--14-MN3v3IJ5AnELy0-x4uPnNLqhE"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-background">Admin User</span>
+<span class="font-caption text-caption text-on-surface-variant">admin@eduflow.com</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full bg-background overflow-hidden relative">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-margin sticky top-0 z-30 w-full bg-surface-bright shadow-sm shrink-0">
+<div class="flex items-center gap-md md:hidden">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-h4 text-h4 font-bold text-primary leading-tight">EduFlow</h1>
+</div>
+<div class="hidden md:flex items-center w-64">
+<!-- Search could go here -->
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">translate</span>
+</button>
+<div class="hidden sm:flex items-center ml-sm mr-md">
+<span class="font-label-md text-label-md text-on-surface-variant px-sm py-xs bg-surface-container-low rounded">EN/BN</span>
+</div>
+<button class="flex items-center gap-sm p-xs rounded-full hover:bg-surface-container transition-colors border border-transparent hover:border-outline-variant">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small circular avatar placeholder image showing a generic professional user portrait in a corporate setting. The image should be simple, clean, and fit well within a modern UI dashboard context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHqrmj_ZM7ZKnfOeYPVLapEihA2FmDBDdODrMmyAVDbN0FjaSoZ-75q4DujJPqTVNUwGqTXVXPoE69stmJTIqgpfh1j7i6LxfIuJY8c3LmTZWdtSxyCm1wyVcY1afzPQ0z_S-sY05eDRzquACMux8BuK9tjs1iXCh-IHfOsGPzQEf1JI9SgXZjhCswP9NBMJI5hpYeSYX3q1H42lFEbOEzpO7Ngd7KBiUHZlw538-jnSjG2TZzlU3C2OCbBVplHN32hw-0WfP8a80R"/>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-md md:p-margin">
+<div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-lg items-start h-full">
+<!-- Settings Sub-Nav -->
+<nav class="w-full lg:w-64 shrink-0 flex lg:flex-col gap-xs overflow-x-auto lg:overflow-visible pb-md lg:pb-0 border-b lg:border-b-0 border-outline-variant">
+<a class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap lg:whitespace-normal flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+                        Institute Profile
+                    </a>
+<a class="px-md py-sm rounded-lg font-label-md text-label-md text-primary bg-surface-container font-medium whitespace-nowrap lg:whitespace-normal flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">language</span>
+                        Language
+                    </a>
+<a class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap lg:whitespace-normal flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-sm">manage_accounts</span>
+                        Users &amp; Roles
+                    </a>
+<a class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap lg:whitespace-normal flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-sm">credit_card</span>
+                        Billing
+                    </a>
+<a class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap lg:whitespace-normal flex items-center gap-sm" href="#">
+<span class="material-symbols-outlined text-sm">notifications</span>
+                        Notifications
+                    </a>
+</nav>
+<!-- Main Settings Canvas -->
+<div class="flex-1 w-full bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg lg:p-xl flex flex-col">
+<div class="mb-lg border-b border-outline-variant pb-md">
+<h2 class="font-h3 text-h3 text-on-background mb-xs">Language Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Choose your preferred interface language for the dashboard.</p>
+</div>
+<!-- Interface Language Selection -->
+<div class="mb-xl">
+<h3 class="font-label-md text-label-md text-on-background mb-md font-semibold">Interface Language</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Option: English (Selected) -->
+<label class="relative flex flex-col p-lg border-2 border-primary rounded-xl cursor-pointer bg-primary-fixed-dim bg-opacity-20 transition-all hover:shadow-md">
+<input checked="" class="peer sr-only" name="language" type="radio" value="en"/>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-h4 text-h4 font-bold">
+                                        EN
+                                    </div>
+<span class="material-symbols-outlined text-primary bg-surface-container-lowest rounded-full" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="font-h4 text-h4 text-on-background mb-xs">English</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Standard US English interface</span>
+</label>
+<!-- Option: Bangla -->
+<label class="relative flex flex-col p-lg border-2 border-transparent hover:border-outline-variant rounded-xl cursor-pointer bg-surface hover:bg-surface-container-low transition-all">
+<input class="peer sr-only" name="language" type="radio" value="bn"/>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-h4 text-h4 font-bold">
+                                        BN
+                                    </div>
+<span class="material-symbols-outlined text-transparent peer-checked:text-primary">check_circle</span>
+</div>
+<span class="font-h4 text-h4 text-on-background mb-xs">বাংলা</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Standard Bengali interface</span>
+</label>
+</div>
+</div>
+<!-- Live Preview Section -->
+<div class="mb-xl flex-1">
+<h3 class="font-label-md text-label-md text-on-background mb-md font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                            Language Preview
+                        </h3>
+<div class="bg-surface p-lg rounded-xl border border-outline-variant flex items-center justify-center min-h-[240px]">
+<!-- Mock Metric Card (English version showing initially) -->
+<div class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant shadow-sm min-w-[280px]">
+<div class="flex justify-between items-center mb-md">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Students</span>
+<span class="material-symbols-outlined text-primary bg-surface-container p-xs rounded-md">group</span>
+</div>
+<div class="font-h1 text-h1 text-on-background mb-xs">1,248</div>
+<div class="flex items-center gap-xs font-body-sm text-body-sm text-secondary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% this month</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="pt-lg border-t border-outline-variant flex justify-end gap-md mt-auto">
+<button class="px-lg py-sm rounded-lg font-label-md text-label-md text-primary hover:bg-surface-container transition-colors border border-transparent">
+                            Cancel
+                        </button>
+<button class="px-lg py-sm rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:brightness-90 transition-all shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">save</span>
+                            Update Language
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to toggle preview based on radio selection (for demonstration purposes)
+        document.querySelectorAll('input[name="language"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const previewCard = document.querySelector('.min-h-\\[240px\\] > div');
+                
+                // Reset styling for labels
+                document.querySelectorAll('input[name="language"]').forEach(r => {
+                    const label = r.closest('label');
+                    const icon = label.querySelector('.material-symbols-outlined.peer-checked\\:text-primary, .material-symbols-outlined.text-primary');
+                    
+                    if(r.checked) {
+                        label.classList.remove('border-transparent', 'hover:border-outline-variant', 'bg-surface', 'hover:bg-surface-container-low');
+                        label.classList.add('border-primary', 'bg-primary-fixed-dim', 'bg-opacity-20');
+                        icon.classList.remove('text-transparent');
+                        icon.classList.add('text-primary');
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                        icon.classList.add('bg-surface-container-lowest', 'rounded-full');
+                    } else {
+                        label.classList.add('border-transparent', 'hover:border-outline-variant', 'bg-surface', 'hover:bg-surface-container-low');
+                        label.classList.remove('border-primary', 'bg-primary-fixed-dim', 'bg-opacity-20');
+                        icon.classList.add('text-transparent');
+                        icon.classList.remove('text-primary');
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                        icon.classList.remove('bg-surface-container-lowest', 'rounded-full');
+                    }
+                });
+
+
+                if (this.value === 'bn') {
+                    previewCard.innerHTML = `
+                        <div class="flex justify-between items-center mb-md">
+                            <span class="font-label-md text-label-md text-on-surface-variant" style="font-family: sans-serif;">মোট শিক্ষার্থী</span>
+                            <span class="material-symbols-outlined text-primary bg-surface-container p-xs rounded-md">group</span>
+                        </div>
+                        <div class="font-h1 text-h1 text-on-background mb-xs">১,২৪৮</div>
+                        <div class="flex items-center gap-xs font-body-sm text-body-sm text-secondary">
+                            <span class="material-symbols-outlined text-sm">trending_up</span>
+                            <span style="font-family: sans-serif;">এই মাসে +১২%</span>
+                        </div>
+                    `;
+                } else {
+                    previewCard.innerHTML = `
+                        <div class="flex justify-between items-center mb-md">
+                            <span class="font-label-md text-label-md text-on-surface-variant">Total Students</span>
+                            <span class="material-symbols-outlined text-primary bg-surface-container p-xs rounded-md">group</span>
+                        </div>
+                        <div class="font-h1 text-h1 text-on-background mb-xs">1,248</div>
+                        <div class="flex items-center gap-xs font-body-sm text-body-sm text-secondary">
+                            <span class="material-symbols-outlined text-sm">trending_up</span>
+                            <span>+12% this month</span>
+                        </div>
+                    `;
+                }
+            });
+        });
+    </script>
+</body></html>
