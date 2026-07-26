@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Modern Coaching Center Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#743d00",
+                        "surface-container-highest": "#d9e3f4",
+                        "secondary-fixed": "#85f8c4",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d9e3f4",
+                        "surface-container": "#e5eeff",
+                        "surface": "#f8f9ff",
+                        "secondary-container": "#82f5c1",
+                        "on-primary-fixed": "#001453",
+                        "primary": "#00288e",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-container": "#a8b8ff",
+                        "tertiary-fixed": "#ffdcc3",
+                        "surface-tint": "#3755c3",
+                        "surface-container-low": "#eef4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#532a00",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "on-tertiary-fixed": "#2f1500",
+                        "surface-dim": "#d1dbec",
+                        "on-secondary-fixed": "#002114",
+                        "on-surface": "#121c28",
+                        "primary-fixed": "#dde1ff",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#121c28",
+                        "on-tertiary-container": "#ffa85d",
+                        "on-surface-variant": "#444653",
+                        "inverse-primary": "#b8c4ff",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c4c5d5",
+                        "inverse-surface": "#27313e",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "secondary": "#006c4a",
+                        "on-secondary-fixed-variant": "#005137",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "on-secondary-container": "#00714e",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dfe9fa",
+                        "error-container": "#ffdad6",
+                        "outline": "#757684",
+                        "primary-container": "#1e40af",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "margin": "32px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {},
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h3": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h2": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "h4": ["20px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" }],
+                        "h1-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h1": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f8f9ff; /* background */
+            color: #121c28; /* on-background */
+        }
+    </style>
+</head>
+<body class="antialiased font-sans">
+<!-- CTA Section -->
+<section class="bg-primary-container text-on-primary py-xxl px-margin">
+<div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+<h2 class="font-h2 text-h2 text-on-primary mb-md">
+                Ready to modernize your coaching center?
+            </h2>
+<p class="font-body-lg text-body-lg text-on-primary opacity-90 mb-xl max-w-2xl">
+                Join 50+ institutes managing attendance, fees, and results with ease.
+            </p>
+<button class="bg-surface-container-lowest text-primary-container hover:bg-surface-container-low transition-colors duration-200 font-label-md text-label-md px-xl py-md rounded-lg shadow-sm mb-md inline-flex items-center gap-sm">
+<span>Start Free Trial</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+<p class="font-caption text-caption text-on-primary opacity-80">
+                No credit card required · 14-day free trial
+            </p>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-inverse-surface border-t border-outline-variant dark:border-outline">
+<div class="max-w-7xl mx-auto px-margin py-xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter">
+<!-- Brand Column -->
+<div class="col-span-2 lg:col-span-2 flex flex-col gap-md">
+<a class="font-h3 text-h3 font-bold text-primary dark:text-primary-fixed-dim" href="#">
+                    EduFlow
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant max-w-xs">
+                    Professional coaching center management for Bangladesh.
+                </p>
+<div class="flex gap-md mt-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
+</a>
+</div>
+</div>
+<!-- Product Column -->
+<div class="col-span-1 lg:col-span-1 flex flex-col gap-md">
+<h4 class="font-label-md text-label-md text-on-surface font-semibold dark:text-on-primary">Product</h4>
+<ul class="flex flex-col gap-sm">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Features</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Pricing</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Demo</a></li>
+</ul>
+</div>
+<!-- Company Column -->
+<div class="col-span-1 lg:col-span-1 flex flex-col gap-md">
+<h4 class="font-label-md text-label-md text-on-surface font-semibold dark:text-on-primary">Company</h4>
+<ul class="flex flex-col gap-sm">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">About Us</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Contact Us</a></li>
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Blog</a></li>
+</ul>
+</div>
+<!-- Support Column -->
+<div class="col-span-2 lg:col-span-2 flex flex-col gap-md">
+<h4 class="font-label-md text-label-md text-on-surface font-semibold dark:text-on-primary">Support</h4>
+<ul class="flex flex-col gap-sm">
+<li><a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Help Center</a></li>
+<li class="flex items-center gap-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant">Language:</span>
+<div class="bg-surface-container-high rounded-full p-xs flex text-caption font-caption">
+<button class="bg-surface-container-lowest text-on-surface px-sm py-xs rounded-full shadow-sm">EN</button>
+<button class="text-on-surface-variant hover:text-primary px-sm py-xs rounded-full transition-colors">BN</button>
+</div>
+</li>
+<li>
+<a class="inline-flex items-center gap-sm font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+                            WhatsApp Support
+                        </a>
+</li>
+</ul>
+</div>
+</div>
+<!-- Bottom Bar -->
+<div class="max-w-7xl mx-auto px-margin py-md border-t border-outline-variant dark:border-outline flex flex-col md:flex-row justify-between items-center gap-md">
+<p class="font-caption text-caption text-on-surface-variant dark:text-surface-variant">
+                © 2024 EduFlow Solutions Inc. All rights reserved.
+            </p>
+<div class="flex gap-lg font-caption text-caption text-on-surface-variant dark:text-surface-variant">
+<a class="hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

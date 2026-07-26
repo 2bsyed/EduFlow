@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduFlow Design System & Screen Gallery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex h-screen overflow-hidden">
+  
+  <!-- Sidebar -->
+  <aside class="w-80 bg-gray-950 border-r border-gray-800 flex flex-col h-full">
+    <div class="p-4 border-b border-gray-800 flex items-center gap-3">
+      <span class="material-symbols-outlined text-blue-500 text-2xl">school</span>
+      <div>
+        <h1 class="font-bold text-lg text-white">EduFlow Design System</h1>
+        <p class="text-xs text-gray-400">Stitch MCP Design Assets (26 Screens)</p>
+      </div>
+    </div>
+
+    <div class="flex border-b border-gray-800 text-sm">
+      <button id="tab-screens" onclick="switchTab('screens')" class="flex-1 py-2 px-3 text-center border-b-2 border-blue-500 font-medium text-blue-400">Screens</button>
+      <button id="tab-theme" onclick="switchTab('theme')" class="flex-1 py-2 px-3 text-center border-b-2 border-transparent font-medium text-gray-400 hover:text-gray-200">Design Tokens</button>
+    </div>
+
+    <!-- Screens List -->
+    <div id="panel-screens" class="flex-1 overflow-y-auto p-3 space-y-1">
+      <div id="screens-list" class="space-y-1"></div>
+    </div>
+
+    <!-- Theme Panel -->
+    <div id="panel-theme" class="hidden flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+      <div>
+        <h3 class="font-semibold text-gray-300 text-sm mb-2">Color Palette</h3>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-800">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-[#1e40af]"></span>
+              <span>Primary</span>
+            </div>
+            <code class="text-gray-400">#1E40AF</code>
+          </div>
+          <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-800">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-[#059669]"></span>
+              <span>Secondary</span>
+            </div>
+            <code class="text-gray-400">#059669</code>
+          </div>
+          <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-800">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-[#f8f9ff]"></span>
+              <span>Surface</span>
+            </div>
+            <code class="text-gray-400">#F8F9FF</code>
+          </div>
+          <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-800">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-[#121c28]"></span>
+              <span>On Surface</span>
+            </div>
+            <code class="text-gray-400">#121C28</code>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="font-semibold text-gray-300 text-sm mb-1">Typography</h3>
+        <p class="text-gray-400">Font Family: <strong class="text-gray-200">Inter</strong> (English & Bangla)</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-gray-300 text-sm mb-1">Layout & Grid</h3>
+        <p class="text-gray-400">8px base grid, 12-col desktop layout with 24px gutters.</p>
+      </div>
+    </div>
+
+    <div class="p-3 border-t border-gray-800 text-xs text-gray-500 text-center">
+      Pulled via Google Stitch MCP
+    </div>
+  </aside>
+
+  <!-- Main Viewport -->
+  <main class="flex-1 flex flex-col h-full bg-gray-950 overflow-hidden">
+    <header class="h-12 bg-gray-900 border-b border-gray-800 px-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <h2 id="current-title" class="font-semibold text-sm text-gray-200">Select a screen</h2>
+        <span id="current-badge" class="px-2 py-0.5 text-xs bg-gray-800 text-gray-400 rounded">HTML Preview</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <a id="open-new-tab" href="#" target="_blank" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded font-medium flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+          Open Screen HTML
+        </a>
+      </div>
+    </header>
+
+    <div class="flex-1 w-full h-full bg-white relative">
+      <iframe id="preview-frame" class="w-full h-full border-0" src="about:blank"></iframe>
+    </div>
+  </main>
+
+  <script>
+    let manifestData = [];
+
+    async function loadManifest() {
+      try {
+        const resp = await fetch('screens_manifest.json');
+        const data = await resp.json();
+        manifestData = data.screens.filter(s => s.hasHtml);
+        renderScreens();
+        if (manifestData.length > 0) {
+          loadScreen(manifestData[0]);
+        }
+      } catch (err) {
+        console.error("Failed to load screens manifest", err);
+      }
+    }
+
+    function renderScreens() {
+      const container = document.getElementById('screens-list');
+      container.innerHTML = manifestData.map((s, idx) => `
+        <button onclick='selectScreen(${idx})' id="btn-screen-${idx}" class="w-full text-left p-2.5 rounded text-xs transition-colors hover:bg-gray-800 flex items-center justify-between text-gray-300">
+          <span class="truncate font-medium">${s.title}</span>
+          <span class="material-symbols-outlined text-gray-500 text-sm">chevron_right</span>
+        </button>
+      `).join('');
+    }
+
+    function selectScreen(idx) {
+      document.querySelectorAll('#screens-list button').forEach(b => {
+        b.classList.remove('bg-blue-600/20', 'text-blue-400', 'border-l-2', 'border-blue-500');
+        b.classList.add('text-gray-300');
+      });
+      const btn = document.getElementById(`btn-screen-${idx}`);
+      if (btn) {
+        btn.classList.add('bg-blue-600/20', 'text-blue-400', 'border-l-2', 'border-blue-500');
+      }
+      loadScreen(manifestData[idx]);
+    }
+
+    function loadScreen(screen) {
+      document.getElementById('current-title').textContent = screen.title;
+      const htmlPath = `screens/${screen.file}`;
+      document.getElementById('preview-frame').src = htmlPath;
+      document.getElementById('open-new-tab').href = htmlPath;
+    }
+
+    function switchTab(tab) {
+      if (tab === 'screens') {
+        document.getElementById('panel-screens').classList.remove('hidden');
+        document.getElementById('panel-theme').classList.add('hidden');
+        document.getElementById('tab-screens').className = 'flex-1 py-2 px-3 text-center border-b-2 border-blue-500 font-medium text-blue-400';
+        document.getElementById('tab-theme').className = 'flex-1 py-2 px-3 text-center border-b-2 border-transparent font-medium text-gray-400 hover:text-gray-200';
+      } else {
+        document.getElementById('panel-screens').classList.add('hidden');
+        document.getElementById('panel-theme').classList.remove('hidden');
+        document.getElementById('tab-theme').className = 'flex-1 py-2 px-3 text-center border-b-2 border-blue-500 font-medium text-blue-400';
+        document.getElementById('tab-screens').className = 'flex-1 py-2 px-3 text-center border-b-2 border-transparent font-medium text-gray-400 hover:text-gray-200';
+      }
+    }
+
+    loadManifest();
+  </script>
+</body>
+</html>

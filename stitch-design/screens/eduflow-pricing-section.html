@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdcc3",
+                    "on-tertiary-fixed": "#2f1500",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "on-surface-variant": "#444653",
+                    "surface-dim": "#d1dbec",
+                    "secondary-fixed-dim": "#68dba9",
+                    "primary-container": "#1e40af",
+                    "surface-container-high": "#dfe9fa",
+                    "on-secondary-fixed": "#002114",
+                    "tertiary-container": "#743d00",
+                    "secondary": "#006c4a",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9ff",
+                    "outline": "#757684",
+                    "tertiary": "#532a00",
+                    "surface-container-highest": "#d9e3f4",
+                    "on-primary-fixed": "#001453",
+                    "error": "#ba1a1a",
+                    "on-background": "#121c28",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#eef4ff",
+                    "secondary-container": "#82f5c1",
+                    "on-tertiary-container": "#ffa85d",
+                    "primary": "#00288e",
+                    "on-secondary-fixed-variant": "#005137",
+                    "secondary-fixed": "#85f8c4",
+                    "primary-fixed": "#dde1ff",
+                    "on-surface": "#121c28",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#b8c4ff",
+                    "background": "#f8f9ff",
+                    "on-secondary-container": "#00714e",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#a8b8ff",
+                    "surface-container": "#e5eeff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "outline-variant": "#c4c5d5",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#3755c3",
+                    "on-primary-fixed-variant": "#173bab",
+                    "surface-bright": "#f8f9ff",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "surface-variant": "#d9e3f4",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#27313e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "base": "8px",
+                    "xxl": "48px",
+                    "md": "16px",
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "margin": "32px"
+            },
+            "fontFamily": {},
+            "fontSize": {
+                    "h4": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h1": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h1-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "h2": [
+                            "30px",
+                            {
+                                    "lineHeight": "38px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "caption": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "h3": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0em",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glow-effect {
+            position: relative;
+        }
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #1e40af, #82f5c1, #1e40af);
+            z-index: -1;
+            border-radius: 0.75rem;
+            filter: blur(8px);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        .glow-effect:hover::before {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-sans">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none z-50">
+<div class="flex justify-between items-center h-20 px-margin max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<a class="font-h3 text-h3 text-primary dark:text-inverse-primary tracking-tight" href="#">EduFlow</a>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform duration-150" href="#">Features</a>
+<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary font-body-md text-body-md active:scale-95 transition-transform duration-150" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-200 font-body-md text-body-md active:scale-95 transition-transform duration-150" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-variant transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="bg-primary-container text-on-primary hover:bg-primary transition-colors duration-200 font-label-md text-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform duration-150">
+                    Login
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center py-xxl px-margin relative overflow-hidden">
+<!-- Decorative Background Elements -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+<div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-surface-container-high blur-[100px] opacity-60"></div>
+<div class="absolute top-[40%] -right-[20%] w-[60%] h-[60%] rounded-full bg-secondary-container blur-[120px] opacity-20"></div>
+</div>
+<div class="max-w-7xl w-full flex flex-col items-center text-center mb-xl">
+<h1 class="font-h1 text-h1 md:font-h1 text-h1 text-on-background mb-sm">Simple pricing that grows with your institute.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Start managing your coaching center or educational institute with ease. No hidden fees.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-7xl w-full relative z-10">
+<!-- Starter Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-lg transition-shadow duration-300 relative group">
+<div class="mb-lg">
+<h2 class="font-h3 text-h3 text-on-background mb-xs">Starter</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Ideal for new coaching centers.</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2 text-on-background">৳1,500</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/month</span>
+</div>
+<p class="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">Up to 100 students</p>
+</div>
+<ul class="flex flex-col gap-md mb-xl flex-grow">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Digital Attendance</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Basic Fee Tracking</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">SMS Notifications</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Bangla Support</span>
+</li>
+</ul>
+<button class="w-full border-2 border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg active:scale-95 transition-transform duration-150 mt-auto">
+                    Start Free Trial
+                </button>
+</div>
+<!-- Growth Card (Most Popular) -->
+<div class="bg-surface-container-lowest border-2 border-primary-container rounded-xl p-lg flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.12)] md:-mt-md md:mb-md relative z-20 glow-effect transform transition-transform duration-300 hover:-translate-y-2">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary font-label-md text-label-md px-md py-xs rounded-full shadow-sm whitespace-nowrap">
+                    Most Popular
+                </div>
+<div class="mb-lg mt-sm">
+<h2 class="font-h3 text-h3 text-on-background mb-xs">Growth</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">For growing institutes.</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2 text-on-background">৳3,500</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/month</span>
+</div>
+<p class="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">Up to 500 students</p>
+</div>
+<ul class="flex flex-col gap-md mb-xl flex-grow">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background font-medium">Everything in Starter</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Results &amp; Report Cards</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">bKash &amp; Nagad Integration</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Advanced Analytics</span>
+</li>
+</ul>
+<button class="w-full bg-primary-container text-on-primary hover:bg-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg active:scale-95 transition-transform duration-150 mt-auto shadow-md hover:shadow-lg">
+                    Start Free Trial
+                </button>
+</div>
+<!-- Pro Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-lg transition-shadow duration-300 relative group">
+<div class="mb-lg">
+<h2 class="font-h3 text-h3 text-on-background mb-xs">Pro</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">For large educational institutes.</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2 text-on-background">৳7,500</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/month</span>
+</div>
+<p class="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">Unlimited students</p>
+</div>
+<ul class="flex flex-col gap-md mb-xl flex-grow">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background font-medium">Everything in Growth</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Multi-branch Management</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Staff Payroll</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-[#059669] text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md text-on-background">Priority Support</span>
+</li>
+</ul>
+<button class="w-full border-2 border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg active:scale-95 transition-transform duration-150 mt-auto">
+                    Start Free Trial
+                </button>
+</div>
+</div>
+<div class="mt-xl text-center flex items-center justify-center gap-sm bg-surface-container-low px-lg py-md rounded-full shadow-sm max-w-3xl w-full">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant">All plans include Bangla + English support, bKash/Nagad payment collection, and free onboarding.</p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest w-full py-xl border-t border-outline-variant dark:border-outline">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between px-margin max-w-7xl mx-auto items-center gap-lg">
+<div class="font-h4 text-h4 text-primary dark:text-inverse-primary">
+                EduFlow
+            </div>
+<nav class="flex flex-wrap gap-md lg:gap-lg">
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-all duration-200 hover:underline decoration-primary" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-all duration-200 hover:underline decoration-primary" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-all duration-200 hover:underline decoration-primary" href="#">Contact Support</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-all duration-200 hover:underline decoration-primary" href="#">Careers</a>
+</nav>
+<div class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant">
+                © 2024 EduFlow Bangladesh. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

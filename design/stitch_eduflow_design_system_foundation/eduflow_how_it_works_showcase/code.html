@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - How It Works</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#d9e3f4",
+                      "secondary-fixed-dim": "#68dba9",
+                      "primary-container": "#1e40af",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#b8c4ff",
+                      "on-primary-container": "#a8b8ff",
+                      "on-secondary-container": "#00714e",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "outline": "#757684",
+                      "on-secondary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#ffdcc3",
+                      "surface-container-highest": "#d9e3f4",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#743d00",
+                      "surface-dim": "#d1dbec",
+                      "surface-container-high": "#dfe9fa",
+                      "on-error-container": "#93000a",
+                      "surface-container-low": "#eef4ff",
+                      "on-tertiary-fixed": "#2f1500",
+                      "primary": "#00288e",
+                      "inverse-surface": "#27313e",
+                      "secondary-fixed": "#85f8c4",
+                      "outline-variant": "#c4c5d5",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "tertiary-fixed-dim": "#ffb77d",
+                      "on-secondary-fixed": "#002114",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container": "#e5eeff",
+                      "on-primary-fixed-variant": "#173bab",
+                      "on-tertiary-container": "#ffa85d",
+                      "tertiary": "#532a00",
+                      "surface-tint": "#3755c3",
+                      "on-background": "#121c28",
+                      "background": "#f8f9ff",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary-fixed-variant": "#6e3900",
+                      "error": "#ba1a1a",
+                      "secondary": "#006c4a",
+                      "primary-fixed": "#dde1ff",
+                      "secondary-container": "#82f5c1",
+                      "on-surface": "#121c28",
+                      "on-secondary-fixed-variant": "#005137",
+                      "on-surface-variant": "#444653",
+                      "surface": "#f8f9ff",
+                      "on-primary-fixed": "#001453"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "gutter": "24px",
+                      "xxl": "48px",
+                      "lg": "24px",
+                      "margin": "32px",
+                      "sm": "8px",
+                      "md": "16px",
+                      "base": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {},
+              "fontSize": {
+                      "h1-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "h2": [
+                              "30px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "h3": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h4": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Base styles */
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+
+        /* Ambient Shadows */
+        .shadow-ambient {
+            box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.05), 0 10px 15px -3px rgba(30, 64, 175, 0.1);
+        }
+
+        .shadow-ambient-lg {
+            box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.1), 0 8px 10px -6px rgba(30, 64, 175, 0.05);
+        }
+        
+        .shadow-ambient-xl {
+             box-shadow: 0 20px 25px -5px rgba(30, 64, 175, 0.15), 0 8px 10px -6px rgba(30, 64, 175, 0.05);
+        }
+
+        /* Material Symbols Customization */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Perspective Mockup Animation */
+        .perspective-tilt {
+            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(0.98);
+            transition: transform 0.5s ease-out;
+        }
+        
+        .perspective-tilt:hover {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+        }
+        
+        /* Subtle Gradient Background */
+        .bg-soft-gradient {
+            background: linear-gradient(180deg, theme('colors.surface') 0%, theme('colors.surface-container-low') 100%);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none z-50">
+<div class="flex justify-between items-center h-20 px-margin max-w-7xl mx-auto">
+<!-- Brand -->
+<div class="flex items-center gap-sm">
+<span class="font-h3 text-h3 text-primary dark:text-inverse-primary tracking-tight">EduFlow</span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Features</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">About</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center p-sm rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+<button class="bg-primary-container text-on-primary font-label-md text-label-md px-lg py-sm rounded-lg active:scale-95 transition-transform duration-150 hover:bg-primary-container/90 focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                    Login
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow">
+<!-- Part 1: How It Works Section -->
+<section class="py-xxl px-margin max-w-7xl mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-h1 text-h1 text-on-surface md:font-h1 md:text-h1 font-h1-mobile text-h1-mobile">Get started in three simple steps</h2>
+<p class="mt-md font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Set up your entire institute management workflow in minutes, not hours.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-xl mt-xxl relative">
+<!-- Connecting Line (Desktop Only) -->
+<div class="hidden md:block absolute top-12 left-[16%] right-[16%] h-px bg-outline-variant z-0"></div>
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center relative z-10 bg-surface p-lg rounded-xl shadow-ambient border border-outline-variant/30 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mb-md border-4 border-surface shadow-sm relative">
+<span class="absolute top-0 right-0 -mt-2 -mr-2 font-h4 text-h4 text-primary bg-surface-container w-8 h-8 rounded-full flex items-center justify-center shadow-sm">01</span>
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="group_add">group_add</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Add your students &amp; batches</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Quickly import your data or add students manually to set up your institute.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center relative z-10 bg-surface p-lg rounded-xl shadow-ambient border border-outline-variant/30 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mb-md border-4 border-surface shadow-sm relative">
+<span class="absolute top-0 right-0 -mt-2 -mr-2 font-h4 text-h4 text-primary bg-surface-container w-8 h-8 rounded-full flex items-center justify-center shadow-sm">02</span>
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="edit_calendar">edit_calendar</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Mark attendance &amp; collect fees</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Record daily presence and manage payments via bKash, Nagad, or cash.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center relative z-10 bg-surface p-lg rounded-xl shadow-ambient border border-outline-variant/30 hover:-translate-y-1 transition-transform duration-300">
+<div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mb-md border-4 border-surface shadow-sm relative">
+<span class="absolute top-0 right-0 -mt-2 -mr-2 font-h4 text-h4 text-primary bg-surface-container w-8 h-8 rounded-full flex items-center justify-center shadow-sm">03</span>
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="dashboard">dashboard</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-sm">Track everything from one dashboard</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Monitor your growth, dues, and performance with automated real-time reporting.</p>
+</div>
+</div>
+</section>
+<!-- Part 2: Product Showcase Section -->
+<section class="py-xxl px-margin w-full bg-soft-gradient overflow-hidden">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-h1 text-h1 text-on-surface md:font-h1 md:text-h1 font-h1-mobile text-h1-mobile">See your entire institute at a glance.</h2>
+<p class="mt-md font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Powerful analytics presented in a distraction-free, professional interface.</p>
+</div>
+<!-- Browser Mockup -->
+<div class="mt-xl mx-auto max-w-5xl rounded-xl bg-surface border border-outline-variant shadow-ambient-xl perspective-tilt overflow-hidden flex flex-col">
+<!-- Browser Header -->
+<div class="bg-surface-container-lowest border-b border-outline-variant h-12 flex items-center px-md gap-sm">
+<div class="flex gap-2">
+<div class="w-3 h-3 rounded-full bg-error-container border border-error/20"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim border border-tertiary/20"></div>
+<div class="w-3 h-3 rounded-full bg-secondary-fixed border border-secondary/20"></div>
+</div>
+<div class="flex-1 ml-lg">
+<div class="bg-surface-container-low h-6 rounded-md w-1/2 max-w-md border border-outline-variant/50 flex items-center px-sm mx-auto">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/50 mr-2" data-icon="lock">lock</span>
+<span class="font-caption text-caption text-on-surface-variant/70">app.eduflow.com/dashboard</span>
+</div>
+</div>
+</div>
+<!-- Dashboard Content -->
+<div class="bg-surface-bright flex-1 p-lg md:p-xl grid grid-cols-1 md:grid-cols-4 gap-lg">
+<!-- Top Row Stat Cards -->
+<div class="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-md">
+<!-- Card 1: Revenue -->
+<div class="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+                                    Total Revenue
+                                </span>
+<span class="font-h2 text-h2 text-on-surface mt-sm">৳ 2.4L</span>
+<span class="font-caption text-caption text-secondary mt-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                                    +12.5% this month
+                                </span>
+</div>
+<!-- Card 2: Attendance -->
+<div class="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+                                    Attendance Rate
+                                </span>
+<span class="font-h2 text-h2 text-on-surface mt-sm">94%</span>
+<span class="font-caption text-caption text-secondary mt-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                                    +2% vs last week
+                                </span>
+</div>
+<!-- Card 3: Pending Fees -->
+<div class="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="pending_actions">pending_actions</span>
+                                    Pending Fees
+                                </span>
+<span class="font-h2 text-h2 text-error mt-sm">৳ 45K</span>
+<span class="font-caption text-caption text-error mt-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                                    15 students pending
+                                </span>
+</div>
+<!-- Card 4: Active Students -->
+<div class="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="groups">groups</span>
+                                    Active Students
+                                </span>
+<span class="font-h2 text-h2 text-on-surface mt-sm">342</span>
+<span class="font-caption text-caption text-secondary mt-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                                    +8 new admissions
+                                </span>
+</div>
+</div>
+<!-- Main Chart Area -->
+<div class="md:col-span-3 bg-surface p-lg rounded-lg border border-outline-variant/50 shadow-sm flex flex-col min-h-[300px]">
+<h3 class="font-h4 text-h4 text-on-surface mb-lg flex justify-between items-center">
+                                Student Growth
+                                <button class="text-on-surface-variant hover:text-primary p-xs"><span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span></button>
+</h3>
+<!-- CSS Only Chart Representation -->
+<div class="flex-1 relative flex items-end justify-between pt-lg border-b border-l border-outline-variant/30 pl-sm pb-sm">
+<!-- Y Axis Labels -->
+<div class="absolute left-[-24px] top-0 bottom-0 flex flex-col justify-between text-caption font-caption text-on-surface-variant/60 py-sm">
+<span>400</span>
+<span>300</span>
+<span>200</span>
+<span>100</span>
+<span>0</span>
+</div>
+<!-- Chart Lines/Bars -->
+<div class="w-full h-full flex items-end justify-around px-md">
+<div class="w-8 bg-primary-container/20 hover:bg-primary-container/40 rounded-t-sm h-[40%] transition-all relative group"><div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-inverse-surface text-inverse-on-surface text-caption px-2 py-1 rounded transition-opacity">160</div></div>
+<div class="w-8 bg-primary-container/30 hover:bg-primary-container/50 rounded-t-sm h-[45%] transition-all relative group"><div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-inverse-surface text-inverse-on-surface text-caption px-2 py-1 rounded transition-opacity">180</div></div>
+<div class="w-8 bg-primary-container/40 hover:bg-primary-container/60 rounded-t-sm h-[60%] transition-all relative group"><div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-inverse-surface text-inverse-on-surface text-caption px-2 py-1 rounded transition-opacity">240</div></div>
+<div class="w-8 bg-primary-container/60 hover:bg-primary-container/80 rounded-t-sm h-[75%] transition-all relative group"><div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-inverse-surface text-inverse-on-surface text-caption px-2 py-1 rounded transition-opacity">300</div></div>
+<div class="w-8 bg-primary-container/80 hover:bg-primary-container rounded-t-sm h-[85%] transition-all relative group"><div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-inverse-surface text-inverse-on-surface text-caption px-2 py-1 rounded transition-opacity">342</div></div>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute left-0 right-0 -bottom-8 flex justify-around text-caption font-caption text-on-surface-variant/60 px-md">
+<span>Jan</span>
+<span>Feb</span>
+<span>Mar</span>
+<span>Apr</span>
+<span>May</span>
+</div>
+</div>
+</div>
+<!-- Side List Area -->
+<div class="md:col-span-1 bg-surface p-lg rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
+<h3 class="font-h4 text-h4 text-on-surface mb-md">Recent Activity</h3>
+<div class="flex flex-col gap-md">
+<!-- Activity Item -->
+<div class="flex items-start gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="payments">payments</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">Fee collected from Batch A</p>
+<p class="font-caption text-caption text-on-surface-variant">2 mins ago</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex items-start gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="person_add">person_add</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">New admission: R. Islam</p>
+<p class="font-caption text-caption text-on-surface-variant">1 hour ago</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex items-start gap-sm">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="event_busy">event_busy</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface line-clamp-2">5 absences reported today</p>
+<p class="font-caption text-caption text-on-surface-variant">3 hours ago</p>
+</div>
+</div>
+</div>
+<button class="mt-auto pt-md text-primary font-label-md text-label-md hover:underline w-full text-center">View All</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest w-full py-xl border-t border-outline-variant dark:border-outline flat no shadows mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between px-margin max-w-7xl mx-auto items-center gap-lg">
+<!-- Brand -->
+<div class="flex items-center gap-sm mb-md lg:mb-0">
+<span class="font-h4 text-h4 text-primary dark:text-inverse-primary">EduFlow</span>
+</div>
+<!-- Links -->
+<div class="flex flex-wrap gap-md justify-center lg:justify-end mb-md lg:mb-0">
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Contact Support</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Careers</a>
+</div>
+<!-- Copyright -->
+<div class="font-caption text-caption text-on-surface-variant dark:text-on-surface-variant text-center md:text-left md:col-span-2 lg:col-span-1 lg:order-first w-full lg:w-auto">
+                © 2024 EduFlow Bangladesh. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

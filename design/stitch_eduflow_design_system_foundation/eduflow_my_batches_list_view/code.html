@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Batches - EduPortal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#27313e",
+                      "outline": "#757684",
+                      "surface-tint": "#3755c3",
+                      "primary-fixed": "#dde1ff",
+                      "on-secondary-container": "#00714e",
+                      "on-tertiary-fixed-variant": "#6e3900",
+                      "on-primary-container": "#a8b8ff",
+                      "on-tertiary-container": "#ffa85d",
+                      "tertiary-container": "#743d00",
+                      "secondary-container": "#82f5c1",
+                      "surface-container-high": "#dfe9fa",
+                      "tertiary": "#532a00",
+                      "outline-variant": "#c4c5d5",
+                      "on-background": "#121c28",
+                      "tertiary-fixed-dim": "#ffb77d",
+                      "on-primary-fixed-variant": "#173bab",
+                      "surface-variant": "#d9e3f4",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "surface-container-low": "#eef4ff",
+                      "secondary-fixed": "#85f8c4",
+                      "on-secondary-fixed-variant": "#005137",
+                      "tertiary-fixed": "#ffdcc3",
+                      "surface-dim": "#d1dbec",
+                      "primary-container": "#1e40af",
+                      "on-secondary-fixed": "#002114",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#d9e3f4",
+                      "secondary": "#006c4a",
+                      "on-error-container": "#93000a",
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "secondary-fixed-dim": "#68dba9",
+                      "on-tertiary-fixed": "#2f1500",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "primary": "#00288e",
+                      "surface": "#f8f9ff",
+                      "on-primary": "#ffffff",
+                      "surface-container": "#e5eeff",
+                      "error": "#ba1a1a",
+                      "background": "#f8f9ff",
+                      "on-surface-variant": "#444653",
+                      "inverse-primary": "#b8c4ff",
+                      "on-surface": "#121c28",
+                      "on-primary-fixed": "#001453"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "gutter": "24px",
+                      "lg": "24px",
+                      "margin": "32px",
+                      "xl": "32px",
+                      "base": "8px",
+                      "xxl": "48px",
+                      "md": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {},
+              "fontSize": {
+                      "h2": [
+                              "30px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h3": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h1": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "h4": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "h1-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-sans antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="hidden md:flex h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant shadow-sm flex-col py-lg z-20">
+<div class="px-lg mb-xl">
+<h1 class="font-h3 text-h3 font-bold text-primary">EduPortal</h1>
+<p class="font-label-md text-label-md text-on-surface-variant mt-sm">Teacher Dashboard</p>
+</div>
+<ul class="flex-1 space-y-sm px-md">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-semibold border-r-4 border-primary bg-surface-container-low cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                    My Batches
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+                    Attendance
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                    Results
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+                    Timetable
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">campaign</span>
+                    Notices
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 cursor-pointer active:scale-95 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+                    Profile
+                </a>
+</li>
+</ul>
+</nav>
+<!-- TopNavBar -->
+<header class="hidden md:flex fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-lg z-20">
+<div class="flex-1 flex items-center">
+<!-- Search placeholder if needed on left based on intent, though not explicitly in list view prompt but good for layout structure -->
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md text-on-surface-variant font-label-md text-label-md">
+<span>EN/BN</span>
+<button class="hover:text-primary transition-colors focus-within:ring-2 focus-within:ring-primary rounded-full p-sm">
+<span class="material-symbols-outlined">language</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors focus-within:ring-2 focus-within:ring-primary rounded-full p-sm relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-sm right-sm w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="Teacher Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a teacher, confident expression, well-lit studio lighting, isolated against a light grey background, wearing a smart casual blue blazer, corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCsLrf6yPnVqet8qokuHyzpAPHmT1nsF029efGglHxzx5Tl15Sg_2guLQzrzx-HeMqizGpteU_ZsLMYSdoJniNW62Sng8RNGbS32CZXXwF1bSSbY87D12DgTa-0F6A3klCqEXiuib7zJ0jw6Dq3CTqtdY2BUVb1vkq1PJyZnVT7mWHG5pM4LQ9vVrMb2ttYeELHrjkltFs61V_NjpxyETO9NqrBFAw4jexvoF8qLmXoLZBx10OBjF0G5JpjqBhGrb66FzLFmIF0aNf"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="md:ml-64 pt-16 min-h-screen p-lg md:p-margin">
+<div class="max-w-7xl mx-auto">
+<header class="mb-xl flex justify-between items-end">
+<div>
+<h1 class="font-h1 text-h1 text-primary-container">My Batches</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">You are currently assigned to <strong class="font-semibold text-primary">6</strong> active batches.</p>
+</div>
+<div>
+<button class="bg-primary-container text-white px-lg py-sm rounded-lg font-label-md text-label-md hover:bg-primary transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary-container flex items-center gap-sm shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                        New Batch Request
+                    </button>
+</div>
+</header>
+<!-- Bento Grid / Card Grid for Batches -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Batch Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-tint"></div>
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="inline-block px-sm py-xs bg-surface-container-low text-primary-container rounded font-caption text-caption font-medium mb-sm">Science</span>
+<h2 class="font-h4 text-h4 text-on-background group-hover:text-primary transition-colors duration-200">Class 10 - Science A</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Physics &amp; Chemistry</p>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="space-y-sm mb-lg flex-1">
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_clock</span>
+<span>Sun, Tue, Thu | 09:00 AM</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>32 Students</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">meeting_room</span>
+<span>Room 401</span>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Attendance Trend</span>
+<span class="font-caption text-caption text-secondary font-medium">+2%</span>
+</div>
+<!-- Sparkline placeholder -->
+<div class="h-8 w-full bg-surface-container rounded flex items-end overflow-hidden">
+<div class="h-1/2 w-1/5 bg-secondary-container rounded-t-sm"></div>
+<div class="h-3/5 w-1/5 bg-secondary-container rounded-t-sm ml-xs"></div>
+<div class="h-2/5 w-1/5 bg-secondary-container rounded-t-sm ml-xs"></div>
+<div class="h-4/5 w-1/5 bg-secondary-container rounded-t-sm ml-xs"></div>
+<div class="h-full w-1/5 bg-secondary rounded-t-sm ml-xs"></div>
+</div>
+</div>
+</div>
+<!-- Batch Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-tint"></div>
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="inline-block px-sm py-xs bg-surface-container-low text-primary-container rounded font-caption text-caption font-medium mb-sm">Science</span>
+<h2 class="font-h4 text-h4 text-on-background group-hover:text-primary transition-colors duration-200">HSC 1st Year - Physics</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Advanced Physics</p>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="space-y-sm mb-lg flex-1">
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_clock</span>
+<span>Mon, Wed | 11:30 AM</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>45 Students</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">meeting_room</span>
+<span>Lab 2</span>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Attendance Trend</span>
+<span class="font-caption text-caption text-on-surface-variant font-medium">--</span>
+</div>
+<!-- Sparkline placeholder -->
+<div class="h-8 w-full bg-surface-container rounded flex items-end overflow-hidden">
+<div class="h-3/5 w-1/5 bg-primary-fixed-dim rounded-t-sm"></div>
+<div class="h-3/5 w-1/5 bg-primary-fixed-dim rounded-t-sm ml-xs"></div>
+<div class="h-3/5 w-1/5 bg-primary-fixed-dim rounded-t-sm ml-xs"></div>
+<div class="h-3/5 w-1/5 bg-primary-fixed-dim rounded-t-sm ml-xs"></div>
+<div class="h-3/5 w-1/5 bg-primary-fixed-dim rounded-t-sm ml-xs"></div>
+</div>
+</div>
+</div>
+<!-- Batch Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-tint"></div>
+<div class="flex justify-between items-start mb-md">
+<div>
+<span class="inline-block px-sm py-xs bg-surface-container-low text-primary-container rounded font-caption text-caption font-medium mb-sm">Mathematics</span>
+<h2 class="font-h4 text-h4 text-on-background group-hover:text-primary transition-colors duration-200">Class 9 - Math Prep</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Algebra &amp; Geometry</p>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="space-y-sm mb-lg flex-1">
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_clock</span>
+<span>Sat, Mon, Wed | 02:00 PM</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span>28 Students</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">meeting_room</span>
+<span>Room 102</span>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">Attendance Trend</span>
+<span class="font-caption text-caption text-error font-medium">-5%</span>
+</div>
+<!-- Sparkline placeholder -->
+<div class="h-8 w-full bg-surface-container rounded flex items-end overflow-hidden">
+<div class="h-4/5 w-1/5 bg-error-container rounded-t-sm"></div>
+<div class="h-full w-1/5 bg-error-container rounded-t-sm ml-xs"></div>
+<div class="h-3/5 w-1/5 bg-error-container rounded-t-sm ml-xs"></div>
+<div class="h-2/5 w-1/5 bg-error-container rounded-t-sm ml-xs"></div>
+<div class="h-1/5 w-1/5 bg-error rounded-t-sm ml-xs"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

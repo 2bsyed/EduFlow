@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Coaching Center Management Software</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#dfe9fa",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d9e3f4",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#27313e",
+                        "surface-container-low": "#eef4ff",
+                        "on-secondary-fixed": "#002114",
+                        "on-primary-fixed": "#001453",
+                        "on-secondary-container": "#00714e",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#82f5c1",
+                        "primary-fixed": "#dde1ff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-container": "#ffa85d",
+                        "on-surface-variant": "#444653",
+                        "surface-variant": "#d9e3f4",
+                        "outline-variant": "#c4c5d5",
+                        "on-tertiary-fixed": "#2f1500",
+                        "outline": "#757684",
+                        "on-secondary-fixed-variant": "#005137",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdcc3",
+                        "on-background": "#121c28",
+                        "secondary-fixed": "#85f8c4",
+                        "surface-tint": "#3755c3",
+                        "primary-container": "#1e40af",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "background": "#f8f9ff",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#173bab",
+                        "tertiary-container": "#743d00",
+                        "surface-dim": "#d1dbec",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-surface": "#121c28",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "secondary": "#006c4a",
+                        "on-primary-container": "#a8b8ff",
+                        "primary": "#00288e",
+                        "surface": "#f8f9ff",
+                        "inverse-primary": "#b8c4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#532a00",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "xl": "32px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {},
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h2": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h1": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "h3": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h4": ["20px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-sans antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Navbar -->
+<header class="bg-surface dark:bg-surface-container-highest w-full sticky top-0 z-50 border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center h-16 px-margin max-w-7xl mx-auto">
+<div class="flex items-center gap-xl">
+<a class="text-h4 font-h4 text-primary dark:text-primary-fixed-dim tracking-tight" href="#">EduFlow</a>
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-body-md text-body-md cursor-pointer active:opacity-80" href="#">Features</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-body-md text-body-md cursor-pointer active:opacity-80" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-body-md text-body-md cursor-pointer active:opacity-80" href="#">About</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 hidden sm:block" href="#">Bangla</a>
+<a class="bg-primary-container text-on-primary font-label-md text-label-md px-md py-sm rounded-DEFAULT hover:opacity-90 transition-opacity" href="#">Login</a>
+</div>
+</nav>
+</header>
+<main>
+<!-- Trust Bar -->
+<section class="py-lg border-b border-outline-variant/30 bg-surface-container-low/50">
+<div class="max-w-7xl mx-auto px-margin">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-lg">
+<div class="flex flex-col items-center justify-center text-center p-sm">
+<span class="material-symbols-outlined text-outline mb-xs text-3xl">groups</span>
+<p class="font-h3 text-h3 text-on-surface">500+</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Students Managed</p>
+</div>
+<div class="flex flex-col items-center justify-center text-center p-sm">
+<span class="material-symbols-outlined text-outline mb-xs text-3xl">payments</span>
+<p class="font-h3 text-h3 text-on-surface">৳ Lakhs</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">in Fees Tracked</p>
+</div>
+<div class="flex flex-col items-center justify-center text-center p-sm">
+<span class="material-symbols-outlined text-outline mb-xs text-3xl">dns</span>
+<p class="font-h3 text-h3 text-on-surface">99.9%</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Uptime</p>
+</div>
+<div class="flex flex-col items-center justify-center text-center p-sm">
+<span class="material-symbols-outlined text-outline mb-xs text-3xl">language</span>
+<p class="font-h3 text-h3 text-on-surface">Bangla + English</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Support</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Benefits Section -->
+<section class="py-xxl bg-surface">
+<div class="max-w-7xl mx-auto px-margin">
+<div class="text-center mb-xl">
+<h2 class="font-h2 text-h2 text-on-surface mb-sm">Everything your coaching center needs, in one place.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">A unified platform designed specifically for the operational challenges of modern educational institutions in Bangladesh.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Benefit 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-primary-fixed">how_to_reg</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">Attendance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Mark attendance in seconds</p>
+</div>
+<!-- Benefit 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-secondary-fixed">account_balance_wallet</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">Fees &amp; Payments</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Collect fees via bKash &amp; Nagad, automatically track dues</p>
+</div>
+<!-- Benefit 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-tertiary-fixed">assignment</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">Results</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Enter marks, generate report cards instantly</p>
+</div>
+<!-- Benefit 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-error-container">sms</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">SMS Reminders</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Automatic SMS alerts to parents for fees and absences</p>
+</div>
+<!-- Benefit 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface">bar_chart</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">Reports &amp; Analytics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">See revenue, attendance trends, and growth at a glance</p>
+</div>
+<!-- Benefit 6 -->
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center mb-md group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant">translate</span>
+</div>
+<h3 class="font-h4 text-h4 text-on-surface mb-xs">Bangla + English</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Your staff work in the language they're comfortable in</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest w-full py-xl border-t border-outline-variant dark:border-outline flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin max-w-7xl mx-auto gap-md md:gap-0">
+<div class="text-h4 font-h4 text-primary dark:text-primary-fixed-dim">
+                EduFlow
+            </div>
+<div class="flex gap-lg font-caption text-caption">
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Contact Support</a>
+</div>
+<div class="font-caption text-caption text-on-surface-variant dark:text-outline">
+                © 2024 EduFlow. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Trusted by Coaching Centers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002114",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#b8c4ff",
+                        "primary-fixed": "#dde1ff",
+                        "on-secondary-fixed-variant": "#005137",
+                        "background": "#f8f9ff",
+                        "surface-variant": "#d9e3f4",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "primary": "#00288e",
+                        "on-background": "#121c28",
+                        "on-secondary-container": "#00714e",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "tertiary": "#532a00",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface-container-low": "#eef4ff",
+                        "surface-container-highest": "#d9e3f4",
+                        "outline-variant": "#c4c5d5",
+                        "tertiary-fixed": "#ffdcc3",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-container": "#743d00",
+                        "on-surface": "#121c28",
+                        "surface-bright": "#f8f9ff",
+                        "secondary-fixed": "#85f8c4",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-tertiary-container": "#ffa85d",
+                        "on-primary-container": "#a8b8ff",
+                        "surface-dim": "#d1dbec",
+                        "surface": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#444653",
+                        "on-primary-fixed": "#001453",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#3755c3",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#173bab",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2f1500",
+                        "primary-container": "#1e40af",
+                        "surface-container": "#e5eeff",
+                        "surface-container-high": "#dfe9fa",
+                        "secondary": "#006c4a",
+                        "outline": "#757684",
+                        "secondary-container": "#82f5c1",
+                        "inverse-surface": "#27313e",
+                        "error-container": "#ffdad6",
+                        "brand-green": "#059669"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "xxl": "48px",
+                        "margin": "32px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "sans": ['Inter', 'sans-serif']
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h4": ["20px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "h3": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h1": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "h1-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "h2": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .star-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            color: #059669; /* Brand Green overriding standard for this specific requirement */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-sans">
+<!-- Top Navigation Bar from Shared Components -->
+<header class="bg-surface dark:bg-surface-container-highest w-full sticky top-0 z-50 border-b border-outline-variant dark:border-outline shadow-sm dark:shadow-none font-body-md text-body-md">
+<div class="flex justify-between items-center h-16 px-margin max-w-7xl mx-auto w-full">
+<div class="flex items-center gap-2">
+<span class="text-h4 font-h4 text-primary dark:text-primary-fixed-dim tracking-tight">EduFlow</span>
+</div>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#">Features</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md">Bangla</button>
+<button class="bg-primary-container text-on-primary font-label-md px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary-container outline-none">Login</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow">
+<!-- Testimonials Section -->
+<section class="py-xxl md:py-24 bg-surface-container-low px-margin">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-h2 text-h2 text-on-background mb-sm">Coaching centers that trust EduFlow</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">See how we're helping institutions manage their operations more efficiently.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Testimonial Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="flex gap-1 mb-md">
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+</div>
+<blockquote class="font-body-md text-body-md text-on-surface flex-grow mb-lg">
+                            "Managing fees was a constant headache before EduFlow. Now, parents receive automatic reminders and pay via bKash on time. It has completely transformed our cash flow."
+                        </blockquote>
+<div class="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
+<img alt="" class="w-12 h-12 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIjpYYdfpvuDj3CC-TIl7U_c-cfOnP9uAP32e2cNTGdvmNY0STRifuQwi-3m3fVWhg77ZZpgMVxeeekKy45ttc-BP3YGi89FENXEdMeS4DUK8whyzbg6hmeYPmu5ZIFLRFN_YY774Mshve5prZYTk1bXnQ6vP56WXGY6ZqHh5XnJFIjt2CXj4-ExoLgwAj7QO2C5yM7gEjEj79J2l2LTtJ3juEVUS7QbpnsmUuGFKPJFOOr0WsgVjXFJBJWxfVDBxFKGEJ_iznCMEL"/>
+<div>
+<p class="font-label-md text-label-md text-on-background font-semibold">Rafiqul Islam</p>
+<p class="font-caption text-caption text-on-surface-variant">Owner — Bright Future Coaching Center, Rajshahi</p>
+</div>
+</div>
+</div>
+<!-- Testimonial Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="flex gap-1 mb-md">
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+</div>
+<blockquote class="font-body-md text-body-md text-on-surface flex-grow mb-lg">
+                            "The dual-language support is a lifesaver. My staff can mark attendance in Bangla, while I get professional growth reports in English. It's the perfect balance for our institute."
+                        </blockquote>
+<div class="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
+<img alt="" class="w-12 h-12 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS4IvkSqdfBKSyjt5iYMEm4qEnPuGt4U8Q72r4MHh7LPpFWERBrPD-b7DjavGKUeuCaj9kVInLNkd8C3S4d95OInw-iZcHEKih6cSh3L7Q4CNmqrnjcVhYMFMPqscrWwbk_XiPOh31oblkgeOKyvschSNmNwoGcUkhTy-VKl4l3Oeo3AP86CdnmsjnsjVIZafLOZnw-zUaqlinNbXYZoIQ_dSzaa1GkjaQNdB29BUwNKNEgHLi8IBnK6WzPHsEiYrkGEqMxCmO5aqO"/>
+<div>
+<p class="font-label-md text-label-md text-on-background font-semibold">Nusrat Jahan</p>
+<p class="font-caption text-caption text-on-surface-variant">Principal — Excellence Academic Care, Dhaka</p>
+</div>
+</div>
+</div>
+<!-- Testimonial Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="flex gap-1 mb-md">
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined star-filled text-xl" data-icon="star" data-weight="fill">star</span>
+</div>
+<blockquote class="font-body-md text-body-md text-on-surface flex-grow mb-lg">
+                            "We switched from spreadsheets to EduFlow in one day. The interface is clean and trustworthy, which is vital when we're managing student records and payments."
+                        </blockquote>
+<div class="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
+<img alt="" class="w-12 h-12 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA86DCxW72fA8UDJgxjeyBVtNTFLfrrYjKnRRD9GILs5wHcSIEGoZTvmWeJApqeh0ByF6snQ1muK1HOvOp0YdnamxnKA6LTlryEoJ-CRFisDni8EBmqZTZUscyvNYJR92y6IwfP0nLIUzXsF7n3Te0ubp-hyJtmqc3VQpdddYiFdI2_SU1XabQSZqVzS6tuwkNLcYqFyB9jaQRPKx9bi-9ZtJZGPeziD9N2m_bAWJF3DPfkdo0B07fxntzlWr9a84GrkCSII-5Gtcl"/>
+<div>
+<p class="font-label-md text-label-md text-on-background font-semibold">Tanvir Ahmed</p>
+<p class="font-caption text-caption text-on-surface-variant">Founder — Prism Science Academy, Sylhet</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer from Shared Components -->
+<footer class="bg-surface-container-low dark:bg-surface-container-lowest w-full py-xl border-t border-outline-variant dark:border-outline font-caption text-caption text-primary dark:text-primary-fixed-dim">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin max-w-7xl mx-auto gap-md md:gap-0">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="text-h4 font-h4 text-primary dark:text-primary-fixed-dim">EduFlow</span>
+<span class="text-on-surface-variant dark:text-outline">© 2024 EduFlow. All rights reserved.</span>
+</div>
+<div class="flex gap-md items-center mt-4 md:mt-0">
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-secondary dark:hover:text-secondary-fixed transition-all duration-300" href="#">Contact Support</a>
+</div>
+</div>
+</footer>
+</body></html>

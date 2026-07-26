@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EduFlow - Institute Profile Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c4c5d5",
+                        "on-primary-fixed-variant": "#173bab",
+                        "primary": "#00288e",
+                        "secondary-container": "#82f5c1",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "primary-fixed": "#dde1ff",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "on-secondary-fixed-variant": "#005137",
+                        "surface-container-highest": "#d9e3f4",
+                        "inverse-primary": "#b8c4ff",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#d9e3f4",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#3755c3",
+                        "on-secondary-container": "#00714e",
+                        "surface-dim": "#d1dbec",
+                        "background": "#f8f9ff",
+                        "tertiary": "#532a00",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-background": "#121c28",
+                        "on-surface-variant": "#444653",
+                        "surface-container-low": "#eef4ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "inverse-surface": "#27313e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#2f1500",
+                        "tertiary-container": "#743d00",
+                        "primary-container": "#1e40af",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary-container": "#ffa85d",
+                        "outline": "#757684",
+                        "on-primary-container": "#a8b8ff",
+                        "surface-container-high": "#dfe9fa",
+                        "secondary-fixed": "#85f8c4",
+                        "on-surface": "#121c28",
+                        "on-secondary-fixed": "#002114",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "secondary": "#006c4a",
+                        "tertiary-fixed": "#ffdcc3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin": "32px",
+                        "xl": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {},
+                    "fontSize": {
+                        "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h4": ["20px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h3": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h1-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "h1": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "h2": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar -->
+<aside class="docked left-0 h-full w-64 border-r border-outline-variant dark:border-outline-variant shadow-sm bg-surface-container-lowest dark:bg-surface-container-lowest flex flex-col h-full py-lg px-md z-40 hidden md:flex">
+<div class="mb-xl flex items-center gap-3 px-sm">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold">E</div>
+<div>
+<h1 class="font-h3 text-h3 font-bold text-primary dark:text-inverse-primary">EduFlow</h1>
+<p class="font-caption text-caption text-on-surface-variant">Coaching Management</p>
+</div>
+</div>
+<nav class="flex-1 space-y-sm overflow-y-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+                Students
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+                Attendance
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Fees
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Results
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                Expenses
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary dark:text-inverse-primary font-semibold border-r-4 border-primary dark:border-inverse-primary bg-primary-fixed dark:bg-primary-container scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- TopNavBar -->
+<header class="docked top-0 w-full border-b border-outline-variant dark:border-outline-variant shadow-sm bg-surface-bright dark:bg-surface-dim flex justify-between items-center h-16 px-margin sticky top-0 z-50">
+<div class="flex items-center gap-md lg:hidden">
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-h4 text-h4 font-bold text-primary dark:text-inverse-primary">EduFlow</h2>
+</div>
+<div class="hidden lg:flex items-center font-h4 text-h4 font-bold text-primary dark:text-inverse-primary">
+               Settings
+            </div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+</button>
+<button class="p-sm rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">translate</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface-variant ml-sm mr-md border-r border-outline-variant pr-md">EN/BN</span>
+</div>
+<button class="flex items-center gap-sm hover:bg-surface-container rounded-lg p-xs transition-colors">
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a school administrator in a bright, modern office setting. The person has a friendly but competent expression. The lighting is soft and natural, emphasizing a high-quality SaaS product aesthetic. The background is slightly blurred." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaTu-I4gTK2pcLCW93IbVxaSf4ikJkghIM4-2elu0K9o2RmgR-0r885OkDTafmoNzWZUj6WwU-IWpGchPYjHijssIs3e1rPCeRDoBkszawQP04ZAlqaD9Q5xPEpDP3_q8dHIqU5rp-c1_tvXAJScors778oGTTLgHSnze4_r0OQHAHSZOQJBX62EdvvPxGzHLEVrvTySyxD9TwomUPU06RJ5uLIf639QnO7zjyYXc9_5DHaer2WWVabGXWitBO_YBrjo3czjKdLJrW"/>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto p-margin md:p-xl flex gap-gutter">
+<!-- Sub Navigation (Settings) -->
+<nav class="w-64 hidden lg:block shrink-0">
+<h3 class="font-label-md text-label-md text-on-surface-variant mb-md px-sm uppercase tracking-wider">Account Settings</h3>
+<div class="flex flex-col gap-xs">
+<a class="flex items-center justify-between px-md py-sm rounded-lg bg-surface-container text-primary font-label-md text-label-md font-semibold" href="#">
+                        Institute Profile
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+</a>
+<a class="flex items-center justify-between px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-label-md text-label-md" href="#">
+                        Language
+                    </a>
+<a class="flex items-center justify-between px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-label-md text-label-md" href="#">
+                        Users &amp; Roles
+                    </a>
+<a class="flex items-center justify-between px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-label-md text-label-md" href="#">
+                        Billing
+                    </a>
+<a class="flex items-center justify-between px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors font-label-md text-label-md" href="#">
+                        Notifications
+                    </a>
+</div>
+</nav>
+<!-- Form Area -->
+<div class="flex-1 max-w-3xl bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="mb-xl border-b border-outline-variant pb-md flex justify-between items-center">
+<div>
+<h2 class="font-h3 text-h3 text-on-surface">Institute Profile</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Manage your institution's public details and configuration.</p>
+</div>
+</div>
+<form class="space-y-xl">
+<!-- Logo Upload -->
+<div class="flex items-start gap-lg">
+<div class="relative group cursor-pointer">
+<div class="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-on-surface-variant overflow-hidden group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-3xl mb-1">domain</span>
+<span class="font-caption text-caption">Upload</span>
+</div>
+<div class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant shadow-sm flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</div>
+</div>
+<div class="flex-1 pt-2">
+<h4 class="font-label-md text-label-md text-on-surface mb-xs">Institute Logo</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Recommended size: 256x256px. Max file size: 2MB (JPG, PNG).</p>
+</div>
+</div>
+<!-- Institute Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="md:col-span-2 space-y-xs">
+<label class="block font-label-md text-label-md text-on-surface" for="institute-name">Institute Name</label>
+<input class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow" id="institute-name" placeholder="Enter institute name" type="text" value="Green Valley Academy"/>
+</div>
+<div class="md:col-span-2 space-y-xs">
+<label class="block font-label-md text-label-md text-on-surface" for="address">Address</label>
+<textarea class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow resize-none" id="address" placeholder="Enter full physical address" rows="3">123 Education Boulevard, Block B
+Dhaka 1212, Bangladesh</textarea>
+</div>
+<div class="md:col-span-2 space-y-xs">
+<label class="block font-label-md text-label-md text-on-surface" for="subdomain">Subdomain</label>
+<div class="flex rounded-lg shadow-sm">
+<input class="flex-1 rounded-l-lg border border-outline-variant border-r-0 bg-surface-container-lowest px-md py-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow z-10" id="subdomain" placeholder="yourinstitute" type="text" value="greenvalley"/>
+<span class="inline-flex items-center rounded-r-lg border border-outline-variant border-l-0 bg-surface-container px-md font-body-md text-body-md text-on-surface-variant">
+                                    .eduflow.app
+                                </span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-1">This will be your dedicated login portal URL.</p>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-md text-label-md text-on-surface" for="currency">Base Currency</label>
+<div class="relative">
+<select class="w-full appearance-none rounded-lg border border-outline-variant bg-surface-container-lowest px-md py-sm pr-10 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow" id="currency">
+<option selected="" value="BDT">BDT - Bangladeshi Taka</option>
+<option value="USD">USD - US Dollar</option>
+<option value="EUR">EUR - Euro</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="block font-label-md text-label-md text-on-surface" for="timezone">Timezone</label>
+<div class="relative">
+<select class="w-full appearance-none rounded-lg border border-outline-variant bg-surface-container-lowest px-md py-sm pr-10 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow" id="timezone">
+<option selected="" value="UTC+6">UTC+6 (Dhaka)</option>
+<option value="UTC+5:30">UTC+5:30 (New Delhi)</option>
+<option value="UTC+0">UTC+0 (London)</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<div class="pt-lg border-t border-outline-variant flex justify-end gap-md">
+<button class="px-lg py-sm rounded-lg font-label-md text-label-md font-semibold text-primary bg-surface-container-lowest border border-outline-variant hover:bg-surface-container-low transition-colors" type="button">
+                            Cancel
+                        </button>
+<button class="px-lg py-sm rounded-lg font-label-md text-label-md font-semibold text-on-primary bg-primary hover:bg-primary-container focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all" type="button">
+                            Save Changes
+                        </button>
+</div>
+</form>
+</div>
+</main>
+</div>
+</body></html>
