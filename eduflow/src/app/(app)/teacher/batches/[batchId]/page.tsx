@@ -3,7 +3,10 @@ import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { TeacherSidebar } from "@/components/layout/TeacherSidebar";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 
 interface BatchDetailPageProps {
   params: Promise<{
@@ -73,64 +76,7 @@ export default async function TeacherBatchDetailPage({ params }: BatchDetailPage
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <Icon name="school" className="text-[20px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute?.name || "Teacher Portal"}
-            </p>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-xs overflow-y-auto pr-sm">
-          <Link
-            href="/teacher"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="dashboard" className="text-[20px]" />
-            <span>Dashboard</span>
-          </Link>
-          <Link
-            href="/teacher/batches"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed"
-          >
-            <Icon name="groups" className="text-[20px]" />
-            <span>My Batches</span>
-          </Link>
-          <Link
-            href="/attendance"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span>Attendance</span>
-          </Link>
-          <Link
-            href="/results"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="analytics" className="text-[20px]" />
-            <span>Results</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="schedule" className="text-[20px]" />
-            <span>Timetable</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
-          >
-            <Icon name="person" className="text-[20px]" />
-            <span>Profile</span>
-          </Link>
-        </nav>
-      </aside>
+      <TeacherSidebar activeTab="batches" instituteName={institute?.name || "EduFlow"} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -264,9 +210,11 @@ export default async function TeacherBatchDetailPage({ params }: BatchDetailPage
                           <td className="py-4">
                             <div className="flex items-center gap-3">
                               {student.photoUrl ? (
-                                <img
+                                <Image
                                   src={student.photoUrl}
                                   alt={student.fullName}
+                                  width={40}
+                                  height={40}
                                   className="w-10 h-10 rounded-full object-cover border border-outline-variant shrink-0"
                                 />
                               ) : (

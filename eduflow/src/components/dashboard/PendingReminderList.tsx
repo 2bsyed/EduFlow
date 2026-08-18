@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { sendFeeReminderAction } from "@/app/actions/dashboard";
+import { useTranslations } from "next-intl";
 
 interface PendingStudent {
   studentId: string;
@@ -14,6 +15,7 @@ interface PendingReminderListProps {
 }
 
 export function PendingReminderList({ students }: PendingReminderListProps) {
+  const t = useTranslations("PendingReminders");
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [sentMap, setSentMap] = useState<Record<string, boolean>>({});
 
@@ -30,7 +32,7 @@ export function PendingReminderList({ students }: PendingReminderListProps) {
   if (!students || students.length === 0) {
     return (
       <div className="p-lg text-center font-body-sm text-on-surface-variant">
-        No pending fee reminders found. All clear!
+        {t("empty")}
       </div>
     );
   }
@@ -51,7 +53,7 @@ export function PendingReminderList({ students }: PendingReminderListProps) {
                 </div>
                 <div>
                   <p className="font-label-md text-on-surface">{student.studentName}</p>
-                  <p className="font-caption text-error font-medium">Due: ৳{student.amount}</p>
+                  <p className="font-caption text-error font-medium">{t("due")}{student.amount}</p>
                 </div>
               </div>
               <button
@@ -64,8 +66,9 @@ export function PendingReminderList({ students }: PendingReminderListProps) {
                     ? "bg-secondary-container text-on-secondary-container border-secondary cursor-default"
                     : "border-primary text-primary hover:bg-primary/5 disabled:opacity-50"
                 }`}
+                title={t("tooltip")}
               >
-                {isLoading ? "Sending..." : isSent ? "Sent ✓" : "Remind"}
+                {isLoading ? t("sending") : isSent ? t("logged") : t("sendAlert")}
               </button>
             </div>
             {idx < students.length - 1 && <hr className="border-outline-variant/30" />}

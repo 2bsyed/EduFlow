@@ -1,9 +1,11 @@
 import React from "react";
-import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { NotificationBell } from "@/components/ui/NotificationBell";
+import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
+import { StudentSidebar } from "@/components/layout/StudentSidebar";
 
 export default async function StudentFeeStatusPage() {
   const session = await auth();
@@ -91,65 +93,8 @@ export default async function StudentFeeStatusPage() {
       : sampleFeeHistory;
 
   return (
-    <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <Icon name="school" className="text-[20px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute?.name || "Student Portal"}
-            </p>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-xs overflow-y-auto pr-sm">
-          <Link
-            href="/student"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="dashboard" className="text-[20px]" />
-            <span>Dashboard</span>
-          </Link>
-          <Link
-            href="/student/attendance"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span>My Attendance</span>
-          </Link>
-          <Link
-            href="/student/results"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="grade" className="text-[20px]" />
-            <span>My Results</span>
-          </Link>
-          <Link
-            href="/student/fees"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed"
-          >
-            <Icon name="payments" className="text-[20px]" />
-            <span>Fee Status</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="schedule" className="text-[20px]" />
-            <span>Timetable</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
-          >
-            <Icon name="campaign" className="text-[20px]" />
-            <span>Notices</span>
-          </Link>
-        </nav>
-      </aside>
+    <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
+      <StudentSidebar activeTab="fees" instituteName={institute?.name} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -158,33 +103,19 @@ export default async function StudentFeeStatusPage() {
           <div className="flex items-center gap-md">
             <h2 className="font-h4 text-h4 font-semibold text-on-surface">Student Portal</h2>
           </div>
-          <div className="flex items-center gap-md">
-            <button className="text-on-surface-variant hover:text-primary transition-colors p-sm rounded-full hover:bg-surface-container cursor-pointer">
-              <Icon name="notifications" className="text-[20px]" />
-            </button>
+          <div className="flex items-center gap-md shrink-0 flex-nowrap">
+            <NotificationBell />
             <LanguageToggle />
-            <div className="flex items-center gap-sm ml-sm">
-              <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold">
-                {student.fullName?.[0] || "S"}
-              </div>
-              <span className="font-label-md hidden lg:block text-on-surface">
-                {student.fullName}
-              </span>
-              <form
-                action={async () => {
-                  "use server";
-                  await signOut({ redirectTo: "/login" });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="p-1 text-on-surface-variant hover:text-error transition-colors cursor-pointer"
-                  title="Log Out"
-                >
-                  <Icon name="logout" className="text-[20px]" />
-                </button>
-              </form>
-            </div>
+            <ProfileDropdown
+              userName={student.fullName}
+              userEmail={session?.user?.email || "student@eduflow.bd"}
+              userRole="STUDENT"
+              avatarUrl={student.photoUrl}
+              onSignOut={async () => {
+                "use server";
+                await signOut({ redirectTo: "/login" });
+              }}
+            />
           </div>
         </header>
 
@@ -199,63 +130,66 @@ export default async function StudentFeeStatusPage() {
           </div>
 
           {/* Grid: Status Summary + Next Due Date */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl items-stretch">
             {/* Status Summary Card */}
-            <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm relative overflow-hidden flex flex-col justify-center min-h-[160px]">
-              <div className="flex items-start md:items-center gap-lg z-10">
+            <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm flex flex-col justify-between">
+              <div className="flex items-start md:items-center gap-lg">
                 {isAllPaid ? (
                   <>
-                    <div className="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0 shadow-sm border border-secondary-fixed">
-                      <Icon name="check_circle" className="text-[32px]" />
+                    <div className="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0 shadow-sm border border-secondary-fixed">
+                      <Icon name="check_circle" className="text-[28px]" />
                     </div>
                     <div>
                       <h2 className="font-h2 text-h2 text-on-surface font-bold mb-xs">
                         All fees paid
                       </h2>
-                      <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-                        Your account is up to date. You have no pending balances for the current
-                        term.
+                      <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Your account is up to date. You have no pending balances for the current term.
                       </p>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="w-16 h-16 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0 shadow-sm">
-                      <Icon name="warning" className="text-[32px]" />
+                    <div className="w-14 h-14 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0 shadow-sm">
+                      <Icon name="warning" className="text-[28px]" />
                     </div>
                     <div>
                       <h2 className="font-h2 text-h2 text-on-surface font-bold mb-xs">
                         Pending Balance: BDT {totalUnpaidAmount.toFixed(2)}
                       </h2>
-                      <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
+                      <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
                         Please clear your pending fee balance before the upcoming exam date.
                       </p>
                     </div>
                   </>
                 )}
               </div>
+              <div className="mt-md pt-sm border-t border-surface-variant/60 flex items-center justify-between text-caption text-on-surface-variant">
+                <span className="flex items-center gap-xs text-secondary font-medium">
+                  <Icon name="verified" className="text-[16px]" /> Multi-channel Gateway Ready
+                </span>
+                <span>bKash / Nagad / Cash</span>
+              </div>
             </div>
 
             {/* Next Due Date Card */}
             <div className="bg-surface-container-low border border-surface-variant rounded-xl p-lg flex flex-col justify-between shadow-sm">
               <div>
-                <div className="flex justify-between items-center mb-sm">
-                  <span className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider">
+                <div className="flex justify-between items-center mb-xs">
+                  <span className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider font-bold">
                     Next Due Date
                   </span>
-                  <Icon name="event" className="text-outline text-[20px]" />
+                  <Icon name="event" className="text-primary text-[20px]" />
                 </div>
-                <p className="font-h3 text-h3 text-on-surface font-bold">15 Jun 2026</p>
+                <p className="font-h2 text-h2 text-on-surface font-bold mt-xs">15 Jun 2026</p>
               </div>
-              <div className="mt-md pt-md border-t border-surface-variant flex justify-between items-end">
-                <div>
-                  <span className="font-caption text-caption text-on-surface-variant block mb-1">
-                    Estimated Amount
-                  </span>
-                  <span className="font-body-md text-body-md font-semibold text-on-surface">
-                    BDT {isAllPaid ? "0.00" : totalUnpaidAmount.toFixed(2)}
-                  </span>
-                </div>
+              <div className="mt-md pt-sm border-t border-surface-variant flex justify-between items-center">
+                <span className="font-caption text-caption text-on-surface-variant font-medium">
+                  Estimated Due:
+                </span>
+                <span className="font-label-md text-label-md font-bold text-primary">
+                  BDT {isAllPaid ? "0.00" : totalUnpaidAmount.toFixed(2)}
+                </span>
               </div>
             </div>
           </div>

@@ -1,10 +1,15 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { NotificationBell } from "@/components/ui/NotificationBell";
+import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { StudentTableClient, StudentItem } from "@/components/students/StudentTableClient";
+
+import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 
 export default async function StudentsPage() {
   const session = await auth();
@@ -82,79 +87,17 @@ export default async function StudentsPage() {
   });
 
   return (
-    <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
-            <Icon name="school" className="text-[24px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute?.name || "Coaching Management"}
-            </p>
-          </div>
-        </div>
-        <nav className="flex flex-col gap-sm">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="home" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Home</span>
-          </Link>
-          <Link
-            href="/students"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-primary font-semibold border-r-4 border-primary bg-primary-fixed scale-[0.98] transition-transform"
-          >
-            <Icon name="group" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Students</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Attendance</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="payments" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Fees</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="analytics" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Results</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="receipt_long" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Expenses</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
-          >
-            <Icon name="settings" className="text-[20px]" />
-            <span className="font-label-md text-label-md">Settings</span>
-          </Link>
-        </nav>
-      </aside>
+    <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
+      <OwnerSidebar activeTab="students" instituteName={institute?.name} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* TopNavBar */}
         <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
           <div className="flex items-center gap-md w-full max-w-md">
-            <div className="md:hidden font-h4 text-h4 font-bold text-primary">EduFlow</div>
+            <div className="md:hidden flex items-center">
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={100} height={32} className="object-contain -ml-2" />
+            </div>
             <div className="relative w-full hidden md:block">
               <Icon
                 name="search"
@@ -167,39 +110,27 @@ export default async function StudentsPage() {
               />
             </div>
           </div>
-          <div className="flex items-center gap-md">
-            <button className="text-on-surface-variant hover:text-primary transition-colors p-sm rounded-full hover:bg-surface-container cursor-pointer">
-              <Icon name="notifications" className="text-[20px]" />
-            </button>
+          <div className="flex items-center gap-md shrink-0 flex-nowrap">
+            <NotificationBell />
             <LanguageToggle />
-            <div className="flex items-center gap-sm ml-sm">
-              <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md">
-                <Icon name="person" className="text-[18px]" />
-              </div>
-              <span className="font-label-md hidden lg:block text-on-surface">
-                {session?.user?.name || "Owner"}
-              </span>
-              <form
-                action={async () => {
-                  "use server";
-                  await signOut({ redirectTo: "/login" });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="p-1 text-on-surface-variant hover:text-error transition-colors cursor-pointer"
-                  title="Log Out"
-                >
-                  <Icon name="logout" className="text-[20px]" />
-                </button>
-              </form>
-            </div>
+            <ProfileDropdown
+              userName={session?.user?.name || "Dr. Rafiqul Islam"}
+              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userRole={session?.user?.role || "OWNER"}
+              avatarUrl={session?.user?.image}
+              onSignOut={async () => {
+                "use server";
+                await signOut({ redirectTo: "/login" });
+              }}
+            />
           </div>
         </header>
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-margin">
-          <StudentTableClient students={studentItems} batches={batches} />
+          <Suspense fallback={<div className="p-md text-on-surface-variant font-body-md">Loading students...</div>}>
+            <StudentTableClient students={studentItems} batches={batches} />
+          </Suspense>
         </main>
       </div>
     </div>

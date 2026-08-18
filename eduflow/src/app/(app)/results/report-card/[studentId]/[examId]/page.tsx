@@ -57,6 +57,24 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
     );
   }
 
+  // Security Check: If logged in as TEACHER, enforce that they are assigned to this student's batch
+  if (role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({
+      where: { userId },
+      select: { id: true }
+    });
+    if (teacher) {
+      const isAssigned = student.studentBatches.some((sb) => sb.batch.teacherId === teacher.id);
+      if (!isAssigned) {
+        return (
+          <div className="p-margin text-center font-body-md text-error">
+            Unauthorized access: You are not assigned to this student's batch.
+          </div>
+        );
+      }
+    }
+  }
+
   // Fetch Institute details
   const institute = await prisma.institute.findUnique({
     where: { id: instituteId },
@@ -79,11 +97,11 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
 
   // Default sample subjects if none exist yet in database
   const sampleSubjects = [
-    { subject: "Advanced Mathematics", marksObtained: 92, highestMarks: 98, grade: "A+", remarks: "Excellent logical reasoning." },
-    { subject: "Physics", marksObtained: 88, highestMarks: 95, grade: "A", remarks: "Good grasp of concepts." },
-    { subject: "Chemistry", marksObtained: 95, highestMarks: 97, grade: "A+", remarks: "Outstanding practical work." },
-    { subject: "Computer Science", marksObtained: 100, highestMarks: 100, grade: "A+", remarks: "Perfect score. Exceptional." },
-    { subject: "English Literature", marksObtained: 84, highestMarks: 92, grade: "B+", remarks: "Needs more focus on essays." },
+    { subject: "Advanced Mathematics", marksObtained: 92, totalMarks: 100, grade: "A+", remarks: "Excellent logical reasoning." },
+    { subject: "Physics", marksObtained: 88, totalMarks: 100, grade: "A", remarks: "Good grasp of concepts." },
+    { subject: "Chemistry", marksObtained: 95, totalMarks: 100, grade: "A+", remarks: "Outstanding practical work." },
+    { subject: "Computer Science", marksObtained: 100, totalMarks: 100, grade: "A+", remarks: "Perfect score. Exceptional." },
+    { subject: "English Literature", marksObtained: 84, totalMarks: 100, grade: "B+", remarks: "Needs more focus on essays." },
   ];
 
   const displaySubjects =
@@ -91,7 +109,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
       ? results.map((r) => ({
           subject: r.subject,
           marksObtained: Number(r.marksObtained),
-          highestMarks: 98,
+          totalMarks: Number(r.totalMarks) || 100,
           grade: r.grade || "A",
           remarks: r.comments || "Good effort.",
         }))
@@ -99,14 +117,14 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
 
   // Compute total marks
   const totalObtained = displaySubjects.reduce((acc, curr) => acc + curr.marksObtained, 0);
-  const totalMax = displaySubjects.length * 100;
-  const avgMarks = displaySubjects.length > 0 ? (totalObtained / displaySubjects.length) : 0;
+  const totalMax = displaySubjects.reduce((acc, curr) => acc + curr.totalMarks, 0);
+  const avgPercentage = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
 
   // Compute sample GPA
   let gpa = "3.85";
-  if (avgMarks >= 80) gpa = "4.00";
-  else if (avgMarks >= 70) gpa = "3.50";
-  else if (avgMarks >= 60) gpa = "3.00";
+  if (avgPercentage >= 80) gpa = "4.00";
+  else if (avgPercentage >= 70) gpa = "3.50";
+  else if (avgPercentage >= 60) gpa = "3.00";
 
   const batchName = student.studentBatches[0]?.batch?.name || "Grade 10 - Science A";
 
@@ -211,7 +229,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
                   Marks Obt.
                 </th>
                 <th className="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant text-center font-bold">
-                  Highest
+                  Total
                 </th>
                 <th className="font-label-md text-label-md text-on-surface py-sm px-md border-r border-outline-variant text-center font-bold">
                   Grade
@@ -231,7 +249,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
                     {sub.marksObtained}
                   </td>
                   <td className="py-sm px-md border-r border-outline-variant text-center text-on-surface-variant">
-                    {sub.highestMarks}
+                    {sub.totalMarks}
                   </td>
                   <td className="py-sm px-md border-r border-outline-variant text-center font-bold text-primary">
                     {sub.grade}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useActionState } from "react";
+import Image from "next/image";
 import { updateInstituteProfile } from "@/app/actions/settings";
 import { Icon } from "@/components/ui/Icon";
 
@@ -66,10 +67,10 @@ export function InstituteProfileClient({ institute }: InstituteProfileClientProp
             />
             <label
               htmlFor="logo-upload-input"
-              className="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-on-surface-variant overflow-hidden group-hover:border-primary transition-colors cursor-pointer"
+              className="w-24 h-24 rounded-full bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-on-surface-variant overflow-hidden group-hover:border-primary transition-colors cursor-pointer relative"
             >
               {logoPreview ? (
-                <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+                <Image src={logoPreview} alt="Logo" fill unoptimized className="object-cover" />
               ) : (
                 <>
                   <Icon name="domain" className="text-[32px] mb-1" />

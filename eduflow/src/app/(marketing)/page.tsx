@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Icon } from "@/components/ui/Icon";
@@ -19,10 +20,9 @@ export default function MarketingLandingPage() {
       {/* SECTION 1: TOP NAVBAR & HERO SECTION */}
       <header className="bg-surface dark:bg-surface-container-highest w-full sticky top-0 z-50 border-b border-outline-variant shadow-sm">
         <nav className="flex justify-between items-center h-20 px-margin max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <Icon name="school" className="text-primary text-[28px]" />
-            <span className="font-h3 text-h3 font-bold text-primary tracking-tight">EduFlow</span>
-          </div>
+          <Link href="/" className="flex items-center">
+            <Image src="/images/logo.jpg" alt="EduFlow logo" width={140} height={40} className="object-contain -ml-2" />
+          </Link>
 
           <div className="hidden md:flex items-center gap-gutter">
             <a href="#features" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
@@ -106,22 +106,20 @@ export default function MarketingLandingPage() {
             </div>
           </div>
 
-          {/* Right Hero Image Placeholder Block */}
+          {/* Right Hero Image Block */}
           <div className="md:col-span-5 relative mt-xl md:mt-0">
-            <div className="relative rounded-xl overflow-hidden shadow-lg border border-outline-variant bg-gradient-to-br from-primary-container/10 via-surface-container-lowest to-surface-container-low aspect-[4/5] md:aspect-[4/4.5] flex items-center justify-center p-lg">
-              {/* Styled Placeholder Representation */}
-              <div className="w-full h-full rounded-lg border-2 border-dashed border-outline-variant/60 flex flex-col items-center justify-center p-md text-center bg-surface-container-lowest/70 backdrop-blur-sm">
-                <div className="w-20 h-20 rounded-full bg-primary-container/10 flex items-center justify-center text-primary mb-md">
-                  <Icon name="school" className="text-[44px]" />
-                </div>
-                <h3 className="font-h4 text-h4 text-on-surface mb-xs">Coaching Center Manager</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
-                  Real-time analytics dashboard & daily attendance tracker
-                </p>
-              </div>
+            <div className="relative rounded-xl overflow-hidden shadow-lg border border-outline-variant bg-gradient-to-br from-primary-container/10 via-surface-container-lowest to-surface-container-low aspect-[4/5] md:aspect-[4/4.5] flex items-center justify-center">
+              <Image
+                src="/images/hero.png"
+                alt="Coaching center owner reviewing EduFlow dashboard on a tablet"
+                width={600}
+                height={500}
+                priority
+                className="w-full h-full object-cover rounded-xl"
+              />
 
               {/* Floating UI Widget Element */}
-              <div className="absolute bottom-6 -left-4 md:-left-8 bg-surface-container-lowest rounded-lg shadow-xl border border-outline-variant p-md flex flex-col gap-xs max-w-[220px]">
+              <div className="absolute bottom-6 -left-4 md:-left-8 bg-surface-container-lowest/90 backdrop-blur-md rounded-lg shadow-xl border border-outline-variant p-md flex flex-col gap-xs max-w-[220px]">
                 <div className="flex items-center gap-sm">
                   <div className="bg-secondary-container rounded-full p-xs flex items-center justify-center text-secondary">
                     <Icon name="trending_up" className="text-[16px]" />
@@ -221,7 +219,7 @@ export default function MarketingLandingPage() {
               <div className="w-12 h-12 rounded-full bg-error-container flex items-center justify-center mb-md group-hover:scale-105 transition-transform text-on-error-container">
                 <Icon name="sms" className="text-[24px]" />
               </div>
-              <h3 className="font-h4 text-h4 text-on-surface mb-xs">{tBenefits("smsTitle")}</h3>
+              <h3 className="font-h4 text-h4 text-on-surface mb-xs">{tBenefits("smsTitle")} <span className="text-primary text-sm">(Coming Soon)</span></h3>
               <p className="font-body-md text-body-md text-on-surface-variant">{tBenefits("smsDesc")}</p>
             </div>
 
@@ -439,16 +437,25 @@ export default function MarketingLandingPage() {
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
               <div className="flex gap-1 mb-md text-secondary">
                 {[...Array(5)].map((_, i) => (
-                  <Icon name="star" key={i} className="text-[20px]" />
+                  <Icon
+                    name="star"
+                    key={i}
+                    className="text-[20px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  />
                 ))}
               </div>
               <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
                 "{tTestimonials("quote1")}"
               </blockquote>
               <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                {/* Styled Avatar Placeholder */}
-                <div className="w-12 h-12 rounded-full bg-primary-container/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-lg shrink-0">
-                  RI
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
+                  <Image
+                    src="/images/testimonial-1.png"
+                    alt={tTestimonials("author1Name")}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div>
                   <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author1Name")}</p>
@@ -461,16 +468,25 @@ export default function MarketingLandingPage() {
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
               <div className="flex gap-1 mb-md text-secondary">
                 {[...Array(5)].map((_, i) => (
-                  <Icon name="star" key={i} className="text-[20px]" />
+                  <Icon
+                    name="star"
+                    key={i}
+                    className="text-[20px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  />
                 ))}
               </div>
               <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
                 "{tTestimonials("quote2")}"
               </blockquote>
               <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                {/* Styled Avatar Placeholder */}
-                <div className="w-12 h-12 rounded-full bg-secondary-container/30 border border-secondary/20 flex items-center justify-center text-secondary font-bold text-lg shrink-0">
-                  NJ
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
+                  <Image
+                    src="/images/testimonial-2.png"
+                    alt={tTestimonials("author2Name")}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div>
                   <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author2Name")}</p>
@@ -483,16 +499,25 @@ export default function MarketingLandingPage() {
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
               <div className="flex gap-1 mb-md text-secondary">
                 {[...Array(5)].map((_, i) => (
-                  <Icon name="star" key={i} className="text-[20px]" />
+                  <Icon
+                    name="star"
+                    key={i}
+                    className="text-[20px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  />
                 ))}
               </div>
               <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
                 "{tTestimonials("quote3")}"
               </blockquote>
               <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                {/* Styled Avatar Placeholder */}
-                <div className="w-12 h-12 rounded-full bg-tertiary-fixed-dim/30 border border-tertiary/20 flex items-center justify-center text-tertiary font-bold text-lg shrink-0">
-                  TA
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
+                  <Image
+                    src="/images/testimonial-3.png"
+                    alt={tTestimonials("author3Name")}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div>
                   <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author3Name")}</p>
@@ -536,7 +561,7 @@ export default function MarketingLandingPage() {
               </li>
               <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
                 <Icon name="check_circle" className="text-secondary text-[20px]" />
-                SMS Notifications
+                SMS Notifications (Coming Soon)
               </li>
               <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
                 <Icon name="check_circle" className="text-secondary text-[20px]" />
@@ -578,7 +603,7 @@ export default function MarketingLandingPage() {
               </li>
               <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
                 <Icon name="check_circle" className="text-secondary text-[20px]" />
-                bKash & Nagad Integration
+                bKash & Nagad Integration (Coming Soon)
               </li>
               <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
                 <Icon name="check_circle" className="text-secondary text-[20px]" />
@@ -666,8 +691,8 @@ export default function MarketingLandingPage() {
         <div className="max-w-7xl mx-auto px-margin py-xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-gutter text-left">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2 flex flex-col gap-md">
-            <Link href="/" className="font-h3 text-h3 font-bold text-primary">
-              EduFlow
+            <Link href="/">
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={140} height={40} className="object-contain -ml-2" />
             </Link>
             <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
               {tFooter("brandDesc")}
@@ -693,8 +718,8 @@ export default function MarketingLandingPage() {
             <h4 className="font-label-md text-label-md text-on-surface font-semibold">{tFooter("company")}</h4>
             <ul className="flex flex-col gap-sm">
               <li><a href="#testimonials" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("about")}</a></li>
-              <li><a href="#" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("contact")}</a></li>
-              <li><a href="#" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("blog")}</a></li>
+              <li><a href="#features" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("contact")}</a></li>
+              <li><a href="#features" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("blog")}</a></li>
             </ul>
           </div>
 
@@ -702,13 +727,13 @@ export default function MarketingLandingPage() {
           <div className="col-span-2 lg:col-span-2 flex flex-col gap-md">
             <h4 className="font-label-md text-label-md text-on-surface font-semibold">{tFooter("support")}</h4>
             <ul className="flex flex-col gap-sm">
-              <li><a href="#" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("helpCenter")}</a></li>
+              <li><a href="/demo" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("helpCenter")}</a></li>
               <li className="flex items-center gap-sm">
                 <span className="font-body-sm text-body-sm text-on-surface-variant">Language:</span>
                 <LanguageToggle />
               </li>
               <li>
-                <a href="#" className="inline-flex items-center gap-sm font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors">
+                <a href="https://wa.me/8801700000000" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-sm font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors">
                   <Icon name="chat" className="text-[18px]" />
                   {tFooter("whatsapp")}
                 </a>
@@ -723,8 +748,8 @@ export default function MarketingLandingPage() {
             {tFooter("copyright")}
           </p>
           <div className="flex gap-lg font-caption text-caption text-on-surface-variant">
-            <a href="#" className="hover:text-primary transition-colors">{tFooter("privacy")}</a>
-            <a href="#" className="hover:text-primary transition-colors">{tFooter("terms")}</a>
+            <a href="/register" className="hover:text-primary transition-colors">{tFooter("privacy")}</a>
+            <a href="/register" className="hover:text-primary transition-colors">{tFooter("terms")}</a>
           </div>
         </div>
       </footer>

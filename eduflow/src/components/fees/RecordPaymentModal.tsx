@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 import { recordPaymentAction } from "@/app/actions/fees";
+import { useTranslations } from "next-intl";
 
 interface StudentOption {
   id: string;
@@ -24,6 +26,7 @@ export function RecordPaymentModal({
   students,
   preselectedStudentId,
 }: RecordPaymentModalProps) {
+  const t = useTranslations("RecordPayment");
   const [selectedStudentId, setSelectedStudentId] = useState(preselectedStudentId || "");
   const [amount, setAmount] = useState("");
   const [dateStr, setDateStr] = useState(new Date().toISOString().split("T")[0]);
@@ -37,10 +40,15 @@ export function RecordPaymentModal({
   const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (preselectedStudentId) {
-      setSelectedStudentId(preselectedStudentId);
+    if (isOpen) {
+      setSelectedStudentId(preselectedStudentId || "");
+      setAmount("");
+      setDateStr(new Date().toISOString().split("T")[0]);
+      setPaymentMethod("CASH");
+      setReceiptNo(`RCPT-${Math.floor(100000 + Math.random() * 900000)}`);
+      setServerError(null);
     }
-  }, [preselectedStudentId]);
+  }, [isOpen, preselectedStudentId]);
 
   if (!isOpen) return null;
 
@@ -53,7 +61,7 @@ export function RecordPaymentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStudentId || !amount || !dateStr) {
-      setServerError("Please fill in all required fields");
+      setServerError(t("errorRequired"));
       return;
     }
 
@@ -73,7 +81,7 @@ export function RecordPaymentModal({
     if (res.success) {
       onClose();
     } else {
-      setServerError(res.error || "Failed to record payment");
+      setServerError(res.error || t("errorFailed"));
     }
   };
 
@@ -109,10 +117,10 @@ export function RecordPaymentModal({
           <div>
             <div className="mb-lg">
               <h2 className="font-h3 text-h3 font-semibold text-on-background mb-1">
-                Record Payment
+                {t("title")}
               </h2>
               <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Enter details to generate a receipt.
+                {t("subtitle")}
               </p>
             </div>
 
@@ -126,7 +134,7 @@ export function RecordPaymentModal({
               {/* Student Selection */}
               <div>
                 <label className="block font-label-md text-label-md text-on-surface mb-2 font-medium">
-                  Student *
+                  {t("studentLabel")}
                 </label>
                 <div className="relative">
                   <select
@@ -135,7 +143,7 @@ export function RecordPaymentModal({
                     className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 appearance-none focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md text-on-surface pr-10 transition-colors cursor-pointer"
                   >
                     <option value="" disabled>
-                      Select a student...
+                      {t("selectStudent")}
                     </option>
                     {students.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -154,7 +162,7 @@ export function RecordPaymentModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-label-md text-label-md text-on-surface mb-2 font-medium">
-                    Amount (৳) *
+                    {t("amountLabel")}
                   </label>
                   <div className="relative">
                     <Icon
@@ -174,7 +182,7 @@ export function RecordPaymentModal({
 
                 <div>
                   <label className="block font-label-md text-label-md text-on-surface mb-2 font-medium">
-                    Date *
+                    {t("dateLabel")}
                   </label>
                   <div className="relative">
                     <input
@@ -190,7 +198,7 @@ export function RecordPaymentModal({
               {/* Payment Method Styled Radio Badges */}
               <div>
                 <label className="block font-label-md text-label-md text-on-surface mb-3 font-medium">
-                  Payment Method
+                  {t("methodLabel")}
                 </label>
                 <div className="flex gap-4">
                   {/* Cash (Green) */}
@@ -208,7 +216,7 @@ export function RecordPaymentModal({
                       <Icon name="money" className="text-[24px]" />
                     </div>
                     <span className="font-caption text-caption font-medium text-on-surface">
-                      Cash
+                      {t("cash")}
                     </span>
                   </label>
 
@@ -227,7 +235,7 @@ export function RecordPaymentModal({
                       <Icon name="send_money" className="text-[24px]" />
                     </div>
                     <span className="font-caption text-caption font-medium text-on-surface">
-                      bKash
+                      {t("bkash")}
                     </span>
                   </label>
 
@@ -246,7 +254,7 @@ export function RecordPaymentModal({
                       <Icon name="phone_iphone" className="text-[24px]" />
                     </div>
                     <span className="font-caption text-caption font-medium text-on-surface">
-                      Nagad
+                      {t("nagad")}
                     </span>
                   </label>
 
@@ -265,7 +273,7 @@ export function RecordPaymentModal({
                       <Icon name="account_balance" className="text-[24px]" />
                     </div>
                     <span className="font-caption text-caption font-medium text-on-surface">
-                      Bank
+                      {t("bank")}
                     </span>
                   </label>
                 </div>
@@ -274,7 +282,7 @@ export function RecordPaymentModal({
               {/* Receipt Info */}
               <div>
                 <label className="block font-label-md text-label-md text-on-surface mb-2 font-medium">
-                  Receipt Number
+                  {t("receiptNoLabel")}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -287,7 +295,7 @@ export function RecordPaymentModal({
                     type="button"
                     onClick={handleRefreshReceipt}
                     className="p-2 text-primary hover:bg-surface-container rounded-lg cursor-pointer"
-                    title="Generate New Receipt No"
+                    title={t("generateReceipt")}
                   >
                     <Icon name="refresh" className="text-[20px]" />
                   </button>
@@ -304,7 +312,7 @@ export function RecordPaymentModal({
               className="w-full bg-primary-container text-on-primary hover:bg-primary py-3 rounded-lg font-label-md text-label-md flex justify-center items-center gap-2 transition-colors shadow-sm cursor-pointer disabled:opacity-50"
             >
               <Icon name="check_circle" className="text-[20px]" />
-              <span>{isSubmitting ? "Recording..." : "Confirm Payment"}</span>
+              <span>{isSubmitting ? t("recording") : t("confirm")}</span>
             </button>
           </div>
         </div>
@@ -317,9 +325,9 @@ export function RecordPaymentModal({
 
             {/* Header */}
             <div className="text-center border-b border-outline-variant pb-4 mb-4 mt-2">
-              <h3 className="font-h3 text-h3 font-bold text-primary mb-1">EduFlow</h3>
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={100} height={32} className="object-contain mb-1" />
               <p className="font-caption text-caption text-on-surface-variant">
-                Payment Receipt Preview
+                {t("receiptPreview")}
               </p>
             </div>
 
@@ -327,14 +335,14 @@ export function RecordPaymentModal({
             <div className="space-y-3 mb-6">
               <div className="flex justify-between items-baseline">
                 <span className="font-caption text-caption text-on-surface-variant">
-                  Receipt No:
+                  {t("receiptNo")}
                 </span>
                 <span className="font-label-md text-label-md text-on-surface font-mono">
                   {receiptNo}
                 </span>
               </div>
               <div className="flex justify-between items-baseline">
-                <span className="font-caption text-caption text-on-surface-variant">Date:</span>
+                <span className="font-caption text-caption text-on-surface-variant">{t("date")}</span>
                 <span className="font-label-md text-label-md text-on-surface">
                   {new Date(dateStr).toLocaleDateString("en-GB", {
                     day: "2-digit",
@@ -345,26 +353,26 @@ export function RecordPaymentModal({
               </div>
               <div className="flex justify-between items-baseline">
                 <span className="font-caption text-caption text-on-surface-variant">
-                  Student:
+                  {t("student")}
                 </span>
                 <span className="font-label-md text-label-md text-on-surface font-medium text-right max-w-[150px] truncate">
-                  {selectedStudentObj ? selectedStudentObj.name : "Select Student..."}
+                  {selectedStudentObj ? selectedStudentObj.name : t("selectStudentPreview")}
                 </span>
               </div>
               <div className="flex justify-between items-baseline">
                 <span className="font-caption text-caption text-on-surface-variant">
-                  Method:
+                  {t("method")}
                 </span>
                 <span className="font-label-md text-label-md text-on-surface flex items-center gap-1">
                   {renderMethodIcon()}
                   <span>
                     {paymentMethod === "BANK_TRANSFER"
-                      ? "Bank"
+                      ? t("bank")
                       : paymentMethod === "BKASH"
-                      ? "bKash"
+                      ? t("bkash")
                       : paymentMethod === "NAGAD"
-                      ? "Nagad"
-                      : "Cash"}
+                      ? t("nagad")
+                      : t("cash")}
                   </span>
                 </span>
               </div>
@@ -373,7 +381,7 @@ export function RecordPaymentModal({
             {/* Amount */}
             <div className="bg-surface-bright rounded-lg p-4 border border-outline-variant mb-6 flex justify-between items-center">
               <span className="font-label-md text-label-md text-on-surface font-medium">
-                Total Amount
+                {t("totalAmount")}
               </span>
               <span className="font-h3 text-h3 font-bold text-primary">
                 ৳ {amount ? parseFloat(amount).toLocaleString() : "0.00"}
@@ -386,9 +394,9 @@ export function RecordPaymentModal({
                 <Icon name="qr_code_2" className="text-[32px] text-outline" />
               </div>
               <p className="font-caption text-caption text-on-surface-variant text-center">
-                Scan to verify digital receipt.
+                {t("scanVerify")}
                 <br />
-                Thank you.
+                {t("thankYou")}
               </p>
             </div>
 

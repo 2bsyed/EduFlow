@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { studentSchema, StudentFormValues } from "@/lib/validations/student";
@@ -127,13 +128,20 @@ export function StudentFormSidePanel({
       formData.append("photoFile", photoFile);
     }
 
-    const res = await createOrUpdateStudentAction(formData);
-    setIsSubmitting(false);
+    try {
+      const res = await createOrUpdateStudentAction(formData);
+      setIsSubmitting(false);
 
-    if (res.success) {
-      onClose();
-    } else {
-      setServerError(res.error || "Failed to save student");
+      if (res.success) {
+        onClose();
+      } else {
+        setServerError(res.error || "Failed to save student");
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setServerError(
+        err.message || "Network error: Unable to reach server. Please check your internet connection and try again."
+      );
     }
   };
 
@@ -173,10 +181,12 @@ export function StudentFormSidePanel({
               <label className="relative group cursor-pointer">
                 <div className="w-24 h-24 rounded-full bg-surface-variant border-2 border-dashed border-outline hover:border-primary transition-colors flex items-center justify-center overflow-hidden">
                   {photoPreview ? (
-                    <img
+                    <Image
                       src={photoPreview}
                       alt="Student Preview"
-                      className="w-full h-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
                     />
                   ) : (
                     <Icon name="add_a_photo" className="text-outline group-hover:text-primary text-3xl" />

@@ -17,8 +17,25 @@ const notoBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://eduflow.bd"),
   title: "EduFlow - Coaching Center Management System",
   description: "Comprehensive coaching center management platform for Bangladesh",
+  openGraph: {
+    title: "EduFlow - Coaching Center Management System",
+    description: "Comprehensive coaching center management platform for Bangladesh",
+    url: "https://eduflow.bd",
+    siteName: "EduFlow",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "EduFlow Platform Banner",
+      },
+    ],
+    locale: "bn_BD",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({

@@ -152,3 +152,52 @@ export async function createOrUpdateStudentAction(formData: FormData) {
     };
   }
 }
+
+export async function deleteStudentAction(studentId: string) {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+  const role = session?.user?.role;
+  const userId = session?.user?.id;
+
+  if (!instituteId || !userId) {
+    return { success: false, error: "Unauthorized access" };
+  }
+
+  if (role !== "OWNER") {
+    return { success: false, error: "Only institute owners can delete student records" };
+  }
+
+  // Explicit Institute Ownership Check
+  const student = await prisma.student.findUnique({
+    where: { id: studentId, instituteId },
+  });
+
+  if (!student) {
+    return { success: false, error: "Student not found in your institute" };
+  }
+
+  try {
+    // Archive student status
+    await prisma.student.update({
+      where: { id: studentId },
+      data: { status: "SUSPENDED" },
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        instituteId,
+        userId,
+        action: "STUDENT_DELETED",
+        details: `Archived/Suspended student record: ${student.fullName} (Roll: ${student.rollNo})`,
+      },
+    });
+
+    revalidatePath("/students");
+    revalidatePath("/dashboard");
+
+    return { success: true, message: `Archived student ${student.fullName}` };
+  } catch (error: any) {
+    console.error("Failed to delete student:", error);
+    return { success: false, error: error.message || "Failed to delete student" };
+  }
+}

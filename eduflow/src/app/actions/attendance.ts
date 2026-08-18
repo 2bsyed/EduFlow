@@ -21,6 +21,14 @@ export async function upsertAttendanceAction(
   const parsedDate = new Date(dateStr);
   parsedDate.setHours(0, 0, 0, 0);
 
+  // Explicit Institute-Ownership Check for studentId
+  const student = await prisma.student.findUnique({
+    where: { id: studentId, instituteId },
+  });
+  if (!student) {
+    return { success: false, error: "Student not found in your institute" };
+  }
+
   // Authorization check for teachers
   if (session.user.role === "TEACHER") {
     const teacher = await prisma.teacher.findUnique({
@@ -82,6 +90,20 @@ export async function bulkMarkPresentAction(
   const parsedDate = new Date(dateStr);
   parsedDate.setHours(0, 0, 0, 0);
 
+  // Explicit Institute-Ownership Check for studentIds
+  const validStudents = await prisma.student.findMany({
+    where: {
+      id: { in: studentIds },
+      instituteId,
+    },
+    select: { id: true },
+  });
+
+  const validStudentIds = validStudents.map((s) => s.id);
+  if (validStudentIds.length === 0) {
+    return { success: false, error: "No valid students found in your institute" };
+  }
+
   // Authorization check for teachers
   if (session.user.role === "TEACHER") {
     const teacher = await prisma.teacher.findUnique({
@@ -97,7 +119,7 @@ export async function bulkMarkPresentAction(
 
   try {
     await Promise.all(
-      studentIds.map((studentId) =>
+      validStudentIds.map((studentId) =>
         prisma.attendance.upsert({
           where: {
             studentId_batchId_date: {
@@ -125,7 +147,7 @@ export async function bulkMarkPresentAction(
     revalidatePath("/attendance");
     revalidatePath("/dashboard");
 
-    return { success: true, message: `Marked ${studentIds.length} students present` };
+    return { success: true, message: `Marked ${validStudentIds.length} students present` };
   } catch (error: any) {
     console.error("Failed to bulk mark attendance present:", error);
     return { success: false, error: error.message || "Failed to bulk save attendance" };
