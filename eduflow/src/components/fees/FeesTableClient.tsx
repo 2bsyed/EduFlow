@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
 import { RecordPaymentModal } from "@/components/fees/RecordPaymentModal";
 
@@ -41,6 +43,9 @@ export function FeesTableClient({
   totalPending,
   totalOverdue,
 }: FeesTableClientProps) {
+  const t = useTranslations("Portal");
+  const tFees = useTranslations("FeesTable");
+
   const [activeTab, setActiveTab] = useState<"All" | "Paid" | "Due" | "Overdue">("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -154,7 +159,7 @@ export function FeesTableClient({
               <Icon name="pending_actions" className="text-[24px]" />
             </div>
           </div>
-          <p className="font-label-md text-label-md text-on-surface-variant">Total Pending</p>
+          <p className="font-label-md text-label-md text-on-surface-variant">{tFees("totalPending")}</p>
           <h3 className="font-h2 text-h2 font-semibold text-on-background mt-xs">
             ৳ {totalPending.toLocaleString()}
           </h3>
@@ -167,7 +172,7 @@ export function FeesTableClient({
               <Icon name="warning" className="text-[24px]" />
             </div>
           </div>
-          <p className="font-label-md text-label-md text-on-surface-variant">Overdue Amount</p>
+          <p className="font-label-md text-label-md text-on-surface-variant">{tFees("overdueAmount")}</p>
           <h3 className="font-h2 text-h2 font-semibold text-error mt-xs">
             ৳ {totalOverdue.toLocaleString()}
           </h3>
@@ -179,19 +184,26 @@ export function FeesTableClient({
         {/* Filter Tabs & Controls */}
         <div className="p-md border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md bg-surface-bright">
           <div className="flex space-x-md overflow-x-auto w-full sm:w-auto pb-sm sm:pb-0">
-            {(["All", "Paid", "Due", "Overdue"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`font-label-md text-label-md px-md py-sm rounded-full whitespace-nowrap cursor-pointer transition-colors ${
-                  activeTab === tab
-                    ? "bg-primary-fixed text-on-primary-fixed font-semibold"
-                    : "text-on-surface-variant hover:bg-surface-container"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+            {(["All", "Paid", "Due", "Overdue"] as const).map((tab) => {
+              let label = tab as string;
+              if (tab === "All") label = tFees("all");
+              if (tab === "Paid") label = tFees("paid");
+              if (tab === "Due") label = tFees("due");
+              if (tab === "Overdue") label = tFees("overdue");
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`font-label-md text-label-md px-md py-sm rounded-full whitespace-nowrap cursor-pointer transition-colors ${
+                    activeTab === tab
+                      ? "bg-primary-fixed text-on-primary-fixed font-semibold"
+                      : "text-on-surface-variant hover:bg-surface-container"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-sm w-full sm:w-auto">
@@ -211,33 +223,33 @@ export function FeesTableClient({
           </div>
         </div>
 
-        {/* Table Content */}
-        <div className="overflow-x-auto">
+        {/* Table Content (Desktop) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-outline-variant bg-surface-bright">
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium">
                   Student
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium">
                   Batch
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium text-right">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium text-right">
                   Amount Due
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium text-right">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium text-right">
                   Paid
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium">
                   Due Date
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium">
                   Status
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium">
                   Method
                 </th>
-                <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant font-medium text-right">
+                <th className="py-xs px-sm font-caption text-caption text-on-surface-variant font-medium text-right">
                   Action
                 </th>
               </tr>
@@ -264,16 +276,18 @@ export function FeesTableClient({
 
                   return (
                     <tr key={fee.id} className="hover:bg-surface-container-low transition-colors group">
-                      <td className="py-md px-lg whitespace-nowrap">
-                        <div className="flex items-center gap-md">
+                      <td className="py-xs px-sm whitespace-nowrap">
+                        <div className="flex items-center gap-sm">
                           {fee.photoUrl ? (
-                            <img
+                            <Image
                               src={fee.photoUrl}
                               alt={fee.studentName}
-                              className="w-10 h-10 rounded-full object-cover border border-outline-variant shrink-0"
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 rounded-full object-cover border border-outline-variant shrink-0"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container border border-outline-variant flex items-center justify-center text-primary font-medium text-body-sm shrink-0 font-bold">
+                            <div className="w-8 h-8 rounded-full overflow-hidden bg-surface-container border border-outline-variant flex items-center justify-center text-primary font-medium text-caption shrink-0 font-bold">
                               {initials}
                             </div>
                           )}
@@ -287,33 +301,33 @@ export function FeesTableClient({
                           </div>
                         </div>
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap text-on-surface">
+                      <td className="py-xs px-sm whitespace-nowrap text-on-surface text-caption">
                         {fee.batchName}
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap text-on-surface text-right">
+                      <td className="py-xs px-sm whitespace-nowrap text-on-surface text-right font-medium">
                         ৳ {fee.amountDue.toLocaleString()}
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap text-on-surface-variant text-right">
+                      <td className="py-xs px-sm whitespace-nowrap text-on-surface-variant text-right text-caption">
                         ৳ {fee.amountPaid.toLocaleString()}
                       </td>
                       <td
-                        className={`py-md px-lg whitespace-nowrap ${
+                        className={`py-xs px-sm whitespace-nowrap text-caption ${
                           fee.status === "Overdue" ? "text-error font-medium" : "text-on-surface"
                         }`}
                       >
                         {fee.dueDate}
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap">
+                      <td className="py-xs px-sm whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center px-sm py-[2px] rounded-full text-caption font-medium ${statusBadgeClass}`}
+                          className={`inline-flex items-center px-2 py-[2px] rounded-full text-[10px] uppercase font-bold tracking-wide ${statusBadgeClass}`}
                         >
                           {fee.status}
                         </span>
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap text-on-surface-variant">
+                      <td className="py-xs px-sm whitespace-nowrap text-on-surface-variant">
                         {renderMethodBadge(fee.paymentMethod)}
                       </td>
-                      <td className="py-md px-lg whitespace-nowrap text-right">
+                      <td className="py-xs px-sm whitespace-nowrap text-right">
                         {fee.status === "Paid" ? (
                           <button
                             onClick={() => handleOpenRecordPayment(fee.studentId)}
@@ -325,7 +339,7 @@ export function FeesTableClient({
                         ) : (
                           <button
                             onClick={() => handleOpenRecordPayment(fee.studentId)}
-                            className="bg-surface-container-lowest border border-primary text-primary px-sm py-xs rounded-lg font-label-md text-label-md hover:bg-primary-fixed transition-colors opacity-90 group-hover:opacity-100 cursor-pointer"
+                            className="bg-surface-container-lowest border border-primary text-primary px-2 py-1 rounded-md text-caption hover:bg-primary-fixed transition-colors font-medium opacity-90 group-hover:opacity-100 cursor-pointer"
                           >
                             Collect
                           </button>
@@ -337,6 +351,124 @@ export function FeesTableClient({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Card Layout (Mobile) */}
+        <div className="block md:hidden divide-y divide-outline-variant">
+          {filteredFees.length === 0 ? (
+            <div className="py-xl text-center text-on-surface-variant font-body-sm">
+              No fee records found.
+            </div>
+          ) : (
+            filteredFees.map((fee) => {
+              const initials = fee.studentName
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .substring(0, 2)
+                .toUpperCase();
+
+              let statusBadgeClass = "bg-secondary-container text-on-secondary-container";
+              if (fee.status === "Due") statusBadgeClass = "bg-primary-fixed text-on-primary-fixed";
+              if (fee.status === "Overdue") statusBadgeClass = "bg-error-container text-on-error-container";
+
+              return (
+                <div key={fee.id} className="p-md hover:bg-surface-container-low transition-colors">
+                  <div className="flex justify-between items-start mb-sm">
+                    <div className="flex items-center gap-sm">
+                      {fee.photoUrl ? (
+                        <Image
+                          src={fee.photoUrl}
+                          alt={fee.studentName}
+                          width={40}
+                          height={40}
+                          className="w-10 h-10 rounded-full object-cover border border-outline-variant shrink-0"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container border border-outline-variant flex items-center justify-center text-primary font-medium text-body-md shrink-0 font-bold">
+                          {initials}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-label-md text-label-md font-medium text-on-background line-clamp-1">
+                          {fee.studentName}
+                        </p>
+                        <p className="font-caption text-caption text-on-surface-variant flex items-center gap-1">
+                          <span>Roll: {fee.studentRoll}</span>
+                          <span>•</span>
+                          <span>{fee.batchName}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`inline-flex items-center px-2 py-[2px] rounded-full text-[10px] uppercase font-bold tracking-wide ${statusBadgeClass}`}
+                    >
+                      {fee.status}
+                    </span>
+                  </div>
+
+                  <div className="bg-surface-container-lowest rounded border border-outline-variant p-sm mb-sm grid grid-cols-2 gap-y-2 gap-x-4">
+                    <div>
+                      <p className="font-caption text-[10px] uppercase tracking-wider text-on-surface-variant">
+                        Amount Due
+                      </p>
+                      <p className="font-label-md text-on-surface font-medium">
+                        ৳ {fee.amountDue.toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-caption text-[10px] uppercase tracking-wider text-on-surface-variant text-right">
+                        Paid
+                      </p>
+                      <p className="font-label-md text-on-surface-variant text-right">
+                        ৳ {fee.amountPaid.toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-caption text-[10px] uppercase tracking-wider text-on-surface-variant">
+                        Due Date
+                      </p>
+                      <p
+                        className={`font-label-sm ${
+                          fee.status === "Overdue" ? "text-error font-medium" : "text-on-surface"
+                        }`}
+                      >
+                        {fee.dueDate}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-caption text-[10px] uppercase tracking-wider text-on-surface-variant text-right">
+                        Method
+                      </p>
+                      <div className="flex justify-end">
+                        {renderMethodBadge(fee.paymentMethod)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    {fee.status === "Paid" ? (
+                      <button
+                        onClick={() => handleOpenRecordPayment(fee.studentId)}
+                        className="flex items-center justify-center gap-xs text-on-surface-variant py-sm px-md rounded-lg border border-outline-variant hover:bg-surface-container transition-colors font-label-sm w-full cursor-pointer"
+                      >
+                        <Icon name="receipt" className="text-[18px]" />
+                        <span>View Receipt</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleOpenRecordPayment(fee.studentId)}
+                        className="flex items-center justify-center gap-xs bg-primary text-on-primary py-sm px-md rounded-lg hover:bg-primary/90 transition-colors font-label-md w-full cursor-pointer shadow-sm"
+                      >
+                        <Icon name="payments" className="text-[18px]" />
+                        <span>Collect Payment</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

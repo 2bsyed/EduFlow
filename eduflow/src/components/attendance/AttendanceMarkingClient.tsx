@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
 import { upsertAttendanceAction, bulkMarkPresentAction } from "@/app/actions/attendance";
 
@@ -22,18 +24,24 @@ interface AttendanceMarkingClientProps {
   batches: BatchOption[];
   selectedBatchId: string;
   selectedDate: string;
+  initialBatchId: string;
+  initialDate: string;
   roster: RosterItem[];
   isAuthorized: boolean;
 }
 
 export function AttendanceMarkingClient({
   batches,
-  selectedBatchId,
-  selectedDate,
+  initialBatchId,
+  initialDate,
   roster,
   isAuthorized,
 }: AttendanceMarkingClientProps) {
   const router = useRouter();
+  const t = useTranslations("Attendance");
+
+  const [selectedBatchId, setSelectedBatchId] = useState(initialBatchId || "");
+  const [selectedDate, setSelectedDate] = useState(initialDate);
 
   // Optimistic Status State
   const [statusMap, setStatusMap] = useState<Record<string, "PRESENT" | "ABSENT" | "LATE" | null>>(
@@ -51,10 +59,12 @@ export function AttendanceMarkingClient({
 
   // Handle Batch / Date Dropdown Changes
   const handleBatchChange = (newBatchId: string) => {
+    setSelectedBatchId(newBatchId);
     router.push(`/attendance?batchId=${newBatchId}&date=${selectedDate}`);
   };
 
   const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
     router.push(`/attendance?batchId=${selectedBatchId}&date=${newDate}`);
   };
 
@@ -100,9 +110,9 @@ export function AttendanceMarkingClient({
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md mb-md">
           <div>
-            <h2 className="font-h2 text-h2 text-on-background">Attendance</h2>
+            <h2 className="font-h2 text-h2 text-on-background">{t("title")}</h2>
             <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-              Manage daily attendance records efficiently.
+              {t("subtitle")}
             </p>
           </div>
           <button
@@ -111,14 +121,14 @@ export function AttendanceMarkingClient({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary-container text-primary-container bg-transparent hover:bg-primary-container hover:text-on-primary rounded-lg font-label-md text-label-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <Icon name="done_all" className="text-[18px]" />
-            <span>{isBulkLoading ? "Marking..." : "Mark All Present"}</span>
+            <span>{isBulkLoading ? t("marking") : t("markAllPresent")}</span>
           </button>
         </div>
 
         {!isAuthorized && (
           <div className="mb-md p-md bg-error-container text-on-error-container rounded-lg font-body-sm flex items-center gap-2">
             <Icon name="warning" className="text-[20px]" />
-            <span>You are not assigned to this batch. Attendance controls are read-only.</span>
+            <span>{t("readOnlyWarning")}</span>
           </div>
         )}
 
@@ -126,7 +136,7 @@ export function AttendanceMarkingClient({
           {/* Select Batch */}
           <div className="relative min-w-[200px] flex-1 sm:flex-none">
             <label className="block font-caption text-caption text-on-surface-variant mb-1 ml-1">
-              Select Batch
+              {t("selectBatch")}
             </label>
             <div className="relative">
               <select
@@ -147,9 +157,9 @@ export function AttendanceMarkingClient({
           </div>
 
           {/* Select Date */}
-          <div className="relative min-w-[160px] flex-1 sm:flex-none">
+          <div className="relative flex-1 sm:flex-none sm:w-48">
             <label className="block font-caption text-caption text-on-surface-variant mb-1 ml-1">
-              Date
+              {t("selectDate")}
             </label>
             <div className="relative">
               <input
@@ -192,16 +202,16 @@ export function AttendanceMarkingClient({
         {/* Header Row */}
         <div className="hidden sm:grid sm:grid-cols-[1fr_auto] items-center gap-4 px-lg py-sm bg-surface-bright border-b border-outline-variant">
           <div className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
-            Student
+            {t("student")}
           </div>
           <div className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center w-[300px]">
-            Status
+            {t("status")}
           </div>
         </div>
 
         {roster.length === 0 ? (
           <div className="p-xl text-center font-body-md text-on-surface-variant">
-            No students found in this batch.
+            {t("noStudents")}
           </div>
         ) : (
           roster.map((student) => {
@@ -220,9 +230,11 @@ export function AttendanceMarkingClient({
               >
                 <div className="flex items-center gap-md w-full">
                   {student.photoUrl ? (
-                    <img
+                    <Image
                       src={student.photoUrl}
                       alt={student.fullName}
+                      width={40}
+                      height={40}
                       className="w-10 h-10 rounded-full object-cover border border-outline-variant shadow-sm shrink-0"
                     />
                   ) : (
@@ -243,42 +255,45 @@ export function AttendanceMarkingClient({
                 </div>
 
                 {/* 3-State Toggle Button Group */}
-                <div className="w-full sm:w-auto mt-2 sm:mt-0 flex bg-surface-bright border border-outline-variant rounded-lg overflow-hidden shadow-sm h-10">
+                <div className="w-full sm:w-[300px] mt-2 sm:mt-0 flex bg-surface-bright border border-outline-variant rounded-lg overflow-hidden shadow-sm h-10">
                   <button
                     type="button"
                     onClick={() => handleStatusToggle(student.studentId, "PRESENT")}
                     disabled={!isAuthorized}
-                    className={`flex-1 sm:w-[100px] font-label-md text-label-md font-medium flex items-center justify-center transition-colors border-r border-outline-variant focus:outline-none cursor-pointer ${
+                    className={`flex-1 sm:w-[100px] flex items-center justify-center gap-1 font-label-md transition-colors border-r border-outline-variant last:border-r-0 ${
                       currentStatus === "PRESENT"
-                        ? "bg-secondary text-on-secondary"
-                        : "text-on-surface-variant hover:bg-surface-variant"
+                        ? "bg-primary text-on-primary"
+                        : "text-on-surface-variant hover:bg-surface-container disabled:opacity-50"
                     }`}
                   >
-                    Present
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleStatusToggle(student.studentId, "ABSENT")}
-                    disabled={!isAuthorized}
-                    className={`flex-1 sm:w-[100px] font-label-md text-label-md font-medium flex items-center justify-center transition-colors border-r border-outline-variant focus:outline-none cursor-pointer ${
-                      currentStatus === "ABSENT"
-                        ? "bg-error text-on-error border-error"
-                        : "text-on-surface-variant hover:bg-surface-variant"
-                    }`}
-                  >
-                    Absent
+                    <Icon name="check_circle" className="text-[18px]" />
+                    <span>{t("present")}</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleStatusToggle(student.studentId, "LATE")}
                     disabled={!isAuthorized}
-                    className={`flex-1 sm:w-[100px] font-label-md text-label-md font-medium flex items-center justify-center transition-colors focus:outline-none cursor-pointer ${
+                    className={`flex-1 sm:w-[100px] flex items-center justify-center gap-1 font-label-md transition-colors border-r border-outline-variant last:border-r-0 ${
                       currentStatus === "LATE"
-                        ? "bg-tertiary-container text-on-tertiary-container border-l border-tertiary-container"
-                        : "text-on-surface-variant hover:bg-surface-variant"
+                        ? "bg-[#fbbc04] text-[#3d3000]"
+                        : "text-on-surface-variant hover:bg-surface-container disabled:opacity-50"
                     }`}
                   >
-                    Late
+                    <Icon name="schedule" className="text-[18px]" />
+                    <span>{t("late")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleStatusToggle(student.studentId, "ABSENT")}
+                    disabled={!isAuthorized}
+                    className={`flex-1 sm:w-[100px] flex items-center justify-center gap-1 font-label-md transition-colors ${
+                      currentStatus === "ABSENT"
+                        ? "bg-error text-on-error"
+                        : "text-on-surface-variant hover:bg-surface-container disabled:opacity-50"
+                    }`}
+                  >
+                    <Icon name="cancel" className="text-[18px]" />
+                    <span>{t("absent")}</span>
                   </button>
                 </div>
               </div>

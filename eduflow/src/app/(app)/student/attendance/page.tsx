@@ -4,6 +4,7 @@ import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { StudentSidebar } from "@/components/layout/StudentSidebar";
 
 export default async function StudentAttendancePage() {
   const session = await auth();
@@ -23,7 +24,7 @@ export default async function StudentAttendancePage() {
     where: { userId, instituteId },
     include: {
       attendances: {
-        orderBy: { date: "asc" },
+        orderBy: { date: "desc" },
       },
     },
   });
@@ -41,40 +42,35 @@ export default async function StudentAttendancePage() {
     where: { id: instituteId },
   });
 
+  // Calculate monthly stats
   const now = new Date();
   const currentYear = now.getFullYear();
-  const currentMonthIndex = now.getMonth(); // 0-indexed
-
   const monthName = now.toLocaleString("default", { month: "long" });
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const firstDayIndex = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
 
-  // Filter attendance records for current month
-  const currentMonthAttendances = student.attendances.filter((att) => {
-    const d = new Date(att.date);
-    return d.getFullYear() === currentYear && d.getMonth() === currentMonthIndex;
+  const currentMonthAttendances = student.attendances.filter((a) => {
+    const d = new Date(a.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
 
   const presentCount = currentMonthAttendances.filter(
     (a) => a.status === "PRESENT" || a.status === "LATE"
   ).length;
   const totalCount = currentMonthAttendances.length;
-  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 94;
+  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 96;
 
-  // Build calendar grid days for current month
-  const firstDayOfMonth = new Date(currentYear, currentMonthIndex, 1);
-  const startingDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sun, 1 = Mon ...
-  const daysInMonth = new Date(currentYear, currentMonthIndex + 1, 0).getDate();
-
-  // Create attendance map for quick lookup by day number
-  const attendanceByDay: Record<number, string> = {};
-  currentMonthAttendances.forEach((att) => {
-    const day = new Date(att.date).getDate();
-    attendanceByDay[day] = att.status;
+  // Map attendances by day number
+  const attendanceByDay: Record<number, "PRESENT" | "ABSENT" | "LATE"> = {};
+  currentMonthAttendances.forEach((a) => {
+    const day = new Date(a.date).getDate();
+    attendanceByDay[day] = a.status;
   });
 
-  // Calendar cells
+  // Build grid of days
   const calendarCells = [];
-  // Empty leading slots from previous month
-  for (let i = 0; i < startingDayOfWeek; i++) {
+  // Empty slots for padding before day 1
+  for (let i = 0; i < firstDayIndex; i++) {
     calendarCells.push({ type: "empty", key: `empty-${i}` });
   }
   // Days 1 to daysInMonth
@@ -86,64 +82,7 @@ export default async function StudentAttendancePage() {
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <Icon name="school" className="text-[20px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute?.name || "Student Portal"}
-            </p>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-xs overflow-y-auto pr-sm">
-          <Link
-            href="/student"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="dashboard" className="text-[20px]" />
-            <span>Dashboard</span>
-          </Link>
-          <Link
-            href="/student/attendance"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span>My Attendance</span>
-          </Link>
-          <Link
-            href="/student/results"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="grade" className="text-[20px]" />
-            <span>My Results</span>
-          </Link>
-          <Link
-            href="/student/fees"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="payments" className="text-[20px]" />
-            <span>Fee Status</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="schedule" className="text-[20px]" />
-            <span>Timetable</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
-          >
-            <Icon name="campaign" className="text-[20px]" />
-            <span>Notices</span>
-          </Link>
-        </nav>
-      </aside>
+      <StudentSidebar activeTab="attendance" instituteName={institute?.name} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">

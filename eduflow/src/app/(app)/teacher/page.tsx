@@ -1,11 +1,15 @@
 import React from "react";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 
 export default async function TeacherDashboardPage() {
+  const t = await getTranslations("Dashboard");
   const session = await auth();
   const instituteId = session?.user?.instituteId;
   const userId = session?.user?.id;
@@ -76,7 +80,9 @@ export default async function TeacherDashboardPage() {
             <Icon name="school" className="text-[20px]" />
           </div>
           <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
+            <div className="flex items-center">
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={100} height={32} className="object-contain -ml-2" />
+            </div>
             <p className="font-caption text-caption text-on-surface-variant">
               {institute?.name || "Teacher Portal"}
             </p>
@@ -112,14 +118,14 @@ export default async function TeacherDashboardPage() {
             <span>Results</span>
           </Link>
           <Link
-            href="#"
+            href="/teacher/timetable"
             className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
           >
             <Icon name="schedule" className="text-[20px]" />
             <span>Timetable</span>
           </Link>
           <Link
-            href="#"
+            href="/teacher/profile"
             className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
           >
             <Icon name="person" className="text-[20px]" />
@@ -141,26 +147,16 @@ export default async function TeacherDashboardPage() {
             </button>
             <LanguageToggle />
             <div className="flex items-center gap-sm ml-sm">
-              <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold">
-                {session?.user?.name?.[0] || "T"}
-              </div>
-              <span className="font-label-md hidden lg:block text-on-surface">
-                {session?.user?.name || "Teacher"}
-              </span>
-              <form
-                action={async () => {
+              <ProfileDropdown
+                userName={session?.user?.name || "Teacher"}
+                userEmail={session?.user?.email || "teacher@eduflow.bd"}
+                userRole={session?.user?.role || "TEACHER"}
+                avatarUrl={session?.user?.image}
+                onSignOut={async () => {
                   "use server";
                   await signOut({ redirectTo: "/login" });
                 }}
-              >
-                <button
-                  type="submit"
-                  className="p-1 text-on-surface-variant hover:text-error transition-colors cursor-pointer"
-                  title="Log Out"
-                >
-                  <Icon name="logout" className="text-[20px]" />
-                </button>
-              </form>
+              />
             </div>
           </div>
         </header>
@@ -169,9 +165,12 @@ export default async function TeacherDashboardPage() {
         <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full space-y-xl">
           {/* Greeting Section */}
           <section className="mb-lg">
-            <h1 className="font-h2 text-h2 font-bold text-on-surface mb-xs">
-              Welcome back, {session?.user?.name || "Teacher"}
-            </h1>
+            <div>
+              <h2 className="font-h2 text-h2 font-bold text-on-surface mb-xs">{t("teacherTitle")}</h2>
+              <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                {t("welcome")}, {session?.user?.name || "Teacher"}.
+              </p>
+            </div>
             <p className="font-body-lg text-body-lg text-on-surface-variant">
               You are assigned to{" "}
               <span className="text-primary font-semibold">{batches.length} active batches</span>.
@@ -186,7 +185,7 @@ export default async function TeacherDashboardPage() {
               <section>
                 <div className="flex justify-between items-center mb-md">
                   <h2 className="font-h4 text-h4 font-semibold text-on-surface">
-                    Today's Classes & Batches
+                    {t("myScheduleToday")}
                   </h2>
                   <Link
                     href="/teacher/batches"
@@ -305,7 +304,7 @@ export default async function TeacherDashboardPage() {
                 <div className="bg-surface-container p-md border-b border-outline-variant">
                   <h3 className="font-h4 text-h4 font-semibold text-on-surface flex items-center gap-sm">
                     <Icon name="task_alt" className="text-primary text-[20px]" />
-                    <span>Action Required</span>
+                    <span>{t("actionRequired")}</span>
                   </h3>
                 </div>
                 <div className="p-md space-y-md">

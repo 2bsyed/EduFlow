@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { SettingsSubNav } from "@/components/settings/SettingsSubNav";
 import { LanguageSettingsClient } from "@/components/settings/LanguageSettingsClient";
+import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 
 export default async function SettingsLanguagePage() {
   const session = await auth();
@@ -34,64 +35,7 @@ export default async function SettingsLanguagePage() {
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <Icon name="school" className="text-[20px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute.name}
-            </p>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-xs overflow-y-auto pr-sm">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="dashboard" className="text-[20px]" />
-            <span>Dashboard</span>
-          </Link>
-          <Link
-            href="/students"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="group" className="text-[20px]" />
-            <span>Students</span>
-          </Link>
-          <Link
-            href="/attendance"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span>Attendance</span>
-          </Link>
-          <Link
-            href="/fees"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="payments" className="text-[20px]" />
-            <span>Fees</span>
-          </Link>
-          <Link
-            href="/results"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="analytics" className="text-[20px]" />
-            <span>Results</span>
-          </Link>
-          <Link
-            href="/settings"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed"
-          >
-            <Icon name="settings" className="text-[20px]" />
-            <span>Settings</span>
-          </Link>
-        </nav>
-      </aside>
+      <OwnerSidebar activeTab="settings" instituteName={institute.name} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">

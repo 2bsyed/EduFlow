@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 import { saveResultsAction } from "@/app/actions/results";
 
@@ -36,6 +37,7 @@ export function ResultsEntryClient({
   const [selectedExam, setSelectedExam] = useState(initialExamName);
   const [selectedBatchId, setSelectedBatchId] = useState(initialBatchId);
   const [selectedSubject, setSelectedSubject] = useState(initialSubject);
+  const [totalMarks, setTotalMarks] = useState(100);
 
   // Map of studentId -> marks string
   const [marksMap, setMarksMap] = useState<Record<string, string>>({});
@@ -58,15 +60,16 @@ export function ResultsEntryClient({
   };
 
   // Grade Calculation Helper
-  const calculateGrade = (marksStr: string) => {
-    if (!marksStr || isNaN(Number(marksStr))) return { grade: "-", class: "bg-surface-variant text-on-surface-variant" };
+  const calculateGrade = (marksStr: string, tMarks: number) => {
+    if (!marksStr || isNaN(Number(marksStr)) || tMarks <= 0) return { grade: "-", class: "bg-surface-variant text-on-surface-variant" };
     const marks = Number(marksStr);
-    if (marks >= 80) return { grade: "A+", class: "bg-secondary-container text-on-secondary-container font-bold" };
-    if (marks >= 70) return { grade: "A", class: "bg-primary-fixed text-on-primary-fixed font-bold" };
-    if (marks >= 60) return { grade: "A-", class: "bg-primary-fixed-dim text-on-primary-fixed-variant font-bold" };
-    if (marks >= 50) return { grade: "B", class: "bg-tertiary-fixed text-on-tertiary-fixed font-bold" };
-    if (marks >= 40) return { grade: "C", class: "bg-tertiary-container text-on-tertiary-container font-bold" };
-    if (marks >= 33) return { grade: "D", class: "bg-surface-container-high text-on-surface-variant font-bold" };
+    const percent = (marks / tMarks) * 100;
+    if (percent >= 80) return { grade: "A+", class: "bg-secondary-container text-on-secondary-container font-bold" };
+    if (percent >= 70) return { grade: "A", class: "bg-primary-fixed text-on-primary-fixed font-bold" };
+    if (percent >= 60) return { grade: "A-", class: "bg-primary-fixed-dim text-on-primary-fixed-variant font-bold" };
+    if (percent >= 50) return { grade: "B", class: "bg-tertiary-fixed text-on-tertiary-fixed font-bold" };
+    if (percent >= 40) return { grade: "C", class: "bg-tertiary-container text-on-tertiary-container font-bold" };
+    if (percent >= 33) return { grade: "D", class: "bg-surface-container-high text-on-surface-variant font-bold" };
     return { grade: "F", class: "bg-error-container text-on-error-container font-bold" };
   };
 
@@ -95,8 +98,8 @@ export function ResultsEntryClient({
       .map(([studentId, val]) => ({
         studentId,
         marksObtained: Number(val),
-        totalMarks: 100,
-        grade: calculateGrade(val).grade,
+        totalMarks: totalMarks,
+        grade: calculateGrade(val, totalMarks).grade,
       }));
 
     if (resultPayload.length === 0) {
@@ -139,17 +142,35 @@ export function ResultsEntryClient({
             {/* Exam Selector */}
             <div className="flex flex-col gap-xs min-w-[150px]">
               <label className="font-label-md text-label-md text-on-surface-variant font-medium">
-                Select Exam
+                Exam Name
               </label>
-              <select
+              <input
+                type="text"
+                list="exam-options"
                 value={selectedExam}
                 onChange={(e) => setSelectedExam(e.target.value)}
-                className="w-full rounded-lg border border-outline-variant bg-surface text-on-surface font-body-sm px-sm py-xs focus:ring-primary focus:border-primary shadow-sm cursor-pointer"
-              >
-                <option value="First Term 2024">First Term 2024</option>
-                <option value="Mid Term 2024">Mid Term 2024</option>
-                <option value="Finals 2023">Finals 2023</option>
-              </select>
+                placeholder="e.g. Mid Term 2024"
+                className="w-full rounded-lg border border-outline-variant bg-surface text-on-surface font-body-sm px-sm py-xs focus:ring-primary focus:border-primary shadow-sm"
+              />
+              <datalist id="exam-options">
+                <option value="First Term 2024" />
+                <option value="Mid Term 2024" />
+                <option value="Finals 2023" />
+              </datalist>
+            </div>
+
+            {/* Total Marks */}
+            <div className="flex flex-col gap-xs min-w-[100px]">
+              <label className="font-label-md text-label-md text-on-surface-variant font-medium">
+                Total Marks
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={totalMarks}
+                onChange={(e) => setTotalMarks(Number(e.target.value) || 0)}
+                className="w-full rounded-lg border border-outline-variant bg-surface text-on-surface font-body-sm px-sm py-xs focus:ring-primary focus:border-primary shadow-sm"
+              />
             </div>
 
             {/* Batch Selector */}
@@ -220,7 +241,7 @@ export function ResultsEntryClient({
           <div className="col-span-4 md:col-span-4 flex items-center">Student</div>
           <div className="col-span-2 md:col-span-1 flex items-center justify-center">Roll</div>
           <div className="col-span-3 md:col-span-3 flex items-center justify-center">
-            Mark Entry (/100)
+            Mark Entry (/{totalMarks})
           </div>
           <div className="col-span-1 md:col-span-2 flex items-center justify-center">Total</div>
           <div className="col-span-1 md:col-span-1 flex items-center justify-center">Grade</div>
@@ -236,7 +257,7 @@ export function ResultsEntryClient({
           ) : (
             students.map((student) => {
               const currentMarks = marksMap[student.studentId] || "";
-              const gradeInfo = calculateGrade(currentMarks);
+              const gradeInfo = calculateGrade(currentMarks, totalMarks);
               const initials = student.fullName
                 .split(" ")
                 .map((n) => n[0])
@@ -252,9 +273,11 @@ export function ResultsEntryClient({
                   {/* Student Info */}
                   <div className="col-span-4 md:col-span-4 flex items-center gap-md">
                     {student.photoUrl ? (
-                      <img
+                      <Image
                         src={student.photoUrl}
                         alt={student.fullName}
+                        width={32}
+                        height={32}
                         className="w-8 h-8 rounded-full object-cover shrink-0"
                       />
                     ) : (
@@ -277,7 +300,7 @@ export function ResultsEntryClient({
                     <input
                       type="number"
                       min="0"
-                      max="100"
+                      max={totalMarks}
                       value={currentMarks}
                       onChange={(e) => handleMarkChange(student.studentId, e.target.value)}
                       placeholder="-"

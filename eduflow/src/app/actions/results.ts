@@ -34,11 +34,46 @@ export async function saveResultsAction({
     return { success: false, error: "Missing required parameters or empty results list" };
   }
 
+  // Explicit Institute-Ownership Check for batchId
+  const batch = await prisma.batch.findUnique({
+    where: { id: batchId, instituteId },
+    select: { id: true, name: true, teacherId: true },
+  });
+
+  if (!batch) {
+    return { success: false, error: "Batch not found in your institute" };
+  }
+
+  // Authorization check for teachers
+  if (session.user.role === "TEACHER") {
+    const teacher = await prisma.teacher.findUnique({ where: { userId } });
+    if (!teacher || batch.teacherId !== teacher.id) {
+      return { success: false, error: "You are not authorized to save results for this batch" };
+    }
+  }
+
+  // Verify all studentIds belong to this institute
+  const studentIds = results.map((r) => r.studentId);
+  const validStudents = await prisma.student.findMany({
+    where: {
+      id: { in: studentIds },
+      instituteId,
+    },
+    select: { id: true },
+  });
+
+  const validStudentIdSet = new Set(validStudents.map((s) => s.id));
+  const filteredResults = results.filter((r) => validStudentIdSet.has(r.studentId));
+
+  if (filteredResults.length === 0) {
+    return { success: false, error: "No valid students found in your institute for this result batch" };
+  }
+
   try {
-    // Save/Upsert result records for each student
-    for (const item of results) {
-      const marks = Math.min(100, Math.max(0, item.marksObtained));
+    // Save/Upsert result records for each valid student
+    for (const item of filteredResults) {
       const total = item.totalMarks || 100;
+      const marks = Math.min(total, Math.max(0, item.marksObtained));
       const percentage = (marks / total) * 100;
 
       let calculatedGrade = item.grade;
@@ -88,19 +123,13 @@ export async function saveResultsAction({
       }
     }
 
-    // Fetch batch details for activity log
-    const batch = await prisma.batch.findUnique({
-      where: { id: batchId },
-      select: { name: true },
-    });
-
     // Write ActivityLog entry
     await prisma.activityLog.create({
       data: {
         instituteId,
         userId,
         action: "RESULTS_SAVED",
-        details: `Saved results for ${results.length} students in ${batch?.name || "Batch"} - Exam: ${examName} (${subject})`,
+        details: `Saved results for ${filteredResults.length} students in ${batch.name} - Exam: ${examName} (${subject})`,
       },
     });
 
@@ -109,7 +138,7 @@ export async function saveResultsAction({
 
     return {
       success: true,
-      message: `Successfully saved marks for ${results.length} students!`,
+      message: `Successfully saved marks for ${filteredResults.length} students!`,
     };
   } catch (error: any) {
     console.error("Failed to save results:", error);

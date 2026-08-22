@@ -4,6 +4,7 @@ import { auth, signOut } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/prisma";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { StudentSidebar } from "@/components/layout/StudentSidebar";
 
 export default async function StudentResultsPage() {
   const session = await auth();
@@ -22,15 +23,15 @@ export default async function StudentResultsPage() {
   const student = await prisma.student.findFirst({
     where: { userId, instituteId },
     include: {
+      results: {
+        orderBy: { createdAt: "desc" },
+      },
+      attendances: true,
       studentBatches: {
         include: {
           batch: true,
         },
       },
-      results: {
-        orderBy: { createdAt: "desc" },
-      },
-      attendances: true,
     },
   });
 
@@ -47,7 +48,44 @@ export default async function StudentResultsPage() {
     where: { id: instituteId },
   });
 
-  // Sample default subjects if none published yet in database
+  // Calculate overall performance metrics
+  const totalExams = student.results.length;
+  const totalPercentageSum = student.results.reduce((sum, r) => {
+    const marks = Number(r.marksObtained);
+    const maxMarks = Number(r.totalMarks) || 100;
+    return sum + (marks / maxMarks) * 100;
+  }, 0);
+  const averagePercentage = totalExams > 0 ? Math.round(totalPercentageSum / totalExams) : 92;
+  const overallPercentage = averagePercentage;
+
+  // Grade calculation
+  const overallGrade =
+    averagePercentage >= 80
+      ? "A+"
+      : averagePercentage >= 70
+      ? "A"
+      : averagePercentage >= 60
+      ? "A-"
+      : averagePercentage >= 50
+      ? "B"
+      : "C";
+
+  const gpa =
+    averagePercentage >= 80
+      ? "4.00"
+      : averagePercentage >= 70
+      ? "3.75"
+      : averagePercentage >= 60
+      ? "3.50"
+      : "3.00";
+
+  // Attendance rate
+  const totalAtt = student.attendances.length;
+  const presentAtt = student.attendances.filter(
+    (a) => a.status === "PRESENT" || a.status === "LATE"
+  ).length;
+  const attPercentage = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : 95;
+
   const sampleResults = [
     { id: "s1", subject: "Advanced Mathematics", marksObtained: 96, totalMarks: 100, grade: "A+" },
     { id: "s2", subject: "Physics", marksObtained: 88, totalMarks: 100, grade: "A" },
@@ -66,85 +104,11 @@ export default async function StudentResultsPage() {
         }))
       : sampleResults;
 
-  // Calculate Overall Percentage and GPA
-  const totalObtained = displayResults.reduce((acc, curr) => acc + curr.marksObtained, 0);
-  const totalMax = displayResults.reduce((acc, curr) => acc + curr.totalMarks, 0);
-  const overallPercentage = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 92;
-
-  let gpa = "3.85";
-  if (overallPercentage >= 80) gpa = "4.00";
-  else if (overallPercentage >= 70) gpa = "3.50";
-  else if (overallPercentage >= 60) gpa = "3.00";
-
-  // Attendance rate calculation
-  const totalAtt = student.attendances.length;
-  const presentAtt = student.attendances.filter(
-    (a) => a.status === "PRESENT" || a.status === "LATE"
-  ).length;
-  const attPercentage = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : 95;
-
   const reportCardExamSlug = "final-term-2024";
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
-      {/* SideNavBar */}
-      <aside className="docked left-0 h-full w-64 border-r border-outline-variant shadow-sm flex flex-col py-lg px-md bg-surface-container-lowest hidden md:flex shrink-0">
-        <div className="mb-xl px-sm flex items-center gap-sm">
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-            <Icon name="school" className="text-[20px]" />
-          </div>
-          <div>
-            <h1 className="font-h3 text-h3 font-bold text-primary">EduFlow</h1>
-            <p className="font-caption text-caption text-on-surface-variant">
-              {institute?.name || "Student Portal"}
-            </p>
-          </div>
-        </div>
-        <nav className="flex-1 space-y-xs overflow-y-auto pr-sm">
-          <Link
-            href="/student"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="dashboard" className="text-[20px]" />
-            <span>Dashboard</span>
-          </Link>
-          <Link
-            href="/student/attendance"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="calendar_today" className="text-[20px]" />
-            <span>My Attendance</span>
-          </Link>
-          <Link
-            href="/student/results"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-primary font-semibold border-r-4 border-primary bg-primary-fixed"
-          >
-            <Icon name="grade" className="text-[20px]" />
-            <span>My Results</span>
-          </Link>
-          <Link
-            href="/student/fees"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="payments" className="text-[20px]" />
-            <span>Fee Status</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors"
-          >
-            <Icon name="schedule" className="text-[20px]" />
-            <span>Timetable</span>
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-md px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors mt-auto"
-          >
-            <Icon name="campaign" className="text-[20px]" />
-            <span>Notices</span>
-          </Link>
-        </nav>
-      </aside>
+      <StudentSidebar activeTab="results" instituteName={institute?.name} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">

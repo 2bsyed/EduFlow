@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Icon } from "@/components/ui/Icon";
 
@@ -9,7 +10,9 @@ export default function DemoPage() {
       <header className="w-full flex justify-between items-center p-margin max-w-7xl mx-auto">
         <Link href="/" className="flex items-center gap-xs">
           <Icon name="school" className="text-[28px] text-primary" />
-          <span className="font-h3 text-h3 text-primary font-bold">EduFlow</span>
+          <Link href="/">
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={140} height={40} className="object-contain -ml-2" />
+            </Link>
         </Link>
         <LanguageToggle />
       </header>
@@ -22,7 +25,7 @@ export default function DemoPage() {
           <div>
             <h1 className="font-h2 text-h2 text-on-surface mb-xs">EduFlow Product Overview Demo</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              Watch how EduFlow simplifies attendance, fee collection via bKash/Nagad, and exam results reporting.
+              Watch how EduFlow simplifies attendance, fee collection (coming soon via bKash/Nagad), and exam results reporting.
             </p>
           </div>
 

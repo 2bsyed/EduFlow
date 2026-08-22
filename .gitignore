@@ -2,3 +2,7 @@
 .agents/
 .mcp.json
 *.log
+node_modules/
+.next/
+eduflow_tmp/
+.DS_Store

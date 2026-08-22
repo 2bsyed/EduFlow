@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
 import { StudentFormSidePanel } from "@/components/students/StudentFormSidePanel";
+import { deleteStudentAction } from "@/app/actions/students";
 
 export interface StudentItem {
   id: string;
@@ -32,6 +36,8 @@ interface StudentTableClientProps {
 }
 
 export function StudentTableClient({ students, batches }: StudentTableClientProps) {
+  const searchParams = useSearchParams();
+  const t = useTranslations("Portal");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -40,6 +46,18 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<StudentItem | null>(null);
+
+  // Delete Confirmation Modal State
+  const [deletingStudent, setDeletingStudent] = useState<StudentItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  useEffect(() => {
+    if (searchParams.get("action") === "new") {
+      setEditingStudent(null);
+      setIsPanelOpen(true);
+    }
+  }, [searchParams]);
 
   // Filtered Students
   const filteredStudents = useMemo(() => {
@@ -77,12 +95,31 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
     setIsPanelOpen(true);
   };
 
+  const handleConfirmDelete = async () => {
+    if (!deletingStudent) return;
+    setIsDeleting(true);
+    setDeleteError("");
+
+    try {
+      const res = await deleteStudentAction(deletingStudent.id);
+      if (res.success) {
+        setDeletingStudent(null);
+      } else {
+        setDeleteError(res.error || "Failed to archive student");
+      }
+    } catch (err: any) {
+      setDeleteError(err.message || "An unexpected error occurred");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-lg">
       {/* Page Header */}
       <div className="flex justify-between items-center mb-xl">
         <div>
-          <h2 className="font-h2 text-h2 text-on-surface">Students</h2>
+          <h2 className="font-h2 text-h2 text-on-surface">{t("students")}</h2>
           <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
             Manage and view all enrolled students.
           </p>
@@ -92,7 +129,7 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
           className="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:bg-[#173bab] transition-colors flex items-center gap-xs shadow-sm cursor-pointer"
         >
           <Icon name="add" className="text-[18px]" />
-          <span>Add Student</span>
+          <span>{t("addStudent")}</span>
         </button>
       </div>
 
@@ -111,7 +148,7 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
               setCurrentPage(1);
             }}
             className="w-full pl-[36px] pr-sm py-sm rounded-lg border border-outline-variant bg-surface-container-lowest text-body-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow"
-            placeholder="Search students by name, roll no, or phone..."
+            placeholder={t("search")}
             type="text"
           />
         </div>
@@ -128,7 +165,7 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
               }}
               className="appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg pl-md pr-xl py-sm font-body-sm text-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none cursor-pointer"
             >
-              <option value="">All Batches</option>
+              <option value="">{t("allBatches")}</option>
               {batches.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
@@ -151,12 +188,13 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
               }}
               className="appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg pl-md pr-xl py-sm font-body-sm text-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none cursor-pointer"
             >
-              <option value="">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="paid">Paid</option>
-              <option value="due">Due</option>
-              <option value="overdue">Overdue</option>
-              <option value="inactive">Inactive</option>
+              <option value="">{t("allStatuses")}</option>
+              <option value="active">{t("active")}</option>
+              <option value="paid">{t("paid")}</option>
+              <option value="due">{t("due")}</option>
+              <option value="overdue">{t("overdue")}</option>
+              <option value="inactive">{t("inactive")}</option>
+              <option value="suspended">{t("suspended")}</option>
             </select>
             <Icon
               name="arrow_drop_down"
@@ -172,13 +210,13 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface border-b border-outline-variant text-on-surface-variant font-label-md text-label-md">
-                <th className="py-sm px-md font-medium">Student</th>
-                <th className="py-sm px-md font-medium">Roll No</th>
-                <th className="py-sm px-md font-medium">Batch</th>
-                <th className="py-sm px-md font-medium">Guardian Contact</th>
-                <th className="py-sm px-md font-medium">Fee Status</th>
+                <th className="py-sm px-md font-medium">{t("students")}</th>
+                <th className="py-sm px-md font-medium">{t("rollNo")}</th>
+                <th className="py-sm px-md font-medium">{t("batch")}</th>
+                <th className="py-sm px-md font-medium">{t("guardianContact")}</th>
+                <th className="py-sm px-md font-medium">{t("feeStatus")}</th>
                 <th className="py-sm px-md font-medium">Attendance</th>
-                <th className="py-sm px-md font-medium text-right">Actions</th>
+                <th className="py-sm px-md font-medium text-right">{t("actions")}</th>
               </tr>
             </thead>
             <tbody className="text-body-sm font-body-sm">
@@ -206,6 +244,16 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                     attBarClass = "bg-[#fbbc04]";
                   if (student.attendancePct < 60) attBarClass = "bg-error";
 
+                  let feeStatusText: string = student.feeStatus;
+                  if (student.feeStatus === "Paid") feeStatusText = t("paid");
+                  if (student.feeStatus === "Due") feeStatusText = t("due");
+                  if (student.feeStatus === "Overdue") feeStatusText = t("overdue");
+
+                  let statusText: string = student.status;
+                  if (student.status === "ACTIVE") statusText = t("active");
+                  if (student.status === "INACTIVE") statusText = t("inactive");
+                  if (student.status === "SUSPENDED") statusText = t("suspended");
+
                   return (
                     <tr
                       key={student.id}
@@ -214,34 +262,45 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                       <td className="py-md px-md">
                         <div className="flex items-center gap-md">
                           {student.photoUrl ? (
-                            <img
+                            <Image
                               src={student.photoUrl}
                               alt={student.fullName}
-                              className="w-8 h-8 rounded-full object-cover border border-outline-variant shrink-0"
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 rounded-full object-cover shrink-0 border border-outline-variant"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-container text-on-primary flex items-center justify-center font-bold text-caption shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant font-label-md font-bold shrink-0">
                               {initials}
                             </div>
                           )}
-                          <div>
-                            <p className="font-medium text-on-surface">{student.fullName}</p>
-                            <p className="text-caption text-on-surface-variant">
-                              {student.email || "No email provided"}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-label-md text-label-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
+                              {student.fullName}
+                            </p>
+                            <p className="font-caption text-caption text-on-surface-variant truncate">
+                              {student.email || student.phone || "No contact info"}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="py-md px-md text-on-surface-variant">{student.rollNo}</td>
-                      <td className="py-md px-md text-on-surface-variant">{student.batchName}</td>
-                      <td className="py-md px-md text-on-surface-variant">
-                        {student.guardianPhone}
+                      <td className="py-md px-md font-medium text-on-surface">{student.rollNo}</td>
+                      <td className="py-md px-md">
+                        <span className="inline-flex items-center px-2 py-[2px] rounded-full text-[10px] font-semibold bg-surface-container-highest text-on-surface-variant uppercase tracking-wide">
+                          {student.batchName}
+                        </span>
+                      </td>
+                      <td className="py-md px-md">
+                        <p className="font-body-sm text-on-surface">{student.guardianName}</p>
+                        <p className="font-caption text-on-surface-variant">
+                          {student.guardianPhone}
+                        </p>
                       </td>
                       <td className="py-md px-md">
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded text-caption font-medium ${feeBadgeClass}`}
+                          className={`inline-flex items-center px-2 py-[2px] rounded-full text-[10px] uppercase font-bold tracking-wide ${feeBadgeClass}`}
                         >
-                          {student.feeStatus}
+                          {feeStatusText}
                         </span>
                       </td>
                       <td className="py-md px-md">
@@ -263,14 +322,26 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                           </span>
                         </div>
                       </td>
-                      <td className="py-md px-md text-right">
-                        <button
-                          onClick={() => handleOpenEdit(student)}
-                          className="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-high opacity-80 group-hover:opacity-100 cursor-pointer"
-                          title="Edit Student"
-                        >
-                          <Icon name="edit" className="text-[18px]" />
-                        </button>
+                      <td className="py-md px-md text-right whitespace-nowrap">
+                        <div className="inline-flex items-center gap-xs">
+                          <button
+                            onClick={() => handleOpenEdit(student)}
+                            className="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-high opacity-80 group-hover:opacity-100 cursor-pointer"
+                            title="Edit Student"
+                          >
+                            <Icon name="edit" className="text-[18px]" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setDeleteError("");
+                              setDeletingStudent(student);
+                            }}
+                            className="text-on-surface-variant hover:text-error transition-colors p-xs rounded hover:bg-error-container/20 opacity-80 group-hover:opacity-100 cursor-pointer"
+                            title="Delete / Archive Student"
+                          >
+                            <Icon name="delete" className="text-[18px]" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -315,6 +386,63 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
         batches={batches}
         editingStudent={editingStudent}
       />
+
+      {/* Delete Confirmation Modal */}
+      {deletingStudent && (
+        <div className="fixed inset-0 z-50 bg-on-surface/40 backdrop-blur-xs flex items-center justify-center p-md">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl max-w-md w-full p-xl shadow-xl space-y-md">
+            <div className="flex items-center gap-md text-error">
+              <div className="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center shrink-0">
+                <Icon name="warning" className="text-[28px] text-error" />
+              </div>
+              <div>
+                <h3 className="font-h3 text-h3 font-bold text-on-surface">Archive Student Record</h3>
+                <p className="font-caption text-caption text-on-surface-variant mt-xs">
+                  This action requires Owner authorization.
+                </p>
+              </div>
+            </div>
+
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Are you sure you want to archive student{" "}
+              <strong className="text-on-surface">{deletingStudent.fullName}</strong> (Roll: {deletingStudent.rollNo})?
+              Historical attendance and fee records will be safely preserved.
+            </p>
+
+            {deleteError && (
+              <div className="p-sm rounded bg-error-container/20 text-error font-body-sm text-body-sm font-medium">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-sm pt-sm border-t border-outline-variant">
+              <button
+                type="button"
+                onClick={() => setDeletingStudent(null)}
+                disabled={isDeleting}
+                className="px-md py-sm rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="px-md py-sm rounded-lg bg-error hover:bg-error/90 text-on-error font-label-md text-label-md font-bold transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-xs"
+              >
+                {isDeleting ? (
+                  <span>Archiving...</span>
+                ) : (
+                  <>
+                    <Icon name="delete" className="text-[18px]" />
+                    <span>Archive Student</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

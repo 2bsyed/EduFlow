@@ -27,7 +27,7 @@ export default auth((req) => {
   if (isLoggedIn && isAppRoute) {
     if (role === "OWNER") {
       // Owner can access all owner app routes (/dashboard, /students, /attendance, /fees, /results, /settings)
-      if (nextUrl.pathname.startsWith("/teacher") || nextUrl.pathname.startsWith("/student")) {
+      if (nextUrl.pathname.startsWith("/teacher") || nextUrl.pathname.startsWith("/student/") || nextUrl.pathname === "/student") {
         return NextResponse.redirect(new URL("/dashboard", nextUrl.origin));
       }
     }

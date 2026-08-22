@@ -4,6 +4,8 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Icon } from "@/components/ui/Icon";
 
@@ -79,8 +81,8 @@ export default function LoginPage() {
         <div className="bg-surface-container-lowest w-full max-w-[420px] rounded-xl shadow-soft border border-surface-container-highest p-margin relative overflow-hidden my-auto">
           {/* Logo & Header */}
           <div className="text-center mb-xl">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-container/10 rounded-lg mb-lg">
-              <Icon name="school" className="text-[32px] text-primary" />
+            <div className="flex justify-center mb-md">
+              <Image src="/images/logo.jpg" alt="EduFlow logo" width={180} height={60} className="object-contain" />
             </div>
             <h1 className="font-h2 text-h2 text-primary mb-sm">{t("welcomeBack")}</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">
@@ -126,13 +128,13 @@ export default function LoginPage() {
                 <label className="font-label-md text-label-md text-on-surface block" htmlFor="password">
                   {t("passwordLabel")}
                 </label>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="font-label-md text-label-md text-primary hover:text-surface-tint transition-colors"
+                <button
+                  type="button"
+                  onClick={() => alert("Password resets are managed by your Institute Admin. Please contact support@eduflow.bd if you need assistance.")}
+                  className="font-label-md text-label-md text-primary hover:text-surface-tint transition-colors cursor-pointer bg-transparent border-none p-0"
                 >
                   {t("forgotPassword")}
-                </a>
+                </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
@@ -238,13 +240,12 @@ export default function LoginPage() {
           <div className="mt-xl text-center">
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               {t("noAccount")}{" "}
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="font-label-md text-label-md text-primary hover:text-surface-tint transition-colors ml-xs"
+              <Link
+                href="/register"
+                className="font-label-md text-label-md text-primary hover:text-surface-tint font-semibold transition-colors ml-xs"
               >
                 {t("freeTrial")}
-              </a>
+              </Link>
             </p>
           </div>
         </div>
