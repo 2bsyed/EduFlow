@@ -1,8 +1,43 @@
-.vscode/
-.agents/
-.mcp.json
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Environment Variables
+.env
+.env.local
+*.env
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+
+# Node / Frontend
 node_modules/
 .next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+.agents/
+.mcp.json
+
+# Temporary
 eduflow_tmp/
-.DS_Store

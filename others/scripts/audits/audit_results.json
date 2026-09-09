@@ -1,0 +1,32 @@
+[
+  {
+    "role": "Owner",
+    "path": "/students",
+    "type": "Bug-007 (Mobile Table)",
+    "detail": "Table overflows on mobile viewport."
+  },
+  {
+    "role": "Owner",
+    "path": "/students?action=new",
+    "type": "Bug-007 (Mobile Table)",
+    "detail": "Table overflows on mobile viewport."
+  },
+  {
+    "role": "Teacher",
+    "path": "/teacher/timetable",
+    "type": "Bug-007 (Mobile Table)",
+    "detail": "Table overflows on mobile viewport."
+  },
+  {
+    "role": "Student",
+    "path": "/student/fees",
+    "type": "Bug-007 (Mobile Table)",
+    "detail": "Table overflows on mobile viewport."
+  },
+  {
+    "role": "Student",
+    "path": "/student/timetable",
+    "type": "Bug-007 (Mobile Table)",
+    "detail": "Table overflows on mobile viewport."
+  }
+]
