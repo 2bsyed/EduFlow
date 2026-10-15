@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
@@ -8,6 +8,25 @@ import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { SettingsSubNav } from "@/components/settings/SettingsSubNav";
 import { InstituteProfileClient } from "@/components/settings/InstituteProfileClient";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+
+async function SettingsInstituteContent() {
+  const { fetchApi } = await import("@/lib/api");
+  const institute = await fetchApi("/api/v1/core/settings/profile").catch(() => null);
+
+  return (
+    <>
+      <SettingsSubNav />
+      {institute ? (
+        <InstituteProfileClient institute={institute} />
+      ) : (
+        <div className="p-margin text-center font-body-md text-error flex-1">
+          Institute record not found.
+        </div>
+      )}
+    </>
+  );
+}
 
 export default async function SettingsInstituteProfilePage() {
   const session = await auth();
@@ -21,26 +40,9 @@ export default async function SettingsInstituteProfilePage() {
     );
   }
 
-  // Fetch Institute record from API
-  const { fetchApi } = await import("@/lib/api");
-  let institute;
-  try {
-    institute = await fetchApi("/api/v1/core/settings/profile");
-  } catch (error) {
-    institute = null;
-  }
-
-  if (!institute) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Institute record not found.
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <OwnerSidebar activeTab="settings" instituteName={institute?.name} />
+      <OwnerSidebar activeTab="settings" />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -67,8 +69,9 @@ export default async function SettingsInstituteProfilePage() {
 
         {/* Main Content Canvas */}
         <main className="flex-1 overflow-y-auto p-margin md:p-xl flex gap-gutter">
-          <SettingsSubNav />
-          <InstituteProfileClient institute={institute} />
+          <Suspense fallback={<ContentSkeleton />}>
+            <SettingsInstituteContent />
+          </Suspense>
         </main>
       </div>
     </div>

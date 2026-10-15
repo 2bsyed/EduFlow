@@ -1,5 +1,5 @@
 import { fetchApi } from "@/lib/api";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/lib/auth/auth";
@@ -7,25 +7,17 @@ import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
-
 import { StudentSidebar } from "@/components/layout/StudentSidebar";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
-export default async function StudentDashboardPage() {
+async function StudentDashboardContent({ instituteId }: { instituteId: string }) {
   const t = await getTranslations("Dashboard");
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
-  const userId = session?.user?.id;
 
-  if (!instituteId || !userId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Session missing.
-      </div>
-    );
-  }
-
-  // Fetch Student record strictly linked to logged-in userId and instituteId
-  const student = await fetchApi("/api/v1/students/me");
+  // Parallel fetch: student and institute concurrently
+  const [student, institute] = await Promise.all([
+    fetchApi("/api/v1/students/me").catch(() => null),
+    fetchApi(`/api/v1/institutes/${instituteId}`).catch(() => null),
+  ]);
 
   if (!student) {
     return (
@@ -35,13 +27,10 @@ export default async function StudentDashboardPage() {
     );
   }
 
-  // Fetch Institute record
-  const institute = await fetchApi(`/api/v1/institutes/${instituteId}`);
-
   // Calculate stats strictly for THIS student:
   // 1. Monthly Attendance
   const now = new Date();
-  const currentMonthAttendances = student.attendances.filter((a: { status: string; date: string }) => {
+  const currentMonthAttendances = (student.attendances || []).filter((a: { status: string; date: string }) => {
     const d = new Date(a.date);
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
@@ -52,95 +41,68 @@ export default async function StudentDashboardPage() {
   const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 96;
 
   // 2. Latest Result
-  const latestResult = student.results[0];
+  const latestResult = (student.results || [])[0];
   const latestGrade = latestResult?.grade || "A+";
   const latestExamName = latestResult
     ? `${latestResult.examName} (${latestResult.subject})`
     : "Final Term Math";
 
   // 3. Fee Status
-  const unpaidFee = student.fees.find((f: { status: string; amount: number }) => f.status === "PENDING" || f.status === "OVERDUE");
+  const unpaidFee = (student.fees || []).find((f: { status: string; amount: number }) => f.status === "PENDING" || f.status === "OVERDUE");
   const dueAmount = unpaidFee ? Number(unpaidFee.amount) : 0;
   const isFeePaid = dueAmount === 0;
 
   // 4. Assigned Batches / Classes
-  const studentBatches = student.studentBatches;
+  const studentBatches = student.studentBatches || [];
 
   return (
-    <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <StudentSidebar activeTab="dashboard" instituteName={institute?.name} />
+    <div className="space-y-xl">
+      {/* Greeting Section */}
+      <section className="mb-md">
+        <h1 className="font-h1 text-h1 text-on-surface font-bold">{t("studentTitle")}</h1>
+        <p className="font-body-lg text-body-lg text-on-surface-variant mt-xs">
+          {t("welcome")}, {student.fullName.split(" ")[0]}.
+        </p>
+      </section>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* TopNavBar */}
-        <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
-          <div className="flex items-center gap-md">
-            <h2 className="font-h4 text-h4 font-semibold text-on-surface">Student Portal</h2>
-          </div>
-          <div className="flex items-center gap-md shrink-0 flex-nowrap">
-            <NotificationBell />
-            <LanguageToggle />
-            <ProfileDropdown
-              userName={student.fullName}
-              userEmail={session?.user?.email || "student@eduflow.bd"}
-              userRole="STUDENT"
-              avatarUrl={student.photoUrl}
-              onSignOut={async () => {
-                "use server";
-                await signOut({ redirectTo: "/login" });
-              }}
-            />
-          </div>
-        </header>
-
-        {/* Canvas */}
-        <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full space-y-xl">
-          {/* Greeting Section */}
-          <section className="mb-md">
-            <h1 className="font-h1 text-h1 text-on-surface font-bold">{t("studentTitle")}</h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mt-xs">
-              {t("welcome")}, {student.fullName.split(" ")[0]}.
-            </p>
-          </section>
-
-          {/* Stat Cards (Bento Grid) */}
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
-            {/* 1. Attendance Card */}
-            <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-md">
-                <div>
-                  <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
-                    {t("myAttendance")}
-                  </p>
-                  <h2 className="font-h2 text-h2 text-on-surface font-bold">{attendanceRate}%</h2>
-                </div>
-                <div className="w-12 h-12 relative flex items-center justify-center">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      className="text-surface-variant"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                    ></path>
-                    <path
-                      className="text-secondary"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeDasharray={`${attendanceRate}, 100`}
-                      strokeWidth="3"
-                    ></path>
-                  </svg>
-                  <Icon name="check_circle" className="absolute text-secondary text-[20px]" />
-                </div>
-              </div>
-              <p className="font-caption text-caption text-secondary flex items-center gap-xs font-medium">
-                <Icon name="trending_up" className="text-[16px]" /> On track for great attendance
+      {/* Stat Cards (Bento Grid) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+        {/* 1. Attendance Card */}
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-md">
+            <div>
+              <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
+                {t("myAttendance")}
               </p>
+              <h2 className="font-h2 text-h2 text-on-surface font-bold">{attendanceRate}%</h2>
             </div>
+            <div className="w-12 h-12 relative flex items-center justify-center">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <path
+                  className="text-surface-variant"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                ></path>
+                <path
+                  className="text-secondary"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeDasharray={`${attendanceRate}, 100`}
+                  strokeWidth="3"
+                ></path>
+              </svg>
+              <Icon name="check_circle" className="absolute text-secondary text-[20px]" />
+            </div>
+          </div>
+          <p className="font-caption text-caption text-secondary flex items-center gap-xs font-medium">
+            <Icon name="trending_up" className="text-[16px]" /> On track for great attendance
+          </p>
+        </div>
 
-            {/* 2. Latest Result Card */}
+        {/* 2. Latest Result Card */}
             <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex flex-col justify-between hover:shadow-md transition-shadow">
               <div className="mb-md">
                 <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
@@ -348,8 +310,58 @@ export default async function StudentDashboardPage() {
               </div>
             </div>
           </section>
+        </div>
+  );
+}
+
+export default async function StudentDashboardPage() {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+  const userId = session?.user?.id;
+
+  if (!instituteId || !userId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Session missing.
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
+      <StudentSidebar activeTab="dashboard" instituteName={"EduFlow"} />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* TopNavBar */}
+        <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
+          <div className="flex items-center gap-md">
+            <h2 className="font-h4 text-h4 font-semibold text-on-surface">Student Portal</h2>
+          </div>
+          <div className="flex items-center gap-md shrink-0 flex-nowrap">
+            <NotificationBell />
+            <LanguageToggle />
+            <ProfileDropdown
+              userName={session?.user?.name || "Student"}
+              userEmail={session?.user?.email || "student@eduflow.bd"}
+              userRole="STUDENT"
+              avatarUrl={session?.user?.image}
+              onSignOut={async () => {
+                "use server";
+                await signOut({ redirectTo: "/login" });
+              }}
+            />
+          </div>
+        </header>
+
+        {/* Canvas */}
+        <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full">
+          <Suspense fallback={<ContentSkeleton />}>
+            <StudentDashboardContent instituteId={instituteId} />
+          </Suspense>
         </main>
       </div>
     </div>
   );
 }
+

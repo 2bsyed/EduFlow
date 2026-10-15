@@ -1,5 +1,5 @@
 import { fetchApi } from "@/lib/api";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
@@ -13,9 +13,9 @@ import {
   RosterItem,
   BatchOption,
 } from "@/components/attendance/AttendanceMarkingClient";
-
 import { TeacherSidebar } from "@/components/layout/TeacherSidebar";
 import { StudentSidebar } from "@/components/layout/StudentSidebar";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 interface AttendancePageProps {
   searchParams: Promise<{
@@ -24,28 +24,22 @@ interface AttendancePageProps {
   }>;
 }
 
-export default async function AttendancePage({ searchParams }: AttendancePageProps) {
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
-  const userId = session?.user?.id;
-  const role = session?.user?.role;
-
-  if (!instituteId || !userId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
-  }
-
+async function AttendanceContent({
+  searchParams,
+  role,
+}: {
+  searchParams: Promise<{ batchId?: string; date?: string }>;
+  role?: string;
+}) {
   const { batchId: paramBatchId, date: paramDate } = await searchParams;
 
-  // Fetch Institute details
-  const institute = await fetchApi(`/api/v1/institutes/${instituteId}`);
+  // Parallel wave 1: fetch batches and teacher profile if needed
+  const [batchesRes, teacherRes] = await Promise.all([
+    fetchApi("/api/v1/batches/").catch(() => []),
+    role === "TEACHER" ? fetchApi("/api/v1/teachers/me").catch(() => null) : Promise.resolve(null),
+  ]);
 
-  // Fetch Batches for this institute
-  const batches = await fetchApi("/api/v1/batches/");
-
+  const batches: BatchOption[] = Array.isArray(batchesRes) ? batchesRes : [];
   const selectedBatchId = paramBatchId || batches[0]?.id || "";
   const todayStr = new Date().toISOString().split("T")[0];
   const selectedDate = paramDate || todayStr;
@@ -53,23 +47,25 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
   // Authorization Check
   let isAuthorized = true;
   if (role === "TEACHER") {
-    const teacher = await fetchApi("/api/v1/teachers/me");
-    const currentBatch = batches.find((b: BatchOption) => b.id === selectedBatchId);
-    isAuthorized = !!(teacher && currentBatch && currentBatch.teacherId === teacher.id);
+    const currentBatch = batches.find((b: any) => b.id === selectedBatchId) as any;
+    isAuthorized = !!(teacherRes && currentBatch && currentBatch.teacherId === teacherRes.id);
   }
 
-  // Fetch Enrolled Roster for selectedBatchId
-  const studentBatches = selectedBatchId
-    ? await fetchApi(`/api/v1/batches/${selectedBatchId}/students`)
-    : [];
-
-  // Fetch Existing Attendance for selectedBatchId & selectedDate
+  // Parallel wave 2: fetch roster and attendance for selectedBatchId
   const parsedDate = new Date(selectedDate);
   parsedDate.setHours(0, 0, 0, 0);
 
-  const existingAttendance = selectedBatchId
-    ? await fetchApi(`/api/v1/attendance?batchId=${selectedBatchId}&date=${parsedDate.toISOString()}`)
-    : [];
+  const [studentBatchesRes, existingAttendanceRes] = await Promise.all([
+    selectedBatchId
+      ? fetchApi(`/api/v1/batches/${selectedBatchId}/students`).catch(() => [])
+      : Promise.resolve([]),
+    selectedBatchId
+      ? fetchApi(`/api/v1/attendance?batchId=${selectedBatchId}&date=${parsedDate.toISOString()}`).catch(() => [])
+      : Promise.resolve([]),
+  ]);
+
+  const studentBatches = Array.isArray(studentBatchesRes) ? studentBatchesRes : [];
+  const existingAttendance = Array.isArray(existingAttendanceRes) ? existingAttendanceRes : [];
 
   // Map to RosterItem List
   const attendanceStatusMap = new Map<string, "PRESENT" | "ABSENT" | "LATE">();
@@ -94,14 +90,41 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
   }));
 
   return (
+    <AttendanceMarkingClient
+      batches={batchOptions}
+      initialBatchId={selectedBatchId}
+      initialDate={selectedDate}
+      selectedBatchId={selectedBatchId}
+      selectedDate={selectedDate}
+      roster={roster}
+      isAuthorized={isAuthorized}
+    />
+  );
+}
+
+export default async function AttendancePage({ searchParams }: AttendancePageProps) {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+  const userId = session?.user?.id;
+  const role = session?.user?.role;
+
+  if (!instituteId || !userId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Institute ID missing.
+      </div>
+    );
+  }
+
+  return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
       {/* Role-based SideNavBar */}
       {role === "TEACHER" ? (
-        <TeacherSidebar activeTab="attendance" instituteName={institute?.name} />
+        <TeacherSidebar activeTab="attendance" />
       ) : role === "STUDENT" ? (
-        <StudentSidebar activeTab="attendance" instituteName={institute?.name} />
+        <StudentSidebar activeTab="attendance" />
       ) : (
-        <OwnerSidebar activeTab="attendance" instituteName={institute?.name || "EduFlow"} />
+        <OwnerSidebar activeTab="attendance" />
       )}
 
       {/* Main Content Area */}
@@ -128,8 +151,8 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={session?.user?.name || "Dr. Rafiqul Islam"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userName={session?.user?.name || "User"}
+              userEmail={session?.user?.email || "user@eduflow.bd"}
               userRole={session?.user?.role || "OWNER"}
               avatarUrl={session?.user?.image}
               onSignOut={async () => {
@@ -142,15 +165,9 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-md md:p-gutter lg:p-margin relative">
-          <AttendanceMarkingClient
-            batches={batchOptions}
-            initialBatchId={selectedBatchId}
-            initialDate={selectedDate}
-            selectedBatchId={selectedBatchId}
-            selectedDate={selectedDate}
-            roster={roster}
-            isAuthorized={isAuthorized}
-          />
+          <Suspense fallback={<ContentSkeleton />}>
+            <AttendanceContent searchParams={searchParams} role={role} />
+          </Suspense>
         </main>
       </div>
     </div>

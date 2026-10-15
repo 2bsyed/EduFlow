@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
@@ -11,6 +11,7 @@ import { TeacherSidebar } from "@/components/layout/TeacherSidebar";
 import { StudentSidebar } from "@/components/layout/StudentSidebar";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 import { fetchApi } from "@/lib/api";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 interface ResultsPageProps {
   searchParams: Promise<{
@@ -20,20 +21,7 @@ interface ResultsPageProps {
   }>;
 }
 
-export default async function ResultsPage({ searchParams }: ResultsPageProps) {
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
-  const userId = session?.user?.id;
-  const role = session?.user?.role;
-
-  if (!instituteId || !userId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
-  }
-
+async function ResultsContent({ searchParams }: { searchParams: Promise<{ batchId?: string; examName?: string; subject?: string }> }) {
   const { batchId: paramBatchId, examName: paramExamName, subject: paramSubject } = await searchParams;
 
   const queryParams = new URLSearchParams();
@@ -44,7 +32,7 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
   let data: any;
   try {
     data = await fetchApi(`/api/v1/results/init?${queryParams.toString()}`, {
-      cache: "no-store"
+      cache: "no-store",
     });
   } catch (err: any) {
     return (
@@ -54,7 +42,7 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
     );
   }
 
-  const { institute, batches, selectedBatchId, selectedExamName, selectedSubject, studentBatches, existingResults } = data;
+  const { batches = [], selectedBatchId = "", selectedExamName = "", selectedSubject = "", studentBatches = [], existingResults = [] } = data || {};
 
   const resultMap = new Map<string, any>();
   existingResults.forEach((r: any) => {
@@ -75,14 +63,39 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
   }));
 
   return (
+    <ResultsEntryClient
+      batches={batchOptions}
+      initialBatchId={selectedBatchId}
+      students={studentRows}
+      initialExamName={selectedExamName}
+      initialSubject={selectedSubject}
+    />
+  );
+}
+
+export default async function ResultsPage({ searchParams }: ResultsPageProps) {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+  const userId = session?.user?.id;
+  const role = session?.user?.role;
+
+  if (!instituteId || !userId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Institute ID missing.
+      </div>
+    );
+  }
+
+  return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-background font-sans">
       {/* Role-based SideNavBar */}
       {role === "TEACHER" ? (
-        <TeacherSidebar activeTab="results" instituteName={institute?.name || "EduFlow"} />
+        <TeacherSidebar activeTab="results" />
       ) : role === "STUDENT" ? (
-        <StudentSidebar activeTab="results" instituteName={institute?.name || "EduFlow"} />
+        <StudentSidebar activeTab="results" />
       ) : (
-        <OwnerSidebar activeTab="results" instituteName={institute?.name || "EduFlow"} />
+        <OwnerSidebar activeTab="results" />
       )}
 
       {/* Main Content Area */}
@@ -123,13 +136,9 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-md md:p-xl relative z-10">
-          <ResultsEntryClient
-            batches={batchOptions}
-            initialBatchId={selectedBatchId}
-            students={studentRows}
-            initialExamName={selectedExamName}
-            initialSubject={selectedSubject}
-          />
+          <Suspense fallback={<ContentSkeleton />}>
+            <ResultsContent searchParams={searchParams} />
+          </Suspense>
         </main>
       </div>
     </div>

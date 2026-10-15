@@ -1,10 +1,91 @@
 import { fetchApi } from "@/lib/api";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { TeacherSidebar } from "@/components/layout/TeacherSidebar";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+
+async function TeacherBatchesContent() {
+  const [teacher, batchesRes] = await Promise.all([
+    fetchApi("/api/v1/teachers/me").catch(() => null),
+    fetchApi("/api/v1/batches/").catch(() => []),
+  ]);
+
+  const teacherId = teacher?.id || "";
+  const batches = teacherId && Array.isArray(batchesRes) ? batchesRes : [];
+
+  return (
+    <>
+      <header className="mb-xl flex justify-between items-end">
+        <div>
+          <h1 className="font-h1 text-h1 text-primary-container font-bold">My Batches</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
+            You are currently assigned to{" "}
+            <strong className="font-semibold text-primary">{batches.length}</strong> active
+            batches.
+          </p>
+        </div>
+      </header>
+
+      {/* Card Grid for Assigned Batches */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        {batches.length === 0 ? (
+          <div className="col-span-full bg-surface-container-lowest border border-outline-variant rounded-xl p-xl text-center text-on-surface-variant font-body-md">
+            No batches assigned to your teacher account.
+          </div>
+        ) : (
+          batches.map((batch: { id: string; name: string; subject?: string | null; schedule?: string | null; studentBatches?: unknown[]; attendances?: { date: string }[] }) => (
+            <Link
+              key={batch.id}
+              href={`/teacher/batches/${batch.id}`}
+              prefetch={true}
+              className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-all duration-300 flex flex-col relative overflow-hidden group hover:-translate-y-1"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-surface-tint"></div>
+              <div className="flex justify-between items-start mb-md">
+                <div>
+                  <span className="inline-block px-sm py-xs bg-surface-container-low text-primary-container rounded font-caption text-caption font-medium mb-sm">
+                    {batch.subject || "General Science"}
+                  </span>
+                  <h2 className="font-h4 text-h4 text-on-background group-hover:text-primary transition-colors font-semibold">
+                    {batch.name}
+                  </h2>
+                </div>
+              </div>
+              <div className="space-y-sm mb-lg flex-1">
+                <div className="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+                  <Icon name="calendar_today" className="text-[18px]" />
+                  <span>{batch.schedule || "Sun, Tue, Thu | 09:00 AM"}</span>
+                </div>
+                <div className="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
+                  <Icon name="group" className="text-[18px]" />
+                  <span>{(batch.studentBatches || []).length} Enrolled Students</span>
+                </div>
+              </div>
+              <div className="mt-auto pt-md border-t border-outline-variant">
+                <div className="flex justify-between items-center mb-xs">
+                  <span className="font-label-md text-label-md text-on-surface-variant">
+                    Attendance Trend
+                  </span>
+                  <span className="font-caption text-caption text-secondary font-medium">+2%</span>
+                </div>
+                <div className="h-8 w-full bg-surface-container rounded flex items-end overflow-hidden p-1 gap-xs">
+                  <div className="h-1/2 w-1/5 bg-secondary-container rounded-t-sm"></div>
+                  <div className="h-3/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
+                  <div className="h-2/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
+                  <div className="h-4/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
+                  <div className="h-full w-1/5 bg-secondary rounded-t-sm"></div>
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
+      </div>
+    </>
+  );
+}
 
 export default async function TeacherBatchesPage() {
   const session = await auth();
@@ -19,22 +100,9 @@ export default async function TeacherBatchesPage() {
     );
   }
 
-  // Fetch Teacher record safely
-  const teacher = await fetchApi("/api/v1/teachers/me");
-
-  // Fetch Institute record safely
-  const institute = await fetchApi(`/api/v1/institutes/${instituteId}`);
-
-  const teacherId = teacher?.id || "";
-
-  // Fetch Batches strictly assigned to this teacher
-  const batches = teacherId
-    ? await fetchApi("/api/v1/batches/")
-    : [];
-
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <TeacherSidebar activeTab="batches" instituteName={institute?.name} />
+      <TeacherSidebar activeTab="batches" />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -75,70 +143,9 @@ export default async function TeacherBatchesPage() {
 
         {/* Main Content Canvas */}
         <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full">
-          <header className="mb-xl flex justify-between items-end">
-            <div>
-              <h1 className="font-h1 text-h1 text-primary-container font-bold">My Batches</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mt-sm">
-                You are currently assigned to{" "}
-                <strong className="font-semibold text-primary">{batches.length}</strong> active
-                batches.
-              </p>
-            </div>
-          </header>
-
-          {/* Card Grid for Assigned Batches */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-            {batches.length === 0 ? (
-              <div className="col-span-full bg-surface-container-lowest border border-outline-variant rounded-xl p-xl text-center text-on-surface-variant font-body-md">
-                No batches assigned to your teacher account.
-              </div>
-            ) : (
-              batches.map((batch: { id: string; name: string; subject?: string | null; schedule?: string | null; studentBatches?: unknown[]; attendances?: { date: string }[] }) => (
-                <Link
-                  key={batch.id}
-                  href={`/teacher/batches/${batch.id}`}
-                  className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-all duration-300 flex flex-col relative overflow-hidden group hover:-translate-y-1"
-                >
-                  <div className="absolute top-0 left-0 w-full h-1 bg-surface-tint"></div>
-                  <div className="flex justify-between items-start mb-md">
-                    <div>
-                      <span className="inline-block px-sm py-xs bg-surface-container-low text-primary-container rounded font-caption text-caption font-medium mb-sm">
-                        {batch.subject || "General Science"}
-                      </span>
-                      <h2 className="font-h4 text-h4 text-on-background group-hover:text-primary transition-colors font-semibold">
-                        {batch.name}
-                      </h2>
-                    </div>
-                  </div>
-                  <div className="space-y-sm mb-lg flex-1">
-                    <div className="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
-                      <Icon name="calendar_today" className="text-[18px]" />
-                      <span>{batch.schedule || "Sun, Tue, Thu | 09:00 AM"}</span>
-                    </div>
-                    <div className="flex items-center gap-sm text-on-surface-variant font-body-sm text-body-sm">
-                      <Icon name="group" className="text-[18px]" />
-                      <span>{batch.studentBatches.length} Enrolled Students</span>
-                    </div>
-                  </div>
-                  <div className="mt-auto pt-md border-t border-outline-variant">
-                    <div className="flex justify-between items-center mb-xs">
-                      <span className="font-label-md text-label-md text-on-surface-variant">
-                        Attendance Trend
-                      </span>
-                      <span className="font-caption text-caption text-secondary font-medium">+2%</span>
-                    </div>
-                    <div className="h-8 w-full bg-surface-container rounded flex items-end overflow-hidden p-1 gap-xs">
-                      <div className="h-1/2 w-1/5 bg-secondary-container rounded-t-sm"></div>
-                      <div className="h-3/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
-                      <div className="h-2/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
-                      <div className="h-4/5 w-1/5 bg-secondary-container rounded-t-sm"></div>
-                      <div className="h-full w-1/5 bg-secondary rounded-t-sm"></div>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
+          <Suspense fallback={<ContentSkeleton />}>
+            <TeacherBatchesContent />
+          </Suspense>
         </main>
       </div>
     </div>

@@ -1,37 +1,13 @@
-import { fetchApi } from "@/lib/api";
-import React from "react";
+import React, { Suspense } from "react";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { StudentSidebar } from "@/components/layout/StudentSidebar";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
-export default async function StudentNoticesPage() {
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
-  const userId = session?.user?.id;
-
-  if (!instituteId || !userId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Session missing.
-      </div>
-    );
-  }
-
-  const student = await fetchApi("/api/v1/students/me");
-
-  if (!student) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Student profile not found.
-      </div>
-    );
-  }
-
-  const institute = await fetchApi(`/api/v1/institutes/${instituteId}`);
-
+async function StudentNoticesContent() {
   // Official Notice List
   const notices = [
     {
@@ -77,8 +53,107 @@ export default async function StudentNoticesPage() {
   ];
 
   return (
+    <>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-md mb-md">
+        <div>
+          <h1 className="font-h1 text-h1 text-on-surface font-bold">Notice Board</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
+            Official announcements and academic circulars from your institute.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-xs bg-tertiary-container/10 text-tertiary px-md py-sm rounded-lg font-label-md text-label-md font-semibold self-start sm:self-auto">
+          <Icon name="campaign" className="text-[20px]" />
+          <span>{notices.length} Active Circulars</span>
+        </div>
+      </div>
+
+      {/* Notice Cards List */}
+      <div className="space-y-md">
+        {notices.map((notice) => (
+          <div
+            key={notice.id}
+            className={`bg-surface-container-lowest border rounded-xl p-lg shadow-sm transition-all hover:shadow-md ${
+              notice.urgent
+                ? "border-error/40 bg-error-container/5"
+                : "border-outline-variant"
+            }`}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-xs mb-sm">
+              <div className="flex items-center gap-sm">
+                {notice.category === "EXAM" && (
+                  <span className="bg-primary-container/10 text-primary font-label-md text-caption px-md py-xs rounded-full font-bold">
+                    Exam Circular
+                  </span>
+                )}
+                {notice.category === "FEES" && (
+                  <span className="bg-tertiary-container/10 text-tertiary font-label-md text-caption px-md py-xs rounded-full font-bold">
+                    Fee Reminder
+                  </span>
+                )}
+                {notice.category === "HOLIDAY" && (
+                  <span className="bg-secondary-container/20 text-secondary font-label-md text-caption px-md py-xs rounded-full font-bold">
+                    Holiday Notice
+                  </span>
+                )}
+                {notice.category === "ACADEMIC" && (
+                  <span className="bg-surface-container-highest text-on-surface-variant font-label-md text-caption px-md py-xs rounded-full font-bold">
+                    Academic Notice
+                  </span>
+                )}
+
+                {notice.urgent && (
+                  <span className="bg-error-container text-on-error-container font-label-md text-caption px-sm py-xs rounded-full font-bold flex items-center gap-xs">
+                    <Icon name="priority_high" className="text-[14px]" /> Urgent
+                  </span>
+                )}
+              </div>
+
+              <span className="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+                <Icon name="event" className="text-[16px] text-outline" /> {notice.date}
+              </span>
+            </div>
+
+            <h3 className="font-h3 text-h3 text-on-surface font-bold mb-xs">
+              {notice.title}
+            </h3>
+
+            <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-md">
+              {notice.content}
+            </p>
+
+            <div className="pt-sm border-t border-surface-variant flex justify-between items-center text-caption font-caption text-on-surface-variant">
+              <span className="flex items-center gap-xs">
+                <Icon name="account_circle" className="text-[16px] text-outline" />
+                Issued by: <strong className="text-on-surface">{notice.author}</strong>
+              </span>
+              <span className="text-primary font-semibold flex items-center gap-xs hover:underline cursor-pointer">
+                Read Full Notice <Icon name="arrow_forward" className="text-[14px]" />
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default async function StudentNoticesPage() {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+  const userId = session?.user?.id;
+
+  if (!instituteId || !userId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Session missing.
+      </div>
+    );
+  }
+
+  return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <StudentSidebar activeTab="notices" instituteName={institute?.name} />
+      <StudentSidebar activeTab="notices" />
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
@@ -89,10 +164,10 @@ export default async function StudentNoticesPage() {
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={student.fullName}
+              userName={session?.user?.name || "Student"}
               userEmail={session?.user?.email || "student@eduflow.bd"}
               userRole="STUDENT"
-              avatarUrl={student.photoUrl}
+              avatarUrl={session?.user?.image}
               onSignOut={async () => {
                 "use server";
                 await signOut({ redirectTo: "/login" });
@@ -102,86 +177,9 @@ export default async function StudentNoticesPage() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full space-y-lg">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-md mb-md">
-            <div>
-              <h1 className="font-h1 text-h1 text-on-surface font-bold">Notice Board</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
-                Official announcements and academic circulars from your institute.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-xs bg-tertiary-container/10 text-tertiary px-md py-sm rounded-lg font-label-md text-label-md font-semibold self-start sm:self-auto">
-              <Icon name="campaign" className="text-[20px]" />
-              <span>4 Active Circulars</span>
-            </div>
-          </div>
-
-          {/* Notice Cards List */}
-          <div className="space-y-md">
-            {notices.map((notice) => (
-              <div
-                key={notice.id}
-                className={`bg-surface-container-lowest border rounded-xl p-lg shadow-sm transition-all hover:shadow-md ${
-                  notice.urgent
-                    ? "border-error/40 bg-error-container/5"
-                    : "border-outline-variant"
-                }`}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-xs mb-sm">
-                  <div className="flex items-center gap-sm">
-                    {notice.category === "EXAM" && (
-                      <span className="bg-primary-container/10 text-primary font-label-md text-caption px-md py-xs rounded-full font-bold">
-                        Exam Circular
-                      </span>
-                    )}
-                    {notice.category === "FEES" && (
-                      <span className="bg-tertiary-container/10 text-tertiary font-label-md text-caption px-md py-xs rounded-full font-bold">
-                        Fee Reminder
-                      </span>
-                    )}
-                    {notice.category === "HOLIDAY" && (
-                      <span className="bg-secondary-container/20 text-secondary font-label-md text-caption px-md py-xs rounded-full font-bold">
-                        Holiday Notice
-                      </span>
-                    )}
-                    {notice.category === "ACADEMIC" && (
-                      <span className="bg-surface-container-highest text-on-surface-variant font-label-md text-caption px-md py-xs rounded-full font-bold">
-                        Academic Notice
-                      </span>
-                    )}
-
-                    {notice.urgent && (
-                      <span className="bg-error-container text-on-error-container font-label-md text-caption px-sm py-xs rounded-full font-bold flex items-center gap-xs">
-                        <Icon name="priority_high" className="text-[14px]" /> Urgent
-                      </span>
-                    )}
-                  </div>
-
-                  <span className="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
-                    <Icon name="event" className="text-[16px] text-outline" /> {notice.date}
-                  </span>
-                </div>
-
-                <h3 className="font-h3 text-h3 text-on-surface font-bold mb-xs">
-                  {notice.title}
-                </h3>
-
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-md">
-                  {notice.content}
-                </p>
-
-                <div className="pt-sm border-t border-surface-variant flex justify-between items-center text-caption font-caption text-on-surface-variant">
-                  <span className="flex items-center gap-xs">
-                    <Icon name="account_circle" className="text-[16px] text-outline" />
-                    Issued by: <strong className="text-on-surface">{notice.author}</strong>
-                  </span>
-                  <span className="text-primary font-semibold flex items-center gap-xs hover:underline cursor-pointer">
-                    Read Full Notice <Icon name="arrow_forward" className="text-[14px]" />
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={<ContentSkeleton />}>
+            <StudentNoticesContent />
+          </Suspense>
         </main>
       </div>
     </div>
