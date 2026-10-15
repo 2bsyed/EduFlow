@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
@@ -10,21 +10,17 @@ import { FeesTableClient, FeeItem, StudentOption } from "@/components/fees/FeesT
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 import { redirect } from "next/navigation";
 import { fetchApi } from "@/lib/api";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
-export default async function FeesPage() {
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
+async function FeesContent({ instituteId }: { instituteId: string }) {
+  const [institute, rawStudentsData, rawFeesData] = await Promise.all([
+    fetchApi(`/api/v1/institutes/${instituteId}`, { cache: "no-store" }).catch(() => null),
+    fetchApi(`/api/v1/students/`, { cache: "no-store" }).catch(() => []),
+    fetchApi(`/api/v1/fees/`, { cache: "no-store" }).catch(() => []),
+  ]);
 
-  if (!instituteId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
-  }
-
-  const institute = await fetchApi(`/api/v1/institutes/${instituteId}`, { cache: "no-store" }).catch(() => null);
-  const rawStudents = (await fetchApi(`/api/v1/students/`, { cache: "no-store" }).catch(() => [])) || [];
+  const rawStudents = rawStudentsData || [];
+  const rawFees = rawFeesData || [];
 
   const studentOptions: StudentOption[] = rawStudents.map((s: any) => ({
     id: s.id,
@@ -32,8 +28,6 @@ export default async function FeesPage() {
     rollNo: s.roll_no,
     batchName: "General Batch", 
   }));
-
-  const rawFees = (await fetchApi(`/api/v1/fees/`, { cache: "no-store" }).catch(() => [])) || [];
 
   let totalCollected = 0;
   let totalPending = 0;
@@ -79,8 +73,31 @@ export default async function FeesPage() {
   });
 
   return (
+    <FeesTableClient
+      fees={feeItems}
+      students={studentOptions}
+      totalCollected={totalCollected}
+      totalPending={totalPending}
+      totalOverdue={totalOverdue}
+    />
+  );
+}
+
+export default async function FeesPage() {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+
+  if (!instituteId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Institute ID missing.
+      </div>
+    );
+  }
+
+  return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <OwnerSidebar activeTab="fees" instituteName={institute?.name || "Institute"} />
+      <OwnerSidebar activeTab="fees" instituteName={"EduFlow"} />
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
@@ -117,15 +134,12 @@ export default async function FeesPage() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-md md:p-xl relative z-10">
-          <FeesTableClient
-            fees={feeItems}
-            students={studentOptions}
-            totalCollected={totalCollected}
-            totalPending={totalPending}
-            totalOverdue={totalOverdue}
-          />
+          <Suspense fallback={<ContentSkeleton />}>
+            <FeesContent instituteId={instituteId} />
+          </Suspense>
         </main>
       </div>
     </div>
   );
 }
+

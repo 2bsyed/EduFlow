@@ -9,24 +9,17 @@ import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { StudentTableClient, StudentItem } from "@/components/students/StudentTableClient";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 import { fetchApi } from "@/lib/api";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
-export default async function StudentsPage() {
-  const session = await auth();
-  const instituteId = session?.user?.instituteId;
+async function StudentsContent() {
+  // Parallel fetch: run both queries concurrently
+  const [batchesRaw, rawStudentsData] = await Promise.all([
+    fetchApi("/api/v1/batches/").catch(() => []),
+    fetchApi("/api/v1/students/").catch(() => []),
+  ]);
 
-  if (!instituteId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
-  }
-
-  // Fetch Batches for filtering and dropdowns
-  const batches: { id: string, name: string }[] = await fetchApi("/api/v1/batches/");
-
-  // Fetch Students scoped to instituteId
-  const rawStudents = await fetchApi("/api/v1/students/");
+  const batches: { id: string; name: string }[] = batchesRaw || [];
+  const rawStudents: any[] = rawStudentsData || [];
 
   // Map to UI-ready StudentItem objects
   const studentItems: StudentItem[] = rawStudents.map((s: any) => {
@@ -63,6 +56,21 @@ export default async function StudentsPage() {
       attendancePct,
     };
   });
+
+  return <StudentTableClient students={studentItems} batches={batches} />;
+}
+
+export default async function StudentsPage() {
+  const session = await auth();
+  const instituteId = session?.user?.instituteId;
+
+  if (!instituteId) {
+    return (
+      <div className="p-margin text-center font-body-md text-error">
+        Unauthorized access: Institute ID missing.
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
@@ -106,11 +114,12 @@ export default async function StudentsPage() {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-margin">
-          <Suspense fallback={<div className="p-md text-on-surface-variant font-body-md">Loading students...</div>}>
-            <StudentTableClient students={studentItems} batches={batches} />
+          <Suspense fallback={<ContentSkeleton />}>
+            <StudentsContent />
           </Suspense>
         </main>
       </div>
     </div>
   );
 }
+

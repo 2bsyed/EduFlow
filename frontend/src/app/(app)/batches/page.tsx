@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
@@ -9,6 +9,182 @@ import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 import { AssignStudentClient } from "@/components/batches/AssignStudentClient";
 import { createBatchAction } from "@/actions/batches";
 import { fetchApi } from "@/lib/api";
+import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+
+async function BatchesContent() {
+  // Parallel fetch: run all 3 queries concurrently
+  const [batchesRaw, teachersRaw, studentsRaw] = await Promise.all([
+    fetchApi("/api/v1/batches/").catch(() => []),
+    fetchApi("/api/v1/teachers/").catch(() => []),
+    fetchApi("/api/v1/students/").catch(() => []),
+  ]);
+
+  const batches: any[] = batchesRaw || [];
+  const teachers: any[] = teachersRaw || [];
+  const students = (studentsRaw || [])
+    .filter((s: any) => s.status === "ACTIVE")
+    .sort((a: any, b: any) => a.fullName.localeCompare(b.fullName));
+
+  return (
+    <div className="space-y-lg">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-md mb-md">
+        <div>
+          <h1 className="font-h1 text-h1 text-on-surface font-bold">Batches & Classes</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
+            Create batches, assign course teachers, and enroll students.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-xs bg-primary-container/10 text-primary px-md py-sm rounded-lg font-label-md text-label-md font-semibold self-start sm:self-auto">
+          <Icon name="school" className="text-[20px]" />
+          <span>{batches.length} Active Batches</span>
+        </div>
+      </div>
+
+      {/* Action Grid: Create Batch & Enroll Student Forms */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+        {/* Create Batch Card */}
+        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm space-y-md">
+          <h3 className="font-h4 text-h4 text-on-surface font-bold flex items-center gap-sm">
+            <Icon name="add_circle" className="text-primary text-[20px]" />
+            <span>Create New Batch</span>
+          </h3>
+
+          <form action={createBatchAction} className="space-y-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Batch Name
+                </label>
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  placeholder="e.g. Class 10 - Physics Special"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                />
+              </div>
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Subject
+                </label>
+                <input
+                  name="subject"
+                  type="text"
+                  placeholder="e.g. Physics"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Schedule
+                </label>
+                <input
+                  name="schedule"
+                  type="text"
+                  placeholder="e.g. Sun, Tue, Thu | 04:00 PM"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                />
+              </div>
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Monthly Fee (BDT)
+                </label>
+                <input
+                  name="monthlyFee"
+                  type="number"
+                  placeholder="e.g. 2500"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                Assign Instructor / Teacher
+              </label>
+              <select
+                name="teacherId"
+                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+              >
+                <option value="">-- Select Teacher --</option>
+                {teachers.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.user?.name || "Unknown"} ({t.subject || ""})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm px-md rounded-lg shadow-sm transition-colors font-semibold flex items-center justify-center gap-xs cursor-pointer"
+            >
+              <Icon name="save" className="text-[18px]" />
+              <span>Create Batch</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Enroll Student into Batch Card */}
+        <AssignStudentClient students={students} batches={batches} />
+      </div>
+
+      {/* Active Batches List */}
+      <div className="space-y-md">
+        <h3 className="font-h3 text-h3 text-on-surface font-bold">Existing Batches</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+          {batches.map((batch) => {
+            const teacherName = batch.teacher?.user?.name || "Unassigned";
+            return (
+              <div
+                key={batch.id}
+                className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+              >
+                <div className="flex justify-between items-start mb-md">
+                  <div>
+                    <h4 className="font-h4 text-h4 text-on-surface font-bold">{batch.name}</h4>
+                    <p className="font-body-sm text-body-sm text-primary font-semibold mt-xs">
+                      {batch.subject || "General"}
+                    </p>
+                  </div>
+                  <span className="bg-primary-container/10 text-primary text-caption font-bold px-sm py-xs rounded-full">
+                    ৳ {Number(batch.monthlyFee || 0).toFixed(0)}/mo
+                  </span>
+                </div>
+
+                <div className="space-y-xs font-body-sm text-body-sm text-on-surface-variant mb-md">
+                  <div className="flex items-center gap-xs">
+                    <Icon name="person" className="text-[18px] text-outline" />
+                    <span>Teacher: <strong className="text-on-surface">{teacherName}</strong></span>
+                  </div>
+                  <div className="flex items-center gap-xs">
+                    <Icon name="schedule" className="text-[18px] text-outline" />
+                    <span>Schedule: <strong>{batch.schedule || "Regular Routine"}</strong></span>
+                  </div>
+                  <div className="flex items-center gap-xs">
+                    <Icon name="group" className="text-[18px] text-outline" />
+                    <span>Enrolled Students: <strong className="text-secondary">{(batch.studentBatches || []).length}</strong></span>
+                  </div>
+                </div>
+
+                <div className="pt-sm border-t border-surface-variant flex justify-between items-center text-caption font-caption text-on-surface-variant">
+                  <span>Roster Status: Active</span>
+                  <span className="text-primary font-semibold cursor-pointer hover:underline">
+                    Manage Batch
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default async function OwnerBatchesPage() {
   const session = await auth();
@@ -17,16 +193,6 @@ export default async function OwnerBatchesPage() {
   if (!instituteId) {
     redirect("/login");
   }
-
-  // Fetch all batches
-  const batches: any[] = await fetchApi("/api/v1/batches/");
-
-  // Fetch teachers for assignment dropdown
-  const teachers: any[] = await fetchApi("/api/v1/teachers/");
-
-  // Fetch students for enrollment dropdown
-  const studentsRaw: any[] = await fetchApi("/api/v1/students/");
-  const students = studentsRaw.filter((s) => s.status === "ACTIVE").sort((a, b) => a.fullName.localeCompare(b.fullName));
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
@@ -53,164 +219,13 @@ export default async function OwnerBatchesPage() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full space-y-lg">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-md mb-md">
-            <div>
-              <h1 className="font-h1 text-h1 text-on-surface font-bold">Batches & Classes</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
-                Create batches, assign course teachers, and enroll students.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-xs bg-primary-container/10 text-primary px-md py-sm rounded-lg font-label-md text-label-md font-semibold self-start sm:self-auto">
-              <Icon name="school" className="text-[20px]" />
-              <span>{batches.length} Active Batches</span>
-            </div>
-          </div>
-
-          {/* Action Grid: Create Batch & Enroll Student Forms */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
-            {/* Create Batch Card */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm space-y-md">
-              <h3 className="font-h4 text-h4 text-on-surface font-bold flex items-center gap-sm">
-                <Icon name="add_circle" className="text-primary text-[20px]" />
-                <span>Create New Batch</span>
-              </h3>
-
-              <form action={createBatchAction} className="space-y-md">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
-                  <div>
-                    <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                      Batch Name
-                    </label>
-                    <input
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="e.g. Class 10 - Physics Special"
-                      className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                      Subject
-                    </label>
-                    <input
-                      name="subject"
-                      type="text"
-                      placeholder="e.g. Physics"
-                      className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
-                  <div>
-                    <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                      Schedule
-                    </label>
-                    <input
-                      name="schedule"
-                      type="text"
-                      placeholder="e.g. Sun, Tue, Thu | 04:00 PM"
-                      className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                      Monthly Fee (BDT)
-                    </label>
-                    <input
-                      name="monthlyFee"
-                      type="number"
-                      placeholder="e.g. 2500"
-                      className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                    Assign Instructor / Teacher
-                  </label>
-                  <select
-                    name="teacherId"
-                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-                  >
-                    <option value="">-- Select Teacher --</option>
-                    {teachers.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.user?.name || "Unknown"} ({t.subject || ""})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm px-md rounded-lg shadow-sm transition-colors font-semibold flex items-center justify-center gap-xs cursor-pointer"
-                >
-                  <Icon name="save" className="text-[18px]" />
-                  <span>Create Batch</span>
-                </button>
-              </form>
-            </div>
-
-            {/* Enroll Student into Batch Card */}
-            <AssignStudentClient students={students} batches={batches} />
-          </div>
-
-          {/* Active Batches List */}
-          <div className="space-y-md">
-            <h3 className="font-h3 text-h3 text-on-surface font-bold">Existing Batches</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
-              {batches.map((batch) => {
-                const teacherName = batch.teacher?.user?.name || "Unassigned";
-                return (
-                  <div
-                    key={batch.id}
-                    className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
-                  >
-                    <div className="flex justify-between items-start mb-md">
-                      <div>
-                        <h4 className="font-h4 text-h4 text-on-surface font-bold">{batch.name}</h4>
-                        <p className="font-body-sm text-body-sm text-primary font-semibold mt-xs">
-                          {batch.subject || "General"}
-                        </p>
-                      </div>
-                      <span className="bg-primary-container/10 text-primary text-caption font-bold px-sm py-xs rounded-full">
-                        ৳ {Number(batch.monthlyFee || 0).toFixed(0)}/mo
-                      </span>
-                    </div>
-
-                    <div className="space-y-xs font-body-sm text-body-sm text-on-surface-variant mb-md">
-                      <div className="flex items-center gap-xs">
-                        <Icon name="person" className="text-[18px] text-outline" />
-                        <span>Teacher: <strong className="text-on-surface">{teacherName}</strong></span>
-                      </div>
-                      <div className="flex items-center gap-xs">
-                        <Icon name="schedule" className="text-[18px] text-outline" />
-                        <span>Schedule: <strong>{batch.schedule || "Regular Routine"}</strong></span>
-                      </div>
-                      <div className="flex items-center gap-xs">
-                        <Icon name="group" className="text-[18px] text-outline" />
-                        <span>Enrolled Students: <strong className="text-secondary">{(batch.studentBatches || []).length}</strong></span>
-                      </div>
-                    </div>
-
-                    <div className="pt-sm border-t border-surface-variant flex justify-between items-center text-caption font-caption text-on-surface-variant">
-                      <span>Roster Status: Active</span>
-                      <span className="text-primary font-semibold cursor-pointer hover:underline">
-                        Manage Batch
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full">
+          <Suspense fallback={<ContentSkeleton />}>
+            <BatchesContent />
+          </Suspense>
         </main>
       </div>
     </div>
   );
 }
+
