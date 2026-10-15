@@ -19,7 +19,8 @@ async function TeacherDashboardContent({ instituteId, userName }: { instituteId:
     fetchApi("/api/v1/batches/").catch(() => []),
   ]);
 
-  const batches: any[] = batchesRaw || [];
+  const teacherId = teacher?.id || "";
+  const batches: any[] = (batchesRaw || []).filter((b: any) => !teacherId || b.teacherId === teacherId);
   const todayStr = new Date().toISOString().split("T")[0];
 
   // Calculate attendance status for today's classes

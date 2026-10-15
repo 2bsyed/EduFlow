@@ -14,7 +14,9 @@ async function TeacherBatchesContent() {
   ]);
 
   const teacherId = teacher?.id || "";
-  const batches = teacherId && Array.isArray(batchesRes) ? batchesRes : [];
+  const batches = teacherId && Array.isArray(batchesRes)
+    ? batchesRes.filter((b: any) => b.teacherId === teacherId)
+    : [];
 
   return (
     <>

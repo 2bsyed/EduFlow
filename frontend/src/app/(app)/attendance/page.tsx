@@ -39,8 +39,29 @@ async function AttendanceContent({
     role === "TEACHER" ? fetchApi("/api/v1/teachers/me").catch(() => null) : Promise.resolve(null),
   ]);
 
-  const batches: BatchOption[] = Array.isArray(batchesRes) ? batchesRes : [];
-  const selectedBatchId = paramBatchId || batches[0]?.id || "";
+  const rawBatches: any[] = Array.isArray(batchesRes) ? batchesRes : [];
+  
+  // Teachers ONLY see batches they are assigned to
+  const teacherId = teacherRes?.id;
+  const batches = role === "TEACHER"
+    ? rawBatches.filter((b: any) => b.teacherId === teacherId)
+    : rawBatches;
+
+  if (role === "TEACHER" && batches.length === 0) {
+    return (
+      <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl text-center space-y-sm my-md">
+        <Icon name="event_busy" className="text-outline text-[48px] mx-auto text-on-surface-variant" />
+        <h3 className="font-h3 text-h3 font-bold text-on-surface">No Assigned Batches</h3>
+        <p className="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">
+          You are not currently assigned to any batches. Attendance is only available for batches assigned to your teacher account.
+        </p>
+      </div>
+    );
+  }
+
+  // Validate paramBatchId: teachers cannot see or access unassigned batches
+  const isAllowedBatch = batches.some((b: any) => b.id === paramBatchId);
+  const selectedBatchId = (isAllowedBatch ? paramBatchId : null) || batches[0]?.id || "";
   const todayStr = new Date().toISOString().split("T")[0];
   const selectedDate = paramDate || todayStr;
 
@@ -48,7 +69,7 @@ async function AttendanceContent({
   let isAuthorized = true;
   if (role === "TEACHER") {
     const currentBatch = batches.find((b: any) => b.id === selectedBatchId) as any;
-    isAuthorized = !!(teacherRes && currentBatch && currentBatch.teacherId === teacherRes.id);
+    isAuthorized = !!(teacherId && currentBatch && currentBatch.teacherId === teacherId);
   }
 
   // Parallel wave 2: fetch roster and attendance for selectedBatchId

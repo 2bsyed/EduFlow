@@ -15,7 +15,9 @@ async function TeacherTimetableContent() {
   ]);
 
   const teacherId = teacher?.id || "";
-  const batches = teacherId && Array.isArray(batchesRes) ? batchesRes : [];
+  const batches = teacherId && Array.isArray(batchesRes)
+    ? batchesRes.filter((b: any) => b.teacherId === teacherId)
+    : [];
 
   const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
   const defaultTimeslots = [

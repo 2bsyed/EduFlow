@@ -16,12 +16,15 @@ interface BatchDetailPageProps {
 }
 
 async function TeacherBatchDetailContent({ batchId }: { batchId: string }) {
-  const batch = await fetchApi(`/api/v1/batches/${batchId}`).catch(() => null);
+  const [batch, teacher] = await Promise.all([
+    fetchApi(`/api/v1/batches/${batchId}`).catch(() => null),
+    fetchApi("/api/v1/teachers/me").catch(() => null),
+  ]);
 
-  if (!batch) {
+  if (!batch || (teacher && batch.teacherId !== teacher.id)) {
     return (
       <div className="p-margin text-center font-body-md text-error">
-        Batch not found or unauthorized access.
+        Batch not found or unauthorized access. You are not assigned to this batch.
       </div>
     );
   }

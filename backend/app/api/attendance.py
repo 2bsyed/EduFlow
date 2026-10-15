@@ -177,6 +177,12 @@ def get_attendances(
     institute_id = current_user.institute_id
     parsed_date = parse_date(target_date_str)
     
+    if current_user.role == "TEACHER":
+        teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
+        batch = db.query(Batch).filter(Batch.id == target_batch_id, Batch.institute_id == institute_id).first()
+        if not teacher or not batch or batch.teacher_id != teacher.id:
+            raise HTTPException(status_code=403, detail="You are not authorized to view attendance for this batch")
+
     attendances = db.query(Attendance).filter(
         Attendance.institute_id == institute_id,
         Attendance.batch_id == target_batch_id,

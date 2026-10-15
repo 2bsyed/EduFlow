@@ -28,11 +28,19 @@ def get_batches(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    batches = db.query(Batch).options(
+    query = db.query(Batch).options(
         joinedload(Batch.teacher).joinedload(Teacher.user),
         joinedload(Batch.student_batches),
         joinedload(Batch.attendances)
-    ).filter(Batch.institute_id == current_user.institute_id).order_by(Batch.created_at.desc()).all()
+    ).filter(Batch.institute_id == current_user.institute_id)
+    
+    if current_user.role == "TEACHER":
+        teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
+        if not teacher:
+            return []
+        query = query.filter(Batch.teacher_id == teacher.id)
+
+    batches = query.order_by(Batch.created_at.desc()).all()
     
     result = []
     for b in batches:
@@ -135,6 +143,12 @@ def get_batch_students(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role == "TEACHER":
+        teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
+        batch = db.query(Batch).filter(Batch.id == batch_id, Batch.institute_id == current_user.institute_id).first()
+        if not teacher or not batch or batch.teacher_id != teacher.id:
+            raise HTTPException(status_code=403, detail="You are not authorized to view students of this batch")
+
     student_batches = db.query(StudentBatch).options(
         joinedload(StudentBatch.student)
     ).filter(
