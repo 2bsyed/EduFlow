@@ -29,3 +29,29 @@ def read_root():
 @app.api_route("/api/v1/health", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok", "app": "EduFlow API", "version": "1.0.0"}
+
+import traceback
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from app.db.database import get_db
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    error_trace = traceback.format_exc()
+    print(f"ERROR on {request.url.path}: {error_trace}")
+    return JSONResponse(
+        status_code=500,
+        content={"error": str(exc), "type": type(exc).__name__, "detail": error_trace.splitlines()[-4:]}
+    )
+
+@app.get("/api/v1/db-check")
+def db_check(db: Session = Depends(get_db)):
+    try:
+        result = db.execute(text("SELECT count(*) FROM users")).scalar()
+        return {"status": "connected", "users_count": result}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "type": type(e).__name__}
+
