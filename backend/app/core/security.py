@@ -14,7 +14,7 @@ from app.models.models import User
 load_dotenv()
 
 # Configuration
-SECRET_KEY = os.getenv("AUTH_SECRET", "supersecretkey") # Should match Next.js AUTH_SECRET if possible, or have its own
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("AUTH_SECRET") or "supersecretkey" # Matches Render/Docker SECRET_KEY or Next.js AUTH_SECRET
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440")) # 24 hours
 REFRESH_TOKEN_EXPIRE_DAYS = 7

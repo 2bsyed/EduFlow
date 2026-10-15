@@ -1,4 +1,5 @@
 import React from "react";
+import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
@@ -14,11 +15,7 @@ export default async function OwnerBatchesPage() {
   const instituteId = session?.user?.instituteId;
 
   if (!instituteId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
+    redirect("/login");
   }
 
   // Fetch all batches

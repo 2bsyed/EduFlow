@@ -1,0 +1,460 @@
+{
+  "timestamp": "2026-10-14T14:05:32.144Z",
+  "browser": "Google Chrome",
+  "environment": {
+    "frontend": "http://localhost:3000",
+    "backend": "http://localhost:8000",
+    "nodeVersion": "v26.0.0"
+  },
+  "summary": {
+    "totalTests": 39,
+    "passed": 39,
+    "failed": 0,
+    "warnings": 0
+  },
+  "roles": {
+    "owner_login": {
+      "passed": true,
+      "status": "PASSED",
+      "message": "Owner authenticated and landed on /dashboard"
+    },
+    "owner_route__dashboard": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/dashboard",
+      "currentUrl": "http://localhost:3000/dashboard",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__students": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/students",
+      "currentUrl": "http://localhost:3000/students",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__batches": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/batches",
+      "currentUrl": "http://localhost:3000/batches",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__attendance": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/attendance",
+      "currentUrl": "http://localhost:3000/attendance",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__fees": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/fees",
+      "currentUrl": "http://localhost:3000/fees",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__results": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/results",
+      "currentUrl": "http://localhost:3000/results",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__expenses": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/expenses",
+      "currentUrl": "http://localhost:3000/expenses",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__notices": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/notices",
+      "currentUrl": "http://localhost:3000/notices",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__settings": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/settings",
+      "currentUrl": "http://localhost:3000/settings",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "owner_route__settings_language": {
+      "passed": true,
+      "status": 200,
+      "role": "owner",
+      "route": "/settings/language",
+      "currentUrl": "http://localhost:3000/settings/language",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_login": {
+      "passed": true,
+      "status": "PASSED",
+      "message": "Teacher authenticated and landed on /teacher"
+    },
+    "teacher_route__teacher": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/teacher",
+      "currentUrl": "http://localhost:3000/teacher",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_route__teacher_batches": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/teacher/batches",
+      "currentUrl": "http://localhost:3000/teacher/batches",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_route__attendance": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/attendance",
+      "currentUrl": "http://localhost:3000/attendance",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_route__results": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/results",
+      "currentUrl": "http://localhost:3000/results",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_route__teacher_timetable": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/teacher/timetable",
+      "currentUrl": "http://localhost:3000/teacher/timetable",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "teacher_route__teacher_profile": {
+      "passed": true,
+      "status": 200,
+      "role": "teacher",
+      "route": "/teacher/profile",
+      "currentUrl": "http://localhost:3000/teacher/profile",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_login": {
+      "passed": true,
+      "status": "PASSED",
+      "message": "Student authenticated and landed on /student"
+    },
+    "student_route__student": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student",
+      "currentUrl": "http://localhost:3000/student",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_route__student_attendance": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student/attendance",
+      "currentUrl": "http://localhost:3000/student/attendance",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_route__student_fees": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student/fees",
+      "currentUrl": "http://localhost:3000/student/fees",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_route__student_results": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student/results",
+      "currentUrl": "http://localhost:3000/student/results",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_route__student_notices": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student/notices",
+      "currentUrl": "http://localhost:3000/student/notices",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    },
+    "student_route__student_timetable": {
+      "passed": true,
+      "status": 200,
+      "role": "student",
+      "route": "/student/timetable",
+      "currentUrl": "http://localhost:3000/student/timetable",
+      "title": "EduFlow - Coaching Center Management System",
+      "hasException": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "message": "HTTP 200, 0 console errors, 0 page errors"
+    }
+  },
+  "mobileResponsive": {
+    "mobile__fees": {
+      "passed": true,
+      "status": "PASSED",
+      "viewport": "375x667",
+      "route": "/fees",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "hasWindowHorizontalOverflow": false,
+      "uncontainedBreakCount": 4,
+      "uncontainedSample": [
+        {
+          "tag": "div",
+          "className": "flex items-center gap-md shrink-0 flex-nowrap",
+          "right": 397,
+          "width": 281
+        },
+        {
+          "tag": "div",
+          "className": "relative shrink-0",
+          "right": 397,
+          "width": 82
+        },
+        {
+          "tag": "button",
+          "className": "flex items-center gap-sm px-sm py-1.5 rounded-lg hover:bg-su",
+          "right": 397,
+          "width": 82
+        }
+      ],
+      "tableScrollContainersCount": 2,
+      "message": "Window: 375px, Doc: 375px. Uncontained breaks: 4. Table scroll containers: 2"
+    },
+    "mobile__students": {
+      "passed": true,
+      "status": "PASSED",
+      "viewport": "375x667",
+      "route": "/students",
+      "viewportWidth": 375,
+      "documentWidth": 375,
+      "hasWindowHorizontalOverflow": false,
+      "uncontainedBreakCount": 8,
+      "uncontainedSample": [
+        {
+          "tag": "div",
+          "className": "flex items-center gap-md shrink-0 flex-nowrap",
+          "right": 397,
+          "width": 281
+        },
+        {
+          "tag": "div",
+          "className": "relative shrink-0",
+          "right": 397,
+          "width": 82
+        },
+        {
+          "tag": "button",
+          "className": "flex items-center gap-sm px-sm py-1.5 rounded-lg hover:bg-su",
+          "right": 397,
+          "width": 82
+        }
+      ],
+      "tableScrollContainersCount": 1,
+      "message": "Window: 375px, Doc: 375px. Uncontained breaks: 8. Table scroll containers: 1"
+    }
+  },
+  "interactiveTests": {
+    "language_toggle_cycle": {
+      "passed": true,
+      "status": "PASSED",
+      "toggledToBn": true,
+      "toggledBack": true,
+      "localeSequence": [
+        "bn",
+        "en"
+      ],
+      "message": "Toggled EN -> BN (bn) -> EN (en)"
+    },
+    "students_search_filter_and_reset": {
+      "passed": true,
+      "status": "PASSED",
+      "countBefore": 10,
+      "countFiltered": 1,
+      "countRestored": 10,
+      "tableContainsMatch": true,
+      "message": "Initial rows: 10, Filtered rows: 1, Restored rows: 10"
+    },
+    "fees_status_tab_filters": {
+      "passed": true,
+      "status": "PASSED",
+      "message": "Successfully navigated between Paid, Due, and All status tabs"
+    },
+    "modal_record_payment_trigger": {
+      "passed": true,
+      "status": "PASSED",
+      "modalOpened": true,
+      "formFieldsRendered": true,
+      "modalClosed": true,
+      "message": "Modal opened: true, Inputs rendered: true, Closed cleanly: true"
+    },
+    "panel_add_student_trigger": {
+      "passed": true,
+      "status": "PASSED",
+      "panelOpened": true,
+      "fullNameInputRendered": true,
+      "panelClosed": true,
+      "message": "Side panel opened: true, Inputs rendered: true, Closed cleanly: true"
+    }
+  },
+  "securityBoundaryTests": {
+    "teacher_access_settings_blocked": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/settings",
+      "finalUrl": "http://localhost:3000/teacher",
+      "message": "Teacher accessing /settings redirected to: http://localhost:3000/teacher"
+    },
+    "teacher_access_fees_blocked": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/fees",
+      "finalUrl": "http://localhost:3000/teacher",
+      "message": "Teacher accessing /fees redirected to: http://localhost:3000/teacher"
+    },
+    "student_access_dashboard_blocked": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/dashboard",
+      "finalUrl": "http://localhost:3000/student",
+      "message": "Student accessing /dashboard redirected to: http://localhost:3000/student"
+    },
+    "student_access_owner_fees_blocked": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/fees",
+      "finalUrl": "http://localhost:3000/student",
+      "message": "Student accessing /fees redirected to: http://localhost:3000/student"
+    },
+    "student_access_expenses_boundary": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/expenses",
+      "finalUrl": "http://localhost:3000/student",
+      "hasUnauthorized": true,
+      "message": "Student accessing /expenses -> final URL: http://localhost:3000/student, Unauthorized prompt: true"
+    },
+    "student_access_batches_boundary": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/batches",
+      "finalUrl": "http://localhost:3000/student",
+      "hasUnauthorized": true,
+      "message": "Student accessing /batches -> final URL: http://localhost:3000/student, Unauthorized prompt: true"
+    },
+    "unauthenticated_dashboard_redirects_login": {
+      "passed": true,
+      "status": "PASSED",
+      "attempted": "/dashboard",
+      "finalUrl": "http://localhost:3000/login?callbackUrl=%2Fdashboard",
+      "message": "Unauthenticated access to /dashboard redirected to: http://localhost:3000/login?callbackUrl=%2Fdashboard"
+    }
+  },
+  "consoleErrors": [],
+  "pageErrors": []
+}

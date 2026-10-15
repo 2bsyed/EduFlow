@@ -35,7 +35,7 @@ export function InstituteProfileClient({ institute }: InstituteProfileClientProp
         <div>
           <h2 className="font-h3 text-h3 text-on-surface font-bold">Institute Profile</h2>
           <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
-            Manage your institution's public details and configuration.
+            Manage your institution&apos;s public details and configuration.
           </p>
         </div>
       </div>

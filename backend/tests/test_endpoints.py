@@ -31,7 +31,7 @@ def create_token(user_id, role, institute_id, email, expired=False, invalid=Fals
 
 BASE_URL = "http://127.0.0.1:8001"
 
-def test_endpoint(name, method, url, headers=None, data=None, expected_status=None):
+def check_endpoint(name, method, url, headers=None, data=None, expected_status=None):
     try:
         if method == "GET":
             response = requests.get(f"{BASE_URL}{url}", headers=headers)
@@ -55,8 +55,8 @@ if __name__ == "__main__":
     headers_a = {"Authorization": f"Bearer {token_a_owner}"}
     
     print("\n=== Testing Dashboard & Core Endpoints ===")
-    test_endpoint("Fee Reminder", "GET", "/api/v1/core/dashboard/fee-reminder", headers_a, expected_status=[200])
-    test_endpoint("KPI", "GET", "/api/v1/core/dashboard/kpi", headers_a, expected_status=[200])
-    test_endpoint("Notices (GET)", "GET", "/api/v1/core/notices", headers_a, expected_status=[200])
-    test_endpoint("Settings Language (PUT)", "PUT", "/api/v1/core/settings/language", headers_a, data={"language": "bn"}, expected_status=[200])
-    test_endpoint("Settings Profile (PUT)", "PUT", "/api/v1/core/settings/profile", headers_a, data={"name": "New Name"}, expected_status=[200])
+    check_endpoint("Fee Reminder", "GET", "/api/v1/core/dashboard/fee-reminder", headers_a, expected_status=[200])
+    check_endpoint("KPI", "GET", "/api/v1/core/dashboard/kpi", headers_a, expected_status=[200])
+    check_endpoint("Notices (GET)", "GET", "/api/v1/core/notices", headers_a, expected_status=[200])
+    check_endpoint("Settings Language (PUT)", "PUT", "/api/v1/core/settings/language", headers_a, data={"language": "bn"}, expected_status=[200])
+    check_endpoint("Settings Profile (PUT)", "PUT", "/api/v1/core/settings/profile", headers_a, data={"name": "New Name"}, expected_status=[200])

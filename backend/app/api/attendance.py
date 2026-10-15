@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from typing import List, Optional
 from datetime import datetime, date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from app.db.database import get_db
 from app.core.security import get_current_user
@@ -13,6 +13,8 @@ from app.schemas.schemas import AttendanceResponse
 router = APIRouter()
 
 class UpsertAttendanceRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     student_id: str = Field(..., alias="studentId")
     batch_id: str = Field(..., alias="batchId")
     date_str: Optional[str] = Field(None, alias="dateStr")
@@ -20,17 +22,13 @@ class UpsertAttendanceRequest(BaseModel):
     status: AttendanceStatus
     notes: Optional[str] = None
 
-    class Config:
-        populate_by_name = True
-
 class BulkMarkPresentRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     batch_id: str = Field(..., alias="batchId")
     date_str: Optional[str] = Field(None, alias="dateStr")
     date: Optional[str] = None
     student_ids: List[str] = Field(..., alias="studentIds")
-
-    class Config:
-        populate_by_name = True
 
 def parse_date(date_str: str) -> date:
     try:

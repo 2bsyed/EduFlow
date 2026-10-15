@@ -9,5 +9,14 @@
     "build:frontend": "npm run build --prefix frontend",
     "lint:frontend": "npm run lint --prefix frontend"
   },
-  "keywords": ["saas", "eduflow", "school-management", "fastapi", "nextjs"]
+  "keywords": [
+    "saas",
+    "eduflow",
+    "school-management",
+    "fastapi",
+    "nextjs"
+  ],
+  "dependencies": {
+    "playwright": "^1.64.1"
+  }
 }

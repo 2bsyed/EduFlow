@@ -44,8 +44,11 @@ export async function middleware(req: NextRequest) {
     nextUrl.pathname.startsWith("/student") ||
     nextUrl.pathname.startsWith("/students") ||
     nextUrl.pathname.startsWith("/attendance") ||
+    nextUrl.pathname.startsWith("/batches") ||
     nextUrl.pathname.startsWith("/fees") ||
+    nextUrl.pathname.startsWith("/expenses") ||
     nextUrl.pathname.startsWith("/results") ||
+    nextUrl.pathname.startsWith("/notices") ||
     nextUrl.pathname.startsWith("/settings");
 
   // 1. Unauthenticated users trying to access protected routes -> redirect to /login
@@ -103,8 +106,11 @@ export const config = {
     "/student/:path*",
     "/students/:path*",
     "/attendance/:path*",
+    "/batches/:path*",
     "/fees/:path*",
+    "/expenses/:path*",
     "/results/:path*",
+    "/notices/:path*",
     "/settings/:path*",
     "/login",
   ],

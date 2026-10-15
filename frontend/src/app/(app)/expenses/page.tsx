@@ -1,4 +1,5 @@
 import React from "react";
+import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
@@ -13,11 +14,7 @@ export default async function ExpensesPage() {
   const instituteId = session?.user?.instituteId;
 
   if (!instituteId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
+    redirect("/login");
   }
 
   const institute = await fetchApi(`/api/v1/institutes/${instituteId}`, { cache: "no-store" }).catch(() => null);

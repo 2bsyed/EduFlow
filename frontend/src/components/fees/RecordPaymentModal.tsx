@@ -304,12 +304,19 @@ export function RecordPaymentModal({
             </form>
           </div>
 
-          <div className="mt-xl pt-lg border-t border-outline-variant">
+          <div className="mt-xl pt-lg border-t border-outline-variant flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-3 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container font-label-md transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               form="record-payment-form"
               disabled={isSubmitting}
-              className="w-full bg-primary-container text-on-primary hover:bg-primary py-3 rounded-lg font-label-md text-label-md flex justify-center items-center gap-2 transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              className="flex-1 bg-primary-container text-on-primary hover:bg-primary py-3 rounded-lg font-label-md text-label-md flex justify-center items-center gap-2 transition-colors shadow-sm cursor-pointer disabled:opacity-50"
             >
               <Icon name="check_circle" className="text-[20px]" />
               <span>{isSubmitting ? t("recording") : t("confirm")}</span>

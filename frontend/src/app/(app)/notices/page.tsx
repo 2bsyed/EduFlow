@@ -17,11 +17,7 @@ export default async function NoticesPage() {
   const role = session?.user?.role;
 
   if (!instituteId || !userId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Session missing.
-      </div>
-    );
+    redirect("/login");
   }
 
   // Redirect Student to student notices page

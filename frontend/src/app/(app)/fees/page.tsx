@@ -39,12 +39,15 @@ export default async function FeesPage() {
   let totalPending = 0;
   let totalOverdue = 0;
 
-  const feeItems: FeeItem[] = rawFees.map((f: any) => {
-    const amountVal = Number(f.amount);
+  for (const f of rawFees) {
+    const amountVal = Number(f.amount) || 0;
     if (f.status === "PAID") totalCollected += amountVal;
     if (f.status === "PENDING") totalPending += amountVal;
     if (f.status === "OVERDUE") totalOverdue += amountVal;
+  }
 
+  const feeItems: FeeItem[] = rawFees.map((f: any) => {
+    const amountVal = Number(f.amount) || 0;
     let statusMapped: "Paid" | "Due" | "Overdue" = "Paid";
     if (f.status === "PENDING") statusMapped = "Due";
     if (f.status === "OVERDUE") statusMapped = "Overdue";
