@@ -70,7 +70,9 @@ export async function middleware(req: NextRequest) {
       const isAllowedTeacherRoute =
         nextUrl.pathname.startsWith("/teacher") ||
         nextUrl.pathname.startsWith("/attendance") ||
-        nextUrl.pathname.startsWith("/results");
+        nextUrl.pathname.startsWith("/results") ||
+        nextUrl.pathname.startsWith("/notices") ||
+        nextUrl.pathname.startsWith("/settings/language");
 
       if (!isAllowedTeacherRoute) {
         return NextResponse.redirect(new URL("/teacher", nextUrl.origin));
@@ -80,7 +82,8 @@ export async function middleware(req: NextRequest) {
     if (role === "STUDENT") {
       const isAllowedStudentRoute =
         nextUrl.pathname.startsWith("/student") ||
-        nextUrl.pathname.startsWith("/results/report-card/");
+        nextUrl.pathname.startsWith("/results/report-card/") ||
+        nextUrl.pathname.startsWith("/settings/language");
 
       if (!isAllowedStudentRoute) {
         return NextResponse.redirect(new URL("/student", nextUrl.origin));
