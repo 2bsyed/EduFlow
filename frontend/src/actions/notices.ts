@@ -4,12 +4,22 @@ import { fetchApi } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
 export async function createNoticeAction(formData: FormData): Promise<void> {
-  const title = formData.get("title") as string;
+  const title = (formData.get("title") as string)?.trim();
   const category = (formData.get("category") as string) || "ACADEMIC";
   const urgent = formData.get("urgent") === "true";
-  const targetScope = (formData.get("targetScope") as string) || "EVERYONE";
-  const batchId = (formData.get("batchId") as string) || null;
-  const content = formData.get("content") as string;
+  const rawTarget = (formData.get("targetScope") as string) || "EVERYONE";
+  let targetScope = "EVERYONE";
+  let batchId: string | null = (formData.get("batchId") as string) || null;
+
+  if (rawTarget.startsWith("BATCH:")) {
+    targetScope = "BATCH";
+    batchId = rawTarget.replace("BATCH:", "");
+  } else if (rawTarget !== "EVERYONE" && rawTarget.length > 0) {
+    targetScope = "BATCH";
+    batchId = rawTarget;
+  }
+
+  const content = (formData.get("content") as string)?.trim();
 
   if (!title || !content) return;
 
@@ -22,7 +32,7 @@ export async function createNoticeAction(formData: FormData): Promise<void> {
         urgent,
         targetScope,
         batchId,
-        content
+        content,
       }),
     });
 

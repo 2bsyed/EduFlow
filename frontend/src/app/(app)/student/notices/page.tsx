@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { auth, signOut } from "@/lib/auth/auth";
+import { fetchApi } from "@/lib/api";
 import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { NotificationBell } from "@/components/ui/NotificationBell";
@@ -8,8 +9,10 @@ import { StudentSidebar } from "@/components/layout/StudentSidebar";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
 async function StudentNoticesContent() {
-  // Official Notice List
-  const notices = [
+  const noticesData = await fetchApi("/api/v1/core/notices").catch(() => ({ notices: [] }));
+  const rawNoticeLogs: Array<any> = noticesData.notices || [];
+
+  const sampleNotices = [
     {
       id: "n1",
       title: "Annual Term Final Examination Schedule 2026",
@@ -51,6 +54,49 @@ async function StudentNoticesContent() {
         "Guardians and students are requested to clear monthly tuition fees for July 2026 via bKash or Nagad online merchant gateways to avoid late registration charges.",
     },
   ];
+
+  const parsedNotices = rawNoticeLogs.map((log: any) => {
+    let data: any = {};
+    if (log && typeof log.details === "object" && log.details !== null) {
+      data = log.details;
+    } else if (log && typeof log.details === "string") {
+      try {
+        data = JSON.parse(log.details);
+      } catch {
+        data = { content: log.details };
+      }
+    }
+
+    const title = typeof data.title === "string" ? data.title : "Notice Circular";
+    const content =
+      typeof data.content === "string"
+        ? data.content
+        : typeof data.message === "string"
+        ? data.message
+        : "";
+    const category = typeof data.category === "string" ? data.category : "ACADEMIC";
+    const urgent = !!data.urgent;
+    const author = typeof data.author === "string" ? data.author : "Institute Administration";
+    const date = log?.createdAt
+      ? new Date(log.createdAt).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : "Recent";
+
+    return {
+      id: log?.id || Math.random().toString(),
+      title,
+      content,
+      category,
+      urgent,
+      author,
+      date,
+    };
+  });
+
+  const notices = parsedNotices.length > 0 ? parsedNotices : sampleNotices;
 
   return (
     <>
@@ -128,7 +174,7 @@ async function StudentNoticesContent() {
                 Issued by: <strong className="text-on-surface">{notice.author}</strong>
               </span>
               <span className="text-primary font-semibold flex items-center gap-xs hover:underline cursor-pointer">
-                Read Full Notice <Icon name="arrow_forward" className="text-[14px]" />
+                Official Circular <Icon name="check_circle" className="text-[14px] text-secondary" />
               </span>
             </div>
           </div>
@@ -153,7 +199,7 @@ export default async function StudentNoticesPage() {
 
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <StudentSidebar activeTab="notices" />
+      <StudentSidebar activeTab="notices" instituteName={(session?.user as any)?.instituteName || "EduFlow"} />
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">

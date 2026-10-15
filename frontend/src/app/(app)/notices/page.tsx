@@ -11,50 +11,62 @@ import { TeacherSidebar } from "@/components/layout/TeacherSidebar";
 import { createNoticeAction } from "@/actions/notices";
 import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
 
-async function NoticesContent() {
+interface NoticesContentProps {
+  userRole?: string;
+}
+
+async function NoticesContent({ userRole }: NoticesContentProps) {
   const noticesData = await fetchApi("/api/v1/core/notices").catch(() => ({ batches: [], notices: [] }));
 
-  const eligibleBatches = noticesData.batches || [];
-  const rawNoticeLogs = noticesData.notices || [];
+  const eligibleBatches: Array<{ id: string; name: string; subject?: string | null }> = noticesData.batches || [];
+  const rawNoticeLogs: Array<any> = noticesData.notices || [];
 
-  // Parse notice items
-  const publishedNotices = rawNoticeLogs.map((log: { id: string; details?: string | null; createdAt: string; action?: string }) => {
-    try {
-      const data = JSON.parse(log.details || "{}");
-      return {
-        id: log.id,
-        title: data.title || "Announcement",
-        content: data.content || "",
-        category: data.category || "ACADEMIC",
-        urgent: !!data.urgent,
-        targetScope: data.targetScope || "EVERYONE",
-        batchId: data.batchId || null,
-        author: data.author || "Management",
-        role: data.role || "OWNER",
-        date: new Date(log.createdAt).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-      };
-    } catch {
-      return {
-        id: log.id,
-        title: "Notice Circular",
-        content: log.details || "",
-        category: "ACADEMIC",
-        urgent: false,
-        targetScope: "EVERYONE",
-        batchId: null,
-        author: "Management",
-        role: "OWNER",
-        date: new Date(log.createdAt).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-      };
+  // Robustly parse notice items to avoid runtime object-in-jsx errors
+  const publishedNotices = rawNoticeLogs.map((log: any) => {
+    let data: any = {};
+    if (log && typeof log.details === "object" && log.details !== null) {
+      data = log.details;
+    } else if (log && typeof log.details === "string") {
+      try {
+        data = JSON.parse(log.details);
+      } catch {
+        data = { content: log.details };
+      }
     }
+
+    const title = typeof data.title === "string" ? data.title : "Announcement";
+    const content =
+      typeof data.content === "string"
+        ? data.content
+        : typeof data.message === "string"
+        ? data.message
+        : "";
+    const category = typeof data.category === "string" ? data.category : "ACADEMIC";
+    const urgent = !!data.urgent;
+    const targetScope = typeof data.targetScope === "string" ? data.targetScope : "EVERYONE";
+    const batchId = data.batchId || null;
+    const author = typeof data.author === "string" ? data.author : "Management";
+    const role = typeof data.role === "string" ? data.role : "OWNER";
+    const date = log?.createdAt
+      ? new Date(log.createdAt).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : "Recent";
+
+    return {
+      id: log?.id || Math.random().toString(),
+      title,
+      content,
+      category,
+      urgent,
+      targetScope,
+      batchId,
+      author,
+      role,
+      date,
+    };
   });
 
   const sampleNotices = [
@@ -85,15 +97,21 @@ async function NoticesContent() {
   ];
 
   const displayNotices = publishedNotices.length > 0 ? publishedNotices : sampleNotices;
+  const isTeacher = userRole === "TEACHER";
+  const teacherHasNoBatches = isTeacher && eligibleBatches.length === 0;
 
   return (
     <>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-md mb-md">
         <div>
-          <h1 className="font-h1 text-h1 text-on-surface font-bold">Publish & Manage Notices</h1>
+          <h1 className="font-h1 text-h1 text-on-surface font-bold">
+            {isTeacher ? "Teacher Notice Board" : "Publish & Manage Notices"}
+          </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
-            Broadcast emergency alerts, exam circulars, and batch announcements.
+            {isTeacher
+              ? "Broadcast batch announcements and academic updates to your students."
+              : "Broadcast emergency alerts, exam circulars, and batch announcements."}
           </p>
         </div>
       </div>
@@ -105,87 +123,96 @@ async function NoticesContent() {
           <span>New Notice Circular</span>
         </h3>
 
-        <form action={createNoticeAction} className="space-y-md">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+        {teacherHasNoBatches ? (
+          <div className="p-md rounded-lg bg-surface-container-low border border-outline-variant text-on-surface-variant font-body-sm">
+            You do not currently have any assigned batches. Teachers can only publish notices to their assigned batches.
+          </div>
+        ) : (
+          <form action={createNoticeAction} className="space-y-md">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Notice Title
+                </label>
+                <input
+                  name="title"
+                  type="text"
+                  required
+                  placeholder="e.g. Model Test Schedule Published"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                >
+                  <option value="ACADEMIC">Academic Announcement</option>
+                  <option value="EXAM">Examination Routine</option>
+                  {!isTeacher && <option value="FEES">Tuition Fee Notice</option>}
+                  <option value="HOLIDAY">Holiday Notification</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-xs">
+                  Audience Scope
+                </label>
+                <select
+                  name="targetScope"
+                  required
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+                >
+                  {!isTeacher && (
+                    <option value="EVERYONE">Broadcast to Everyone (All Batches)</option>
+                  )}
+                  {eligibleBatches.map((b) => (
+                    <option key={b.id} value={`BATCH:${b.id}`}>
+                      {isTeacher ? `Batch: ${b.name}` : `Target Batch: ${b.name}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div>
               <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                Notice Title
+                Notice Details
               </label>
-              <input
-                name="title"
-                type="text"
+              <textarea
+                name="content"
                 required
-                placeholder="e.g. Model Test Schedule Published"
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-              />
+                rows={3}
+                placeholder="Write the complete announcement text here..."
+                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-md font-body-sm text-body-sm focus:border-primary outline-none resize-none"
+              ></textarea>
             </div>
 
-            <div>
-              <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                Category
+            <div className="flex flex-wrap items-center justify-between gap-md pt-xs">
+              <label className="flex items-center gap-xs cursor-pointer font-label-md text-label-md text-error">
+                <input
+                  name="urgent"
+                  type="checkbox"
+                  value="true"
+                  className="w-4 h-4 rounded border-error text-error focus:ring-error"
+                />
+                <span>Mark as High Priority / Urgent Notice</span>
               </label>
-              <select
-                name="category"
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
+
+              <button
+                type="submit"
+                className="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm px-lg rounded-lg shadow-sm transition-colors font-semibold flex items-center gap-xs cursor-pointer"
               >
-                <option value="ACADEMIC">Academic Announcement</option>
-                <option value="EXAM">Examination Routine</option>
-                <option value="FEES">Tuition Fee Notice</option>
-                <option value="HOLIDAY">Holiday Notification</option>
-              </select>
+                <Icon name="send" className="text-[18px]" />
+                <span>Broadcast Notice</span>
+              </button>
             </div>
-
-            <div>
-              <label className="font-label-md text-label-md text-on-surface block mb-xs">
-                Audience Scope
-              </label>
-              <select
-                name="targetScope"
-                className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:border-primary outline-none"
-              >
-                <option value="EVERYONE">Broadcast to Everyone (All Batches)</option>
-                {eligibleBatches.map((b: { id: string; name: string }) => (
-                  <option key={b.id} value={`BATCH:${b.id}`}>
-                    Target: {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="font-label-md text-label-md text-on-surface block mb-xs">
-              Notice Details
-            </label>
-            <textarea
-              name="content"
-              required
-              rows={3}
-              placeholder="Write the complete announcement text here..."
-              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-md font-body-sm text-body-sm focus:border-primary outline-none resize-none"
-            ></textarea>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-md pt-xs">
-            <label className="flex items-center gap-xs cursor-pointer font-label-md text-label-md text-error">
-              <input
-                name="urgent"
-                type="checkbox"
-                value="true"
-                className="w-4 h-4 rounded border-error text-error focus:ring-error"
-              />
-              <span>Mark as High Priority / Urgent Notice</span>
-            </label>
-
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm px-lg rounded-lg shadow-sm transition-colors font-semibold flex items-center gap-xs cursor-pointer"
-            >
-              <Icon name="send" className="text-[18px]" />
-              <span>Broadcast Notice</span>
-            </button>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
 
       {/* Active Notices Board */}
@@ -211,6 +238,15 @@ async function NoticesContent() {
                   {notice.urgent && (
                     <span className="bg-error-container text-on-error-container font-label-md text-[11px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
                       <Icon name="priority_high" className="text-[12px]" /> URGENT
+                    </span>
+                  )}
+                  {notice.targetScope === "BATCH" ? (
+                    <span className="bg-surface-variant text-on-surface-variant font-label-md text-[11px] px-2 py-0.5 rounded-full font-medium">
+                      Batch Specific
+                    </span>
+                  ) : (
+                    <span className="bg-secondary-container/30 text-secondary font-label-md text-[11px] px-2 py-0.5 rounded-full font-medium">
+                      All Batches
                     </span>
                   )}
                 </div>
@@ -256,15 +292,17 @@ export default async function NoticesPage() {
   return (
     <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
       {role === "TEACHER" ? (
-        <TeacherSidebar activeTab="notices" />
+        <TeacherSidebar activeTab="notices" instituteName={(session?.user as any)?.instituteName || "EduFlow"} />
       ) : (
-        <OwnerSidebar activeTab="notices" />
+        <OwnerSidebar activeTab="notices" instituteName={(session?.user as any)?.instituteName || "EduFlow"} />
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 bg-surface-bright shrink-0">
           <div className="flex items-center gap-md">
-            <h2 className="font-h4 text-h4 font-semibold text-on-surface">Notice Board Management</h2>
+            <h2 className="font-h4 text-h4 font-semibold text-on-surface">
+              {role === "TEACHER" ? "Teacher Notice Board" : "Notice Board Management"}
+            </h2>
           </div>
           <div className="flex items-center gap-md shrink-0 flex-nowrap">
             <NotificationBell />
@@ -284,7 +322,7 @@ export default async function NoticesPage() {
 
         <main className="flex-1 overflow-y-auto p-md md:p-margin max-w-7xl mx-auto w-full space-y-lg">
           <Suspense fallback={<ContentSkeleton />}>
-            <NoticesContent />
+            <NoticesContent userRole={role} />
           </Suspense>
         </main>
       </div>
