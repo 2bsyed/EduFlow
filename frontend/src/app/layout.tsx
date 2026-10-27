@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_Bengali } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { BackendWarmup } from "@/components/common/BackendWarmup";
 import "./globals.css";
 
 const inter = Inter({
@@ -57,6 +58,7 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${notoBengali.variable} font-sans bg-background text-on-background min-h-screen antialiased`}
       >
+        <BackendWarmup />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

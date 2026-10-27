@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Icon } from "@/components/ui/Icon";
+import { warmupBackend } from "@/components/common/BackendWarmup";
 
 export default function LoginPage() {
   const t = useTranslations("Login");
@@ -23,6 +24,11 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Warm up backend and database connection while user views the login form
+    warmupBackend("login_view");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

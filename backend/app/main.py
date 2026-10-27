@@ -1,18 +1,43 @@
 import os
-from fastapi import FastAPI
+import traceback
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request, Depends
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routers import api_router
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-app = FastAPI(title="EduFlow API", description="EduFlow backend API", version="1.0.0")
+from app.api.routers import api_router
+from app.db.database import get_db, engine
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Pre-warm DB connection on application startup
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+            print("INFO: Database connection pre-warmed successfully on startup.")
+    except Exception as e:
+        print(f"INFO: Database pre-warm check on startup: {e}")
+    yield
+
+app = FastAPI(
+    title="EduFlow API",
+    description="EduFlow backend API",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 # Support configurable CORS origins for deployment (Vercel, custom domain, local)
 cors_origins_raw = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
 allow_origins = [origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()]
+default_cors_regex = r"https://.*\.vercel\.app|https://.*eduflow.*|http://localhost:.*|http://127\.0\.0\.1:.*"
+cors_origin_regex = os.getenv("CORS_ORIGIN_REGEX", default_cors_regex)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
-    allow_origin_regex=os.getenv("CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app"),
+    allow_origin_regex=cors_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,16 +52,20 @@ def read_root():
 
 @app.api_route("/health", methods=["GET", "HEAD"])
 @app.api_route("/api/v1/health", methods=["GET", "HEAD"])
-def health_check():
-    return {"status": "ok", "app": "EduFlow API", "version": "1.0.0"}
-
-import traceback
-from fastapi import Request
-from fastapi.responses import JSONResponse
-from sqlalchemy import text
-from app.db.database import get_db
-from fastapi import Depends
-from sqlalchemy.orm import Session
+@app.api_route("/ping", methods=["GET", "HEAD"])
+@app.api_route("/api/v1/ping", methods=["GET", "HEAD"])
+def health_check(db: Session = Depends(get_db)):
+    db_status = "connected"
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as e:
+        db_status = f"unhealthy: {str(e)}"
+    return {
+        "status": "ok",
+        "database": db_status,
+        "app": "EduFlow API",
+        "version": "1.0.0",
+    }
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -54,4 +83,5 @@ def db_check(db: Session = Depends(get_db)):
         return {"status": "connected", "users_count": result}
     except Exception as e:
         return {"status": "error", "error": str(e), "type": type(e).__name__}
+
 

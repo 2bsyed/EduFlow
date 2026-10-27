@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { Icon } from "@/components/ui/Icon";
+import { BackendWarmup } from "@/components/common/BackendWarmup";
 
 export default function MarketingLandingPage() {
   const tHero = useTranslations("Hero");
@@ -17,6 +18,7 @@ export default function MarketingLandingPage() {
 
   return (
     <div className="bg-background text-on-background min-h-screen font-sans antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary">
+      <BackendWarmup />
       {/* SECTION 1: TOP NAVBAR & HERO SECTION */}
       <header className="bg-surface dark:bg-surface-container-highest w-full sticky top-0 z-50 border-b border-outline-variant shadow-sm">
         <nav className="flex justify-between items-center h-20 px-margin max-w-7xl mx-auto">
