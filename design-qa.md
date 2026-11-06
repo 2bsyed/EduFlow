@@ -11,7 +11,7 @@ final result: blocked
 
 ## Same-state comparison
 
-The supplied image and implementation both show the owner dashboard, so the dashboard state was compared. The implementation includes the reference's logo, navigation, headline, quick actions, KPI summary, batch schedule, attendance, recent students, and pending fees. It uses institute records and shows an honest empty attendance state when today's attendance is absent. The available preview is narrower and shorter than the reference, so the screenshots cannot be compared at matching dimensions; a full 1672×940 responsive check is still needed.
+The supplied image and implementation both show the owner dashboard, so the dashboard state was compared. The implementation includes the reference's logo, navigation, headline, quick actions, KPI summary, batch schedule, attendance, recent students, and pending fees. The owner Reports page is also available from the sidebar. It uses institute records and shows an honest empty attendance state when today's attendance is absent. The available preview is narrower and shorter than the reference, so the screenshots cannot be compared at matching dimensions; a full 1672×940 responsive check is still needed.
 
 ## Findings
 

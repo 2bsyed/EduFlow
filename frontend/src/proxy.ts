@@ -49,6 +49,7 @@ export async function proxy(req: NextRequest) {
     nextUrl.pathname.startsWith("/fees") ||
     nextUrl.pathname.startsWith("/expenses") ||
     nextUrl.pathname.startsWith("/results") ||
+    nextUrl.pathname.startsWith("/reports") ||
     nextUrl.pathname.startsWith("/notices") ||
     nextUrl.pathname.startsWith("/settings");
 
@@ -72,6 +73,7 @@ export async function proxy(req: NextRequest) {
         nextUrl.pathname.startsWith("/teacher") ||
         nextUrl.pathname.startsWith("/attendance") ||
         nextUrl.pathname.startsWith("/results") ||
+    nextUrl.pathname.startsWith("/reports") ||
         nextUrl.pathname.startsWith("/notices") ||
         nextUrl.pathname.startsWith("/settings/language");
 
@@ -115,6 +117,7 @@ export const config = {
     "/fees/:path*",
     "/expenses/:path*",
     "/results/:path*",
+    "/reports/:path*",
     "/notices/:path*",
     "/settings/:path*",
     "/login",

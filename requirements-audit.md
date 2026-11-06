@@ -19,7 +19,7 @@ Sources reviewed: `EduFlow_ChatGPT_Work_Handoff.md`, the included handoff ZIP (s
 - The dashboard's “Batches” list displays each batch's free-text schedule. The data model has no structured weekday/time rows, so it cannot reliably select “Today’s Classes.” The reference's day-specific title and real calendar filter remain unimplemented.
 - The dashboard search field is visual only; no cross-module search service exists.
 - The owner can create teachers, but email invitations, edit, deactivate, and password reset flows are not implemented.
-- No reports route or exportable financial/attendance report suite exists. Student CSV export is implemented; accounting exports remain outstanding.
+- A basic owner Reports page now summarizes fees and expenses and exports fee/expense CSVs. Student CSV export is also implemented. Attendance period reports and configurable report filters remain outstanding.
 - Notices are stored and scoped in-app, but push/email/SMS delivery and a persistent notification center are not implemented. The fake notification bell was removed.
 - Expenses can record categories, including a payroll category, but this is not payroll calculation or payment management.
 - The current signed-in dashboard was visually opened and checked in the local browser at 1063×679. The supplied overview is 1672×940. The page responds at the available viewport, but exact same-size visual comparison and full-page responsive review remain incomplete.

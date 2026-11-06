@@ -16,6 +16,7 @@ interface OwnerSidebarProps {
     | "attendance"
     | "fees"
     | "results"
+    | "reports"
     | "expenses"
     | "notices"
     | "settings";
@@ -34,6 +35,7 @@ export function OwnerSidebar({ activeTab: propActiveTab, instituteName }: OwnerS
     { id: "attendance", label: t("attendance"), href: "/attendance", icon: "calendar_today" },
     { id: "fees", label: t("fees"), href: "/fees", icon: "payments" },
     { id: "results", label: t("results"), href: "/results", icon: "analytics" },
+    { id: "reports", label: "Reports", href: "/reports", icon: "bar_chart" },
     { id: "expenses", label: t("expenses"), href: "/expenses", icon: "receipt_long" },
     { id: "notices", label: t("notices"), href: "/notices", icon: "campaign" },
     { id: "settings", label: t("settings"), href: "/settings", icon: "settings" },
