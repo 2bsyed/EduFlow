@@ -34,5 +34,5 @@ Do not claim these are available: parent portal, online payment gateway or autom
 - Frontend production build: passed after the changes.
 - Backend Python compile: passed.
 - Frontend lint: 0 errors, 120 warnings (mostly existing explicit `any` and effect patterns).
-- Backend tests: final rerun pending after correcting a test import for the removed reminder endpoint.
+- Backend tests: passed (18 tests) after removing the obsolete reminder-endpoint test and correcting its imports.
 - Browser: signed-in owner dashboard opened with existing local session and reviewed. No account or business records were created or changed for visual verification.
