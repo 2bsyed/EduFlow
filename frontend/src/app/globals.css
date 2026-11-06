@@ -14,8 +14,155 @@
 .max-w-6xl { max-width: 72rem !important; }
 
 @layer base {
+  :root {
+    color-scheme: light;
+    --eduflow-primary: #0f6cbd;
+    --eduflow-primary-hover: #115ea3;
+    --eduflow-canvas: #f5f7f9;
+    --eduflow-border: #d1d1d1;
+  }
+
   body {
     font-family: var(--font-inter), var(--font-noto-sans-bengali), sans-serif;
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--eduflow-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Signed-in workspaces use a restrained Fluent-style surface system. */
+body:has(aside) {
+  background: var(--eduflow-canvas);
+}
+
+body:has(aside) aside {
+  background: #fff;
+  box-shadow: none;
+  border-color: #e1e1e1;
+}
+
+body:has(aside) header.sticky {
+  background: #fff;
+  box-shadow: none;
+  border-color: #e1e1e1;
+}
+
+body:has(aside) main {
+  background: #f5f7f9;
+}
+
+body:has(aside) .shadow-sm,
+body:has(aside) .shadow,
+body:has(aside) .shadow-md {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+body:has(aside) [class*="hover:-translate"]:hover {
+  transform: none;
+}
+
+body:has(aside) input,
+body:has(aside) select,
+body:has(aside) textarea {
+  border-color: #8a8886;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+body:has(aside) input:focus,
+body:has(aside) select:focus,
+body:has(aside) textarea:focus {
+  border-color: #0f6cbd;
+  box-shadow: inset 0 0 0 1px #0f6cbd;
+  outline: none;
+}
+
+body:has(aside) table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+body:has(aside) th {
+  color: #5c5c5c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+body:has(aside) th,
+body:has(aside) td {
+  border-bottom: 1px solid #e1e1e1;
+  vertical-align: middle;
+}
+
+body:has(aside) a:focus-visible,
+body:has(aside) button:focus-visible {
+  outline: 2px solid #0f6cbd;
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  body:has(aside) main {
+    padding: 16px 16px 88px;
+  }
+
+  body:has(aside) aside {
+    display: flex !important;
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 60;
+    width: 100%;
+    height: 68px;
+    padding: 4px 8px max(4px, env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid #e1e1e1;
+  }
+
+  body:has(aside) aside > div {
+    display: none;
+  }
+
+  body:has(aside) aside nav {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0;
+    scrollbar-width: none;
+  }
+
+  body:has(aside) aside nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  body:has(aside) aside nav a {
+    display: flex;
+    flex: 1 0 64px;
+    min-width: 64px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    border: 0;
+    padding: 4px 2px;
+    font-size: 10px;
+    line-height: 13px;
+    text-align: center;
+  }
+
+  body:has(aside) aside nav a span {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
