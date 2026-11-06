@@ -23,7 +23,7 @@ function isTokenExpired(token: string | null | undefined): boolean {
   }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { nextUrl } = req;
   const session = await auth();
   
@@ -43,6 +43,7 @@ export async function middleware(req: NextRequest) {
     nextUrl.pathname.startsWith("/teacher") ||
     nextUrl.pathname.startsWith("/student") ||
     nextUrl.pathname.startsWith("/students") ||
+    nextUrl.pathname.startsWith("/teachers") ||
     nextUrl.pathname.startsWith("/attendance") ||
     nextUrl.pathname.startsWith("/batches") ||
     nextUrl.pathname.startsWith("/fees") ||
@@ -108,6 +109,7 @@ export const config = {
     "/teacher/:path*",
     "/student/:path*",
     "/students/:path*",
+    "/teachers/:path*",
     "/attendance/:path*",
     "/batches/:path*",
     "/fees/:path*",

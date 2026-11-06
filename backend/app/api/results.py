@@ -8,7 +8,7 @@ import math
 from app.db.database import get_db
 from app.core.security import get_current_user
 from app.models.models import (
-    User, Institute, Batch, Teacher, Student, Result, StudentBatch, ActivityLog, Attendance
+    User, Institute, Batch, Teacher, Student, Result, StudentBatch, ActivityLog, Attendance, AttendanceStatus
 )
 
 router = APIRouter()
@@ -36,6 +36,8 @@ def get_results_init(
     institute_id = current_user.institute_id
     if not institute_id:
         raise HTTPException(status_code=400, detail="User does not belong to an institute")
+    if current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Only owners and teachers can enter results")
 
     institute = db.query(Institute).filter(Institute.id == institute_id).first()
     
@@ -45,8 +47,6 @@ def get_results_init(
         if not teacher:
             raise HTTPException(status_code=403, detail="Teacher record not found")
         teacher_id = teacher.id
-    elif current_user.role == "STUDENT":
-        raise HTTPException(status_code=403, detail="Students cannot view batch results")
 
     # Fetch Batches
     batches_query = db.query(Batch).filter(Batch.institute_id == institute_id)
@@ -62,8 +62,8 @@ def get_results_init(
     selected_batch_id = batchId if batchId else (batches[0].id if batches else "")
     selected_batch = next((b for b in batches if b.id == selected_batch_id), None)
     
-    selected_exam_name = examName if examName else "First Term 2024"
-    selected_subject = subject if subject else (selected_batch.subject if selected_batch else "Mathematics")
+    selected_exam_name = examName or ""
+    selected_subject = subject or (selected_batch.subject if selected_batch else "")
 
     student_batches = []
     existing_results = []
@@ -123,6 +123,8 @@ def save_results(
     institute_id = current_user.institute_id
     if not institute_id:
         raise HTTPException(status_code=400, detail="Unauthorized")
+    if current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Only owners and teachers can save results")
 
     if not payload.examName or not payload.batchId or not payload.subject or not payload.results:
         raise HTTPException(status_code=400, detail="Missing required parameters or empty results list")
@@ -141,19 +143,18 @@ def save_results(
             raise HTTPException(status_code=403, detail="You are not authorized to save results for this batch")
 
     student_ids = [r.studentId for r in payload.results]
-    valid_students = db.query(Student).filter(
-        Student.id.in_(student_ids),
-        Student.institute_id == institute_id
-    ).all()
-    
-    valid_student_ids = {s.id for s in valid_students}
+    valid_student_ids = {row[0] for row in db.query(StudentBatch.student_id).filter(
+        StudentBatch.student_id.in_(student_ids),
+        StudentBatch.batch_id == payload.batchId,
+        StudentBatch.institute_id == institute_id,
+    ).all()}
     filtered_results = [r for r in payload.results if r.studentId in valid_student_ids]
 
     if not filtered_results:
         raise HTTPException(status_code=400, detail="No valid students found in your institute for this result batch")
 
     for item in filtered_results:
-        total = item.totalMarks or 100
+        total = item.totalMarks if item.totalMarks and item.totalMarks > 0 else 100
         marks = min(total, max(0, item.marksObtained))
         percentage = (marks / total) * 100
 
@@ -217,6 +218,8 @@ def get_report_card(
     institute_id = current_user.institute_id
     if not institute_id:
         raise HTTPException(status_code=400, detail="Session missing")
+    if current_user.role not in ["OWNER", "TEACHER", "STUDENT"]:
+        raise HTTPException(status_code=403, detail="Report cards are not available for this role")
 
     student = db.query(Student).filter(
         Student.id == studentId,
@@ -229,23 +232,42 @@ def get_report_card(
     if current_user.role == "STUDENT" and student.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Unauthorized access: You cannot view another student's report card.")
 
-    student_batches = db.query(StudentBatch).filter(StudentBatch.student_id == student.id).all()
-    
+    student_batches = db.query(StudentBatch).filter(
+        StudentBatch.student_id == student.id,
+        StudentBatch.institute_id == institute_id,
+    ).all()
+    teacher_batch_ids = None
     if current_user.role == "TEACHER":
         teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
-        if teacher:
-            is_assigned = any(sb.batch and sb.batch.teacher_id == teacher.id for sb in student_batches)
-            if not is_assigned:
-                raise HTTPException(status_code=403, detail="Unauthorized access: You are not assigned to this student's batch.")
+        if not teacher:
+            raise HTTPException(status_code=403, detail="Teacher profile not found")
+        teacher_batch_ids = {sb.batch_id for sb in student_batches if sb.batch and sb.batch.teacher_id == teacher.id}
+        if not teacher_batch_ids:
+            raise HTTPException(status_code=403, detail="Unauthorized access: You are not assigned to this student's batch.")
 
     institute = db.query(Institute).filter(Institute.id == institute_id).first()
     
-    exam_name_clean = " ".join([word.capitalize() for word in examId.split("-")])
-
-    results = db.query(Result).filter(
+    results_query = db.query(Result).filter(
         Result.institute_id == institute_id,
-        Result.student_id == studentId
-    ).order_by(Result.subject).all()
+        Result.student_id == studentId,
+        Result.exam_name == examId,
+    )
+    if teacher_batch_ids:
+        results_query = results_query.filter(Result.batch_id.in_(teacher_batch_ids))
+    results = results_query.order_by(Result.subject).all()
+    if not results:
+        raise HTTPException(status_code=404, detail="No results are available for this exam")
+
+    exam_name_clean = results[0].exam_name
+    batch_ids = {result.batch_id for result in results}
+    attendance_records = db.query(Attendance).filter(
+        Attendance.institute_id == institute_id,
+        Attendance.student_id == studentId,
+        Attendance.batch_id.in_(batch_ids),
+    ).all()
+    attendance_total = len(attendance_records)
+    attendance_present = sum(1 for record in attendance_records if record.status in [AttendanceStatus.PRESENT, AttendanceStatus.LATE])
+    attendance_percentage = round(attendance_present / attendance_total * 100) if attendance_total else None
 
     return {
         "student": {
@@ -260,8 +282,10 @@ def get_report_card(
             "email": institute.email if institute else None,
             "phone": institute.phone if institute else None,
         },
-        "batchName": student_batches[0].batch.name if student_batches and student_batches[0].batch else "Grade 10 - Science A",
+        "batchName": next((sb.batch.name for sb in student_batches if sb.batch and sb.batch.id in batch_ids), "Batch not assigned"),
         "examNameClean": exam_name_clean,
+        "attendancePercentage": attendance_percentage,
+        "teacherRemarks": "; ".join(result.comments for result in results if result.comments),
         "results": [{
             "subject": r.subject,
             "marksObtained": float(r.marks_obtained),
@@ -291,11 +315,13 @@ def get_student_results(
     institute = db.query(Institute).filter(Institute.id == institute_id).first()
 
     results = db.query(Result).filter(
-        Result.student_id == student.id
+        Result.student_id == student.id,
+        Result.institute_id == institute_id,
     ).order_by(Result.created_at.desc()).all()
     
     attendances = db.query(Attendance).filter(
-        Attendance.student_id == student.id
+        Attendance.student_id == student.id,
+        Attendance.institute_id == institute_id,
     ).all()
 
     return {
@@ -308,10 +334,12 @@ def get_student_results(
         },
         "results": [{
             "id": r.id,
+            "examName": r.exam_name,
             "subject": r.subject,
             "marksObtained": float(r.marks_obtained),
             "totalMarks": float(r.total_marks) if r.total_marks else 100,
-            "grade": r.grade
+            "grade": r.grade,
+            "comments": r.comments,
         } for r in results],
         "attendances": [{
             "status": a.status.value if hasattr(a.status, 'value') else str(a.status)

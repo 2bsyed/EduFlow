@@ -38,19 +38,20 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
     (a: { status: string }) => a.status === "PRESENT" || a.status === "LATE"
   ).length;
   const totalCount = currentMonthAttendances.length;
-  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 96;
+  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : null;
 
   // 2. Latest Result
   const latestResult = (student.results || [])[0];
-  const latestGrade = latestResult?.grade || "A+";
+  const latestGrade = latestResult?.grade || "—";
   const latestExamName = latestResult
     ? `${latestResult.examName} (${latestResult.subject})`
-    : "Final Term Math";
+    : "No results published";
 
   // 3. Fee Status
   const unpaidFee = (student.fees || []).find((f: { status: string; amount: number }) => f.status === "PENDING" || f.status === "OVERDUE");
   const dueAmount = unpaidFee ? Number(unpaidFee.amount) : 0;
-  const isFeePaid = dueAmount === 0;
+  const hasFeeRecords = (student.fees || []).length > 0;
+  const isFeePaid = dueAmount === 0 && hasFeeRecords;
 
   // 4. Assigned Batches / Classes
   const studentBatches = student.studentBatches || [];
@@ -74,7 +75,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
               <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
                 {t("myAttendance")}
               </p>
-              <h2 className="font-h2 text-h2 text-on-surface font-bold">{attendanceRate}%</h2>
+              <h2 className="font-h2 text-h2 text-on-surface font-bold">{attendanceRate === null ? "—" : `${attendanceRate}%`}</h2>
             </div>
             <div className="w-12 h-12 relative flex items-center justify-center">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
@@ -90,7 +91,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   fill="none"
                   stroke="currentColor"
-                  strokeDasharray={`${attendanceRate}, 100`}
+                  strokeDasharray={`${attendanceRate ?? 0}, 100`}
                   strokeWidth="3"
                 ></path>
               </svg>
@@ -98,7 +99,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
             </div>
           </div>
           <p className="font-caption text-caption text-secondary flex items-center gap-xs font-medium">
-            <Icon name="trending_up" className="text-[16px]" /> On track for great attendance
+            {totalCount ? `${totalCount} sessions recorded this month` : "No sessions recorded this month"}
           </p>
         </div>
 
@@ -117,7 +118,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
                   {latestGrade}
                 </span>
                 <span className="bg-primary-container/10 text-primary-container font-label-md text-caption px-sm py-xs rounded-full font-semibold">
-                  Outstanding
+                  {latestResult ? latestResult.examName : "No published result"}
                 </span>
               </div>
             </div>
@@ -128,7 +129,9 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
                 <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
                   {t("feeStatus")}
                 </p>
-                {isFeePaid ? (
+                {!hasFeeRecords ? (
+                  <div className="inline-flex items-center gap-xs bg-surface-container-high text-on-surface-variant px-sm py-xs rounded-full font-label-md text-caption font-semibold mt-xs">No fee records</div>
+                ) : isFeePaid ? (
                   <div className="inline-flex items-center gap-xs bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full font-label-md text-caption font-semibold mt-xs">
                     <Icon name="check" className="text-[16px]" /> Paid
                   </div>
@@ -143,7 +146,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
                   Current Balance
                 </p>
                 <h3 className="font-h3 text-h3 text-on-surface font-bold">
-                  BDT {dueAmount.toFixed(2)}
+                  {hasFeeRecords ? `BDT ${dueAmount.toFixed(2)}` : "—"}
                 </h3>
               </div>
             </div>
@@ -204,7 +207,7 @@ async function StudentDashboardContent({ instituteId }: { instituteId: string })
                             {sb.batch.name}
                           </h4>
                           <p className="font-body-sm text-body-sm text-on-surface-variant">
-                            {sb.batch.subject || "General Science"} • {sb.batch.schedule || "Sun, Tue, Thu"}
+                            {[sb.batch.subject, sb.batch.schedule].filter(Boolean).join(" • ") || "Schedule not set"}
                           </p>
                         </div>
                         <span className="font-caption text-caption bg-surface-container-highest px-3 py-1 rounded-full text-on-surface-variant font-medium">

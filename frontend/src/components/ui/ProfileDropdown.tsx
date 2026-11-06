@@ -16,7 +16,7 @@ interface ProfileDropdownProps {
 
 export function ProfileDropdown({
   userName,
-  userEmail = "owner@eduflow.bd",
+  userEmail,
   userRole = "OWNER",
   avatarUrl,
   onSignOut,
@@ -78,7 +78,7 @@ export function ProfileDropdown({
               {userName}
             </p>
             <p className="font-caption text-caption text-on-surface-variant truncate">
-              {userEmail}
+              {userEmail || "No email on account"}
             </p>
             <span className="inline-block mt-xs bg-primary-container/20 text-primary font-label-md text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
               {userRole}

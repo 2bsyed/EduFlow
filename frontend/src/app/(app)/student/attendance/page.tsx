@@ -35,7 +35,7 @@ async function StudentAttendanceContent() {
     (a: any) => a.status === "PRESENT" || a.status === "LATE"
   ).length;
   const totalCount = currentMonthAttendances.length;
-  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 96;
+  const attendanceRate = totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : null;
 
   // Map attendances by day number
   const attendanceByDay: Record<number, "PRESENT" | "ABSENT" | "LATE"> = {};
@@ -78,7 +78,7 @@ async function StudentAttendanceContent() {
             </div>
             <div className="mb-sm">
               <span className="text-5xl font-extrabold text-primary tracking-tight">
-                {attendanceRate}%
+                {attendanceRate === null ? "—" : `${attendanceRate}%`}
               </span>
             </div>
             <p className="font-body-md text-body-md text-on-surface-variant mb-lg">
@@ -87,7 +87,7 @@ async function StudentAttendanceContent() {
             <div className="w-full bg-surface-container-high rounded-full h-2.5 mb-md">
               <div
                 className="bg-primary h-2.5 rounded-full"
-                style={{ width: `${attendanceRate}%` }}
+                style={{ width: `${attendanceRate ?? 0}%` }}
               ></div>
             </div>
             <p className="font-label-md text-label-md text-on-surface-variant">

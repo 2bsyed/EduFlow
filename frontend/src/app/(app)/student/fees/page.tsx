@@ -28,7 +28,7 @@ async function StudentFeeContent({ instituteId }: { instituteId: string }) {
     }),
     description: `Tuition Fee (${f.month_year})`,
     amount: Number(f.amount).toFixed(2),
-    method: f.payment_method || "bKash",
+    method: f.payment_method || "Not recorded",
     status: f.status,
   }));
 

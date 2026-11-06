@@ -1,290 +1,77 @@
-import React, { Suspense } from "react";
 import Link from "next/link";
-import { fetchApi } from "@/lib/api";
-import { getTranslations } from "next-intl/server";
-import { auth, signOut } from "@/lib/auth/auth";
-import { Icon } from "@/components/ui/Icon";
 import Image from "next/image";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
-import { NotificationBell } from "@/components/ui/NotificationBell";
-import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
-import { RevenueChart } from "@/components/dashboard/RevenueChart";
-import { AttendanceDonut } from "@/components/dashboard/AttendanceDonut";
-import { PendingReminderList } from "@/components/dashboard/PendingReminderList";
+import { auth, signOut } from "@/lib/auth/auth";
+import { fetchApi } from "@/lib/api";
+import { Icon } from "@/components/ui/Icon";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
-import { ContentSkeleton } from "@/components/ui/ContentSkeleton";
+import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
+import { AttendanceDonut } from "@/components/dashboard/AttendanceDonut";
 
-async function OwnerDashboardContent({ session }: { session: any }) {
-  const t = await getTranslations("Dashboard");
-  const kpiData = await fetchApi("/api/v1/core/dashboard/kpi").catch(() => ({
-    totalStudents: 0,
-    monthlyRevenue: 0,
-    pendingFees: 0,
-    attendance: { present: 0, absent: 0, late: 0, percentage: 0 },
-    recentLogs: [],
-    pendingFeeRecords: [],
-  }));
+type DashboardData = {
+  totalStudents: number;
+  activeBatches: number;
+  feesCollectedThisMonth: number;
+  pendingFees: number;
+  attendance: { present: number; absent: number; late: number; percentage: number | null };
+  pendingFeeRecords: { studentId: string; studentName: string; amount: string; monthYear: string; status: string }[];
+  batches: { id: string; name: string; subject?: string | null; schedule?: string | null; teacher?: string | null }[];
+  recentStudents: { id: string; rollNo: string; name: string; status: string }[];
+};
 
-  const totalStudents = kpiData.totalStudents || 0;
-  const monthlyRevenue = kpiData.monthlyRevenue || 0;
-  const pendingFees = kpiData.pendingFees || 0;
-  const presentCount = kpiData.attendance?.present || 0;
-  const absentCount = kpiData.attendance?.absent || 0;
-  const lateCount = kpiData.attendance?.late || 0;
-  const attendancePct = kpiData.attendance?.percentage || 0;
-
-  // Revenue Trend Data (Last 6 Months)
-  const monthlyRevenueTrend = [
-    { month: "May", revenue: 15000 },
-    { month: "Jun", revenue: 18000 },
-    { month: "Jul", revenue: 22000 },
-    { month: "Aug", revenue: 25000 },
-    { month: "Sep", revenue: 30000 },
-    { month: "Oct", revenue: monthlyRevenue > 0 ? monthlyRevenue : 37500 },
-  ];
-
-  const recentLogs = kpiData.recentLogs || [];
-  
-  // Fallback demo activities if activity logs empty
-  const displayLogs =
-    recentLogs.length > 0
-      ? recentLogs
-      : [
-          {
-            id: "log-1",
-            action: "FEE_RECEIVED",
-            details: "Aisha Rahman (Class 10) paid ৳ 2,500 via bKash.",
-            createdAt: new Date(),
-          },
-          {
-            id: "log-2",
-            action: "ATTENDANCE_MARKED",
-            details: "Class 10 - Higher Math attendance marked by Kamrul Hasan.",
-            createdAt: new Date(Date.now() - 3600000),
-          },
-          {
-            id: "log-3",
-            action: "STUDENT_ENROLLED",
-            details: "New student 'Tanvir Ahmed' enrolled in Class 10.",
-            createdAt: new Date(Date.now() - 86400000),
-          },
-        ];
-
-  const pendingStudentsList = kpiData.pendingFeeRecords || [];
-
-  return (
-    <>
-      <div className="flex justify-between items-end">
-        <div>
-          <h2 className="font-h2 text-h2 text-on-surface">{t("ownerTitle")}</h2>
-          <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-            {t("welcome")}, {session?.user?.name}.
-          </p>
-        </div>
-        <Link
-          href="/students?action=new"
-          prefetch={true}
-          className="hidden sm:flex items-center gap-xs bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md hover:bg-primary/90 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
-        >
-          <Icon name="add" className="text-sm" />
-          <span>{t("newAdmission")}</span>
-        </Link>
-      </div>
-
-      {/* Top Row: 4 Real KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md md:gap-lg">
-        {/* Card 1: Total Students */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:-translate-y-0.5 transition-transform">
-          <div className="flex justify-between items-start mb-sm">
-            <div className="p-2 bg-primary-fixed rounded-lg text-primary">
-              <Icon name="group" className="text-[20px]" />
-            </div>
-            <span className="inline-flex items-center gap-xs text-secondary bg-secondary-container/30 px-2 py-0.5 rounded-full font-caption font-medium">
-              <Icon name="trending_up" className="text-[14px]" /> 12%
-            </span>
-          </div>
-          <p className="font-body-sm text-on-surface-variant">{t("totalStudents")}</p>
-          <p className="font-h2 text-h2 mt-1">{totalStudents}</p>
-        </div>
-
-        {/* Card 2: Monthly Revenue */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:-translate-y-0.5 transition-transform">
-          <div className="flex justify-between items-start mb-sm">
-            <div className="p-2 bg-primary-fixed rounded-lg text-primary">
-              <Icon name="payments" className="text-[20px]" />
-            </div>
-            <span className="inline-flex items-center gap-xs text-secondary bg-secondary-container/30 px-2 py-0.5 rounded-full font-caption font-medium">
-              <Icon name="trending_up" className="text-[14px]" /> 8%
-            </span>
-          </div>
-          <p className="font-body-sm text-on-surface-variant">{t("monthlyRevenue")}</p>
-          <p className="font-h2 text-h2 mt-1">৳ {monthlyRevenue.toLocaleString()}</p>
-        </div>
-
-        {/* Card 3: Pending Fees */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:-translate-y-0.5 transition-transform">
-          <div className="flex justify-between items-start mb-sm">
-            <div className="p-2 bg-error-container/50 rounded-lg text-error">
-              <Icon name="receipt_long" className="text-[20px]" />
-            </div>
-            <span className="inline-flex items-center gap-xs text-secondary bg-secondary-container/30 px-2 py-0.5 rounded-full font-caption font-medium">
-              <Icon name="trending_down" className="text-[14px]" /> 5%
-            </span>
-          </div>
-          <p className="font-body-sm text-on-surface-variant">{t("pendingFees")}</p>
-          <p className="font-h2 text-h2 mt-1">৳ {pendingFees.toLocaleString()}</p>
-        </div>
-
-        {/* Card 4: Today's Attendance */}
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm hover:-translate-y-0.5 transition-transform">
-          <div className="flex justify-between items-start mb-sm">
-            <div className="p-2 bg-secondary-container/50 rounded-lg text-secondary">
-              <Icon name="calendar_today" className="text-[20px]" />
-            </div>
-            <span className="inline-flex items-center gap-xs text-on-surface-variant bg-surface-variant px-2 py-0.5 rounded-full font-caption font-medium">
-              Stable
-            </span>
-          </div>
-          <p className="font-body-sm text-on-surface-variant">{t("todaysAttendance")}</p>
-          <p className="font-h2 text-h2 mt-1">{attendancePct}%</p>
-        </div>
-      </div>
-
-      {/* Middle Row: Charts Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-md md:gap-lg">
-        {/* Revenue Chart */}
-        <div className="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-lg">
-            <h3 className="font-h4 text-h4 font-semibold text-on-surface">{t("revenueTrend")}</h3>
-            <select className="bg-surface-container border-none text-body-sm rounded-lg py-1 pl-3 pr-8 focus:ring-0 cursor-pointer text-on-surface-variant">
-              <option>Last 6 Months</option>
-              <option>This Year</option>
-            </select>
-          </div>
-          <RevenueChart data={monthlyRevenueTrend} />
-        </div>
-
-        {/* Attendance Donut */}
-        <div className="lg:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col">
-          <h3 className="font-h4 text-h4 font-semibold text-on-surface mb-lg">{t("todaysAttendance")}</h3>
-          <AttendanceDonut
-            present={presentCount > 0 ? presentCount : 24}
-            absent={absentCount > 0 ? absentCount : 2}
-            late={lateCount > 0 ? lateCount : 1}
-          />
-        </div>
-      </div>
-
-      {/* Bottom Row: Activity Feed & Pending Reminders */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-md md:gap-lg pb-xl">
-        {/* Recent Activity Feed */}
-        <div className="lg:col-span-7 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
-          <div className="flex justify-between items-center mb-lg">
-            <h3 className="font-h4 text-h4 font-semibold text-on-surface">{t("recentActivity")}</h3>
-            <button className="text-primary font-label-md hover:underline cursor-pointer">
-              View All
-            </button>
-          </div>
-          <div className="space-y-6">
-            {displayLogs.map((log: { id: string; action: string; entity?: string; details?: string; createdAt: any; user?: { email: string } }) => (
-              <div key={log.id} className="flex items-start gap-md">
-                <div className="w-8 h-8 rounded-full bg-primary-container/10 text-primary flex items-center justify-center shrink-0 mt-1 border border-primary/20">
-                  <Icon name="history" className="text-[18px]" />
-                </div>
-                <div className="flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-3 shadow-sm">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="font-label-md text-on-surface font-semibold">
-                      {log.action.replace(/_/g, " ")}
-                    </div>
-                    <time className="font-caption text-on-surface-variant">
-                      {new Date(log.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </time>
-                  </div>
-                  <p className="text-body-sm text-on-surface-variant">{log.details}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Pending Fee Reminders Widget */}
-        <div className="lg:col-span-5 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-lg">
-            <h3 className="font-h4 text-h4 font-semibold text-on-surface">
-              {t("pendingFeeReminders")}
-            </h3>
-          </div>
-          <PendingReminderList students={pendingStudentsList} />
-        </div>
-      </div>
-    </>
-  );
-}
+const money = (value: number) => `৳ ${Number(value || 0).toLocaleString("en-BD")}`;
 
 export default async function OwnerDashboardPage() {
   const session = await auth();
   const instituteId = session?.user?.instituteId;
+  if (!instituteId) return <div className="p-8 text-center text-red-700">Your account is not linked to an institute.</div>;
 
-  if (!instituteId) {
-    return (
-      <div className="p-margin text-center font-body-md text-error">
-        Unauthorized access: Institute ID missing.
-      </div>
-    );
-  }
+  const data = await fetchApi("/api/v1/core/dashboard/kpi").catch(() => null) as DashboardData | null;
+  const kpi = data ?? { totalStudents: 0, activeBatches: 0, feesCollectedThisMonth: 0, pendingFees: 0, attendance: { present: 0, absent: 0, late: 0, percentage: null }, pendingFeeRecords: [], batches: [], recentStudents: [] };
+  const cards = [
+    { label: "Total students", value: data ? kpi.totalStudents.toLocaleString() : "—", icon: "group", color: "blue", href: "/students" },
+    { label: "Batches", value: data ? kpi.activeBatches.toLocaleString() : "—", icon: "menu_book", color: "green", href: "/batches" },
+    { label: "Fees collected this month", value: data ? money(kpi.feesCollectedThisMonth) : "—", icon: "payments", color: "orange", href: "/fees" },
+    { label: "Outstanding fees", value: data ? money(kpi.pendingFees) : "—", icon: "schedule", color: "purple", href: "/fees" },
+  ];
 
-  return (
-    <div className="flex h-screen overflow-hidden text-on-surface bg-surface font-sans">
-      <OwnerSidebar activeTab="dashboard" />
+  return <div className="flex min-h-screen bg-[#f5f7fa] text-[#16191f]">
+    <OwnerSidebar activeTab="dashboard" instituteName={session.user.name || "Institute"} />
+    <div className="min-w-0 flex-1">
+      <header className="sticky top-0 z-30 flex h-[60px] items-center justify-between border-b border-[#d9dee8] bg-white px-4 md:px-7">
+        <div className="flex items-center gap-5">
+          <Link href="/dashboard" aria-label="EduFlow dashboard" className="block"><Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-9 w-auto object-contain" /></Link>
+          <div className="hidden h-8 border-l border-[#d9dee8] md:block" />
+          <div className="flex items-center gap-2 text-sm font-medium"><Icon name="account_balance" className="text-xl text-[#3d4858]" />{session.user.name || "Institute"}</div>
+        </div>
+        <div className="mx-5 hidden max-w-[600px] flex-1 md:block"><label className="relative block"><Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-[#697586]" /><input aria-label="Search students, batches, teachers or pages" placeholder="Search students, batches, teachers, or pages" className="h-10 w-full rounded-md border border-[#c9d1df] bg-[#f8f9fc] pl-10 pr-4 text-sm outline-none focus:border-[#0f6cbd] focus:ring-2 focus:ring-blue-100" /></label></div>
+        <div className="flex items-center gap-2"><Link href="/settings" aria-label="Settings" className="rounded-md p-2 text-[#344054] hover:bg-slate-100"><Icon name="settings" className="text-xl" /></Link><ProfileDropdown userName={session.user.name || "Account"} userEmail={session.user.email || undefined} userRole={session.user.role || "OWNER"} avatarUrl={session.user.image} onSignOut={async () => { "use server"; await signOut({ redirectTo: "/login" }); }} /></div>
+      </header>
+      <main className="space-y-5 p-4 md:p-7">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div><h1 className="text-[28px] font-semibold tracking-tight">Dashboard</h1><p className="mt-1 text-sm text-[#526071]">Institute overview and key information at a glance.</p></div>
+          <div className="flex flex-wrap gap-2"><Link href="/students?action=new" className="inline-flex h-10 items-center gap-2 rounded-md bg-[#0f6cbd] px-4 text-sm font-semibold text-white hover:bg-[#115ea3]"><Icon name="add" />Add student</Link><Link href="/attendance" className="inline-flex h-10 items-center gap-2 rounded-md border border-[#c9d1df] bg-white px-4 text-sm font-medium hover:bg-slate-50"><Icon name="calendar_today" />Mark attendance</Link><Link href="/fees" className="inline-flex h-10 items-center gap-2 rounded-md border border-[#c9d1df] bg-white px-4 text-sm font-medium hover:bg-slate-50"><Icon name="payments" />Record fee</Link></div>
+        </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* TopNavBar */}
-        <header className="bg-surface-bright text-primary font-body-md text-body-md docked top-0 w-full border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-margin sticky top-0 z-50 shrink-0">
-          <div className="flex items-center gap-lg w-full max-w-2xl">
-            <div className="md:hidden flex items-center">
-              <h1 className="text-xl font-bold text-primary">EduFlow</h1>
-            </div>
-            <div className="relative w-full max-w-md hidden md:block">
-              <Icon
-                name="search"
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]"
-              />
-              <input
-                className="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-on-surface"
-                placeholder="Search students, batches..."
-                type="text"
-              />
-            </div>
+        <section aria-label="Institute summary" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {cards.map((card) => <Link key={card.label} href={card.href} className="group rounded-lg border border-[#dce1e9] bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,.06)] transition hover:border-[#9abfe5]">
+            <div className="flex items-center justify-between"><span className={`flex h-12 w-12 items-center justify-center rounded-lg ${card.color === "blue" ? "bg-blue-50 text-blue-600" : card.color === "green" ? "bg-green-50 text-green-600" : card.color === "orange" ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"}`}><Icon name={card.icon} className="text-2xl" /></span></div>
+            <p className="mt-4 text-sm text-[#526071]">{card.label}</p><p className="mt-1 text-[25px] font-semibold tracking-tight">{card.value}</p>
+          </Link>)}
+        </section>
+
+        <section className="grid gap-4 xl:grid-cols-2">
+          <div className="rounded-lg border border-[#dce1e9] bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,.06)]">
+            <div className="mb-4 flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-semibold"><Icon name="menu_book" className="text-xl" />Batches</h2><Link href="/batches" className="text-sm font-medium text-[#0f6cbd]">View all</Link></div>
+            <div className="overflow-x-auto"><table className="w-full min-w-[520px] text-left text-sm"><thead className="bg-[#f1f3f7] text-xs text-[#344054]"><tr><th className="px-3 py-2 font-semibold">Batch</th><th className="px-3 py-2 font-semibold">Subject</th><th className="px-3 py-2 font-semibold">Schedule</th><th className="px-3 py-2 font-semibold">Teacher</th></tr></thead><tbody>{kpi.batches.map((batch) => <tr key={batch.id} className="border-b border-[#e6eaf0]"><td className="px-3 py-3 font-medium">{batch.name}</td><td className="px-3 py-3">{batch.subject || "—"}</td><td className="px-3 py-3">{batch.schedule || "Not set"}</td><td className="px-3 py-3">{batch.teacher || "Unassigned"}</td></tr>)}{!kpi.batches.length && <tr><td colSpan={4} className="px-3 py-8 text-center text-[#697586]">{data ? "No batches have been created yet." : "Batch data could not be loaded."}</td></tr>}</tbody></table></div>
           </div>
-          <div className="flex items-center gap-md shrink-0 flex-nowrap">
-            <NotificationBell />
+          <div className="rounded-lg border border-[#dce1e9] bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,.06)]"><h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="bar_chart" className="text-xl" />Attendance summary</h2>{!data ? <div className="flex min-h-[230px] items-center justify-center text-sm text-[#697586]">Attendance data could not be loaded.</div> : kpi.attendance.percentage === null ? <div className="flex min-h-[230px] items-center justify-center text-center text-sm text-[#697586]">No attendance has been recorded today.<br />Mark attendance to see the summary.</div> : <AttendanceDonut present={kpi.attendance.present} absent={kpi.attendance.absent} late={kpi.attendance.late} />}</div>
+        </section>
 
-            <LanguageToggle />
-
-            <ProfileDropdown
-              userName={session?.user?.name || "Dr. Rafiqul Islam"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
-              userRole={session?.user?.role || "OWNER"}
-              avatarUrl={session?.user?.image}
-              onSignOut={async () => {
-                "use server";
-                await signOut({ redirectTo: "/login" });
-              }}
-            />
-          </div>
-        </header>
-
-        {/* Scrollable Canvas */}
-        <main className="flex-1 overflow-y-auto p-md md:p-lg lg:p-xl space-y-xl">
-          <Suspense fallback={<ContentSkeleton />}>
-            <OwnerDashboardContent session={session} />
-          </Suspense>
-        </main>
-      </div>
+        <section className="grid gap-4 xl:grid-cols-2">
+          <div className="rounded-lg border border-[#dce1e9] bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,.06)]"><div className="mb-4 flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-semibold"><Icon name="group" className="text-xl" />Recent students</h2><Link href="/students" className="text-sm font-medium text-[#0f6cbd]">View all</Link></div><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead className="bg-[#f1f3f7] text-xs"><tr><th className="px-3 py-2">ID</th><th className="px-3 py-2">Name</th><th className="px-3 py-2">Status</th></tr></thead><tbody>{kpi.recentStudents.map((student) => <tr key={student.id} className="border-b border-[#e6eaf0]"><td className="px-3 py-3">{student.rollNo}</td><td className="px-3 py-3 font-medium">{student.name}</td><td className="px-3 py-3">{student.status}</td></tr>)}{!kpi.recentStudents.length && <tr><td colSpan={3} className="px-3 py-8 text-center text-[#697586]">{data ? "No student records yet." : "Student data could not be loaded."}</td></tr>}</tbody></table></div></div>
+          <div className="rounded-lg border border-[#dce1e9] bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,.06)]"><div className="mb-4 flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-semibold"><Icon name="credit_card" className="text-xl" />Pending fees</h2><Link href="/fees" className="text-sm font-medium text-[#0f6cbd]">View all</Link></div>{kpi.pendingFeeRecords.length ? <div className="divide-y divide-[#e6eaf0]">{kpi.pendingFeeRecords.map((fee, index) => <div key={`${fee.studentId}-${index}`} className="flex items-center justify-between gap-3 py-3 text-sm"><div className="min-w-0"><span className="block truncate font-medium">{fee.studentName}</span><span className="text-xs text-[#697586]">{fee.monthYear} · {fee.status.toLowerCase()}</span></div><span className="shrink-0 font-medium">৳ {fee.amount}</span></div>)}</div> : <p className="flex min-h-32 items-center justify-center text-sm text-[#697586]">{data ? "No pending fee records." : "Fee data could not be loaded."}</p>}</div>
+        </section>
+      </main>
     </div>
-  );
+  </div>;
 }

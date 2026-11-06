@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.main import app
 from app.db.database import Base, get_db
-from app.models.models import User, Institute, Student, Batch, Teacher, Role, StudentBatch
+from app.models.models import User, Institute, Student, Batch, Teacher, Role
 from app.core.security import create_access_token
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -64,7 +64,6 @@ def db_session():
     b2 = Batch(id="batch-2", institute_id="inst-2", name="Batch 2", subject="Physics")
     db.add_all([b1, b2])
     db.commit()
-
     yield db
     db.close()
 

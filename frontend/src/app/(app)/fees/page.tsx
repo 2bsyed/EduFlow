@@ -122,7 +122,7 @@ export default async function FeesPage() {
             <LanguageToggle />
             <ProfileDropdown
               userName={session?.user?.name || "Owner"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userEmail={session?.user?.email || undefined}
               userRole={session?.user?.role || "OWNER"}
               avatarUrl={session?.user?.image}
               onSignOut={async () => {

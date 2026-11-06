@@ -175,7 +175,7 @@ export default async function TeacherTimetablePage() {
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={session?.user?.name || "Kamrul Hasan"}
+              userName={session?.user?.name || "Teacher"}
               userEmail={session?.user?.email || "teacher@eduflow.bd"}
               userRole="TEACHER"
               avatarUrl={session?.user?.image}

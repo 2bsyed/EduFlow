@@ -41,16 +41,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
     );
   }
 
-  const { student, institute, batchName, examNameClean, results } = data;
-
-  // Default sample subjects if none exist yet in database
-  const sampleSubjects = [
-    { subject: "Advanced Mathematics", marksObtained: 92, totalMarks: 100, grade: "A+", remarks: "Excellent logical reasoning." },
-    { subject: "Physics", marksObtained: 88, totalMarks: 100, grade: "A", remarks: "Good grasp of concepts." },
-    { subject: "Chemistry", marksObtained: 95, totalMarks: 100, grade: "A+", remarks: "Outstanding practical work." },
-    { subject: "Computer Science", marksObtained: 100, totalMarks: 100, grade: "A+", remarks: "Perfect score. Exceptional." },
-    { subject: "English Literature", marksObtained: 84, totalMarks: 100, grade: "B+", remarks: "Needs more focus on essays." },
-  ];
+  const { student, institute, batchName, examNameClean, results, attendancePercentage, teacherRemarks } = data;
 
   const displaySubjects =
     results && results.length > 0
@@ -59,20 +50,15 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
           marksObtained: Number(r.marksObtained),
           totalMarks: Number(r.totalMarks) || 100,
           grade: r.grade || "A",
-          remarks: r.remarks || "Good effort.",
+          remarks: r.remarks || r.comments || "",
         }))
-      : sampleSubjects;
+      : [];
 
   // Compute total marks
   const totalObtained = displaySubjects.reduce((acc: number, curr: { marks: number; marksObtained?: number }) => acc + curr.marksObtained, 0);
   const totalMax = displaySubjects.reduce((acc: number, curr: { totalMarks: number }) => acc + curr.totalMarks, 0);
   const avgPercentage = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
 
-  // Compute sample GPA
-  let gpa = "3.85";
-  if (avgPercentage >= 80) gpa = "4.00";
-  else if (avgPercentage >= 70) gpa = "3.50";
-  else if (avgPercentage >= 60) gpa = "3.00";
 
 
   const backUrl = role === "STUDENT" ? "/student/results" : "/results";
@@ -116,7 +102,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
               <span className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider block">
                 Academic Year
               </span>
-              <p className="font-h4 text-h4 text-on-surface font-bold m-0">2023 - 2024</p>
+              <p className="font-h4 text-h4 text-on-surface font-bold m-0">{examNameClean || "Exam period not set"}</p>
             </div>
           </div>
         </div>
@@ -225,15 +211,15 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
           </div>
           <div className="border border-outline-variant rounded-lg p-md bg-surface-container-low min-w-[120px] text-center">
             <span className="block font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
-              GPA
+              Average score
             </span>
-            <span className="block font-h4 text-h4 text-primary font-bold">{gpa}</span>
+            <span className="block font-h4 text-h4 text-primary font-bold">{totalMax > 0 ? `${avgPercentage.toFixed(0)}%` : "—"}</span>
           </div>
           <div className="border border-outline-variant rounded-lg p-md bg-surface-container-low min-w-[120px] text-center">
             <span className="block font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-xs">
               Attendance
             </span>
-            <span className="block font-h4 text-h4 text-primary font-bold">96%</span>
+            <span className="block font-h4 text-h4 text-primary font-bold">{attendancePercentage === null ? "—" : `${attendancePercentage}%`}</span>
           </div>
         </div>
 
@@ -243,7 +229,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
             Class Teacher's Remarks:
           </span>
           <p className="font-body-md text-body-md text-on-surface-variant italic m-0">
-            "{student.fullName} is a dedicated and highly motivated student. Her performance in STEM subjects is particularly commendable. With continued focus on humanities, she will achieve even greater overall success. Keep up the excellent work!"
+            {teacherRemarks ? `“${teacherRemarks}”` : "No teacher remarks have been added."}
           </p>
         </div>
 

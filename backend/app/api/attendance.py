@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 from app.db.database import get_db
 from app.core.security import get_current_user
-from app.models.models import User, Attendance, Student, Batch, Teacher, AttendanceStatus
+from app.models.models import User, Attendance, Student, StudentBatch, Batch, Teacher, AttendanceStatus
 from app.schemas.schemas import AttendanceResponse
 
 router = APIRouter()
@@ -40,11 +40,15 @@ def parse_date(date_str: str) -> date:
             raise HTTPException(status_code=400, detail="Invalid date format")
 
 def verify_teacher_authorization(db: Session, user: User, batch_id: str):
+    if user.role.value not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Only owners and assigned teachers can manage attendance")
     if user.role.value == "TEACHER":
         teacher = db.query(Teacher).filter(Teacher.user_id == user.id).first()
         batch = db.query(Batch).filter(Batch.id == batch_id, Batch.institute_id == user.institute_id).first()
         if not teacher or not batch or batch.teacher_id != teacher.id:
             raise HTTPException(status_code=403, detail="You are not authorized to mark attendance for this batch")
+    elif not db.query(Batch).filter(Batch.id == batch_id, Batch.institute_id == user.institute_id).first():
+        raise HTTPException(status_code=404, detail="Batch not found in your institute")
 
 @router.post("/upsert")
 def upsert_attendance(req: UpsertAttendanceRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -60,6 +64,13 @@ def upsert_attendance(req: UpsertAttendanceRequest, db: Session = Depends(get_db
         raise HTTPException(status_code=404, detail="Student not found in your institute")
         
     verify_teacher_authorization(db, current_user, req.batch_id)
+    enrolled = db.query(StudentBatch).filter(
+        StudentBatch.student_id == req.student_id,
+        StudentBatch.batch_id == req.batch_id,
+        StudentBatch.institute_id == institute_id,
+    ).first()
+    if not enrolled:
+        raise HTTPException(status_code=400, detail="Student is not enrolled in this batch")
     
     # Upsert Logic
     attendance = db.query(Attendance).filter(
@@ -128,6 +139,14 @@ def bulk_mark_present(req: BulkMarkPresentRequest, db: Session = Depends(get_db)
         raise HTTPException(status_code=404, detail="No valid students found in your institute")
         
     verify_teacher_authorization(db, current_user, req.batch_id)
+    enrolled_ids = {row[0] for row in db.query(StudentBatch.student_id).filter(
+        StudentBatch.student_id.in_(valid_student_ids),
+        StudentBatch.batch_id == req.batch_id,
+        StudentBatch.institute_id == institute_id,
+    ).all()}
+    valid_student_ids = [student_id for student_id in valid_student_ids if student_id in enrolled_ids]
+    if not valid_student_ids:
+        raise HTTPException(status_code=400, detail="No selected students are enrolled in this batch")
     
     marked_by = current_user.name or current_user.id
     
@@ -182,6 +201,8 @@ def get_attendances(
         batch = db.query(Batch).filter(Batch.id == target_batch_id, Batch.institute_id == institute_id).first()
         if not teacher or not batch or batch.teacher_id != teacher.id:
             raise HTTPException(status_code=403, detail="You are not authorized to view attendance for this batch")
+    elif current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Attendance records are not available for this role")
 
     attendances = db.query(Attendance).filter(
         Attendance.institute_id == institute_id,

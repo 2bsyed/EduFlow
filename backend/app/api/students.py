@@ -6,7 +6,7 @@ from datetime import datetime, date
 
 from app.db.database import get_db
 from app.core.security import get_current_user
-from app.models.models import User, Student, StudentBatch, ActivityLog, StudentStatus
+from app.models.models import User, Student, StudentBatch, Batch, Result, ActivityLog, StudentStatus
 
 router = APIRouter()
 
@@ -39,6 +39,8 @@ def get_students(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can browse all student records")
     students = db.query(Student).options(
         joinedload(Student.student_batches).joinedload(StudentBatch.batch),
         joinedload(Student.fees),
@@ -90,10 +92,10 @@ def get_my_student_profile(
         "address": s.address,
         "photoUrl": s.photo_url,
         "status": s.status.value if s.status else "ACTIVE",
-        "studentBatches": [{"batch": {"id": sb.batch.id, "name": sb.batch.name}} for sb in s.student_batches if sb.batch],
+        "studentBatches": [{"batchId": sb.batch_id, "batch": {"id": sb.batch.id, "name": sb.batch.name, "subject": sb.batch.subject, "schedule": sb.batch.schedule}} for sb in s.student_batches if sb.batch],
         "fees": [{"status": f.status.value, "amount": f.amount, "monthYear": f.month_year, "paymentDate": f.payment_date.isoformat() if f.payment_date else None, "id": f.id} for f in getattr(s, "fees", [])],
         "attendances": [{"status": a.status.value, "date": a.date.isoformat() if a.date else None, "batchId": a.batch_id} for a in getattr(s, "attendances", [])],
-        "results": []
+        "results": [{"id": r.id, "examName": r.exam_name, "subject": r.subject, "marksObtained": float(r.marks_obtained), "totalMarks": float(r.total_marks) if r.total_marks else 100, "grade": r.grade, "comments": r.comments} for r in db.query(Result).filter(Result.student_id == s.id, Result.institute_id == s.institute_id).order_by(Result.created_at.desc()).all()]
     }
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -102,6 +104,8 @@ def create_student(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can enroll students")
     db_student = Student(
         institute_id=current_user.institute_id,
         full_name=student_in.full_name,
@@ -117,6 +121,10 @@ def create_student(
     db.flush()
 
     if student_in.batch_id:
+        batch = db.query(Batch).filter(Batch.id == student_in.batch_id, Batch.institute_id == current_user.institute_id).first()
+        if not batch:
+            db.rollback()
+            raise HTTPException(status_code=400, detail="Batch must belong to your institute")
         db_student_batch = StudentBatch(
             institute_id=current_user.institute_id,
             student_id=db_student.id,
@@ -142,9 +150,8 @@ def get_student(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if current_user.role == "STUDENT":
-        # Ensure student is retrieving their own profile or handle via /me
-        raise HTTPException(status_code=403, detail="Students should use /me")
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Use your assigned student or batch view")
         
     s = db.query(Student).options(
         joinedload(Student.student_batches).joinedload(StudentBatch.batch),
@@ -168,10 +175,10 @@ def get_student(
         "address": s.address,
         "photoUrl": s.photo_url,
         "status": s.status.value if s.status else "ACTIVE",
-        "studentBatches": [{"batch": {"id": sb.batch.id, "name": sb.batch.name}} for sb in s.student_batches if sb.batch],
+        "studentBatches": [{"batchId": sb.batch_id, "batch": {"id": sb.batch.id, "name": sb.batch.name, "subject": sb.batch.subject, "schedule": sb.batch.schedule}} for sb in s.student_batches if sb.batch],
         "fees": [{"status": f.status.value, "amount": f.amount, "monthYear": f.month_year, "paymentDate": f.payment_date.isoformat() if f.payment_date else None, "id": f.id} for f in getattr(s, "fees", [])],
         "attendances": [{"status": a.status.value, "date": a.date.isoformat() if a.date else None, "batchId": a.batch_id} for a in getattr(s, "attendances", [])],
-        "results": []
+        "results": [{"id": r.id, "examName": r.exam_name, "subject": r.subject, "marksObtained": float(r.marks_obtained), "totalMarks": float(r.total_marks) if r.total_marks else 100, "grade": r.grade, "comments": r.comments} for r in db.query(Result).filter(Result.student_id == s.id, Result.institute_id == s.institute_id).order_by(Result.created_at.desc()).all()]
     }
 
 @router.put("/{student_id}")
@@ -181,6 +188,8 @@ def update_student(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can update student records")
     student = db.query(Student).filter(
         Student.id == student_id,
         Student.institute_id == current_user.institute_id
@@ -191,12 +200,17 @@ def update_student(
 
     update_data = student_in.model_dump(exclude_unset=True)
     batch_id = update_data.pop("batch_id", None)
+
+    if batch_id:
+        batch = db.query(Batch).filter(Batch.id == batch_id, Batch.institute_id == current_user.institute_id).first()
+        if not batch:
+            raise HTTPException(status_code=400, detail="Batch must belong to your institute")
     
     for key, value in update_data.items():
         setattr(student, key, value)
 
     if batch_id is not None:
-        db.query(StudentBatch).filter(StudentBatch.student_id == student.id).delete()
+        db.query(StudentBatch).filter(StudentBatch.student_id == student.id, StudentBatch.institute_id == current_user.institute_id).delete()
         if batch_id:
             new_batch = StudentBatch(
                 institute_id=current_user.institute_id,

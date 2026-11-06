@@ -31,8 +31,8 @@ export function ResultsEntryClient({
   batches,
   initialBatchId,
   students,
-  initialExamName = "First Term 2024",
-  initialSubject = "Mathematics",
+  initialExamName = "",
+  initialSubject = "",
 }: ResultsEntryClientProps) {
   const [selectedExam, setSelectedExam] = useState(initialExamName);
   const [selectedBatchId, setSelectedBatchId] = useState(initialBatchId);
@@ -152,11 +152,6 @@ export function ResultsEntryClient({
                 placeholder="e.g. Mid Term 2024"
                 className="w-full rounded-lg border border-outline-variant bg-surface text-on-surface font-body-sm px-sm py-xs focus:ring-primary focus:border-primary shadow-sm"
               />
-              <datalist id="exam-options">
-                <option value="First Term 2024" />
-                <option value="Mid Term 2024" />
-                <option value="Finals 2023" />
-              </datalist>
             </div>
 
             {/* Total Marks */}

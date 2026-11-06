@@ -15,37 +15,7 @@ async function ExpensesContent() {
 
   const totalExpenseAmount = expenses.reduce((acc: any, e: any) => acc + Number(e.amount), 0);
 
-  const sampleExpenses = [
-    {
-      id: "e1",
-      title: "Monthly Rent & Utility Bill",
-      category: "Rent & Utilities",
-      amount: 18000,
-      recordedBy: "Dr. Rafiqul Islam",
-      expense_date: new Date("2026-07-01"),
-      notes: "July 2026 Premises Rent & Electricity",
-    },
-    {
-      id: "e2",
-      title: "Teacher Honorarium & Payroll",
-      category: "Payroll",
-      amount: 25000,
-      recordedBy: "Dr. Rafiqul Islam",
-      expense_date: new Date("2026-07-05"),
-      notes: "Monthly honorarium for faculty members",
-    },
-    {
-      id: "e3",
-      title: "Exam Sheet Printing & Stationary",
-      category: "Supplies",
-      amount: 3500,
-      recordedBy: "Dr. Rafiqul Islam",
-      expense_date: new Date("2026-07-12"),
-      notes: "Model test question papers",
-    },
-  ];
-
-  const displayExpenses = expenses.length > 0 ? expenses : sampleExpenses;
+  const displayExpenses = expenses;
 
   return (
     <>
@@ -54,7 +24,7 @@ async function ExpensesContent() {
         <div>
           <h1 className="font-h1 text-h1 text-on-surface font-bold">Expenses & Outflow</h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
-            Track operational expenditure, rent, teacher salaries, and office supplies.
+            Record institute expenses by category. Payroll and accounting are not managed here.
           </p>
         </div>
       </div>
@@ -63,23 +33,23 @@ async function ExpensesContent() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
           <span className="font-caption text-caption text-on-surface-variant uppercase tracking-wider font-bold block mb-xs">
-            Total Expenses (Current Term)
+            Total expenses recorded
           </span>
           <h2 className="font-h1 text-h1 text-error font-bold">
-            ৳ {(totalExpenseAmount || 46500).toLocaleString("en-BD")}
+            ৳ {totalExpenseAmount.toLocaleString("en-BD")}
           </h2>
         </div>
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
           <span className="font-caption text-caption text-on-surface-variant uppercase tracking-wider font-bold block mb-xs">
-            Rent & Operations
+            Rent and operations recorded
           </span>
-          <h2 className="font-h2 text-h2 text-on-surface font-bold">৳ 18,000</h2>
+          <h2 className="font-h2 text-h2 text-on-surface font-bold">৳ {expenses.filter((e: any) => /rent|utilit/i.test(e.category)).reduce((sum: number, e: any) => sum + Number(e.amount), 0).toLocaleString("en-BD")}</h2>
         </div>
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
           <span className="font-caption text-caption text-on-surface-variant uppercase tracking-wider font-bold block mb-xs">
-            Faculty Honorarium
+            Payroll category recorded
           </span>
-          <h2 className="font-h2 text-h2 text-primary font-bold">৳ 25,000</h2>
+          <h2 className="font-h2 text-h2 text-primary font-bold">৳ {expenses.filter((e: any) => /payroll|honorarium/i.test(e.category)).reduce((sum: number, e: any) => sum + Number(e.amount), 0).toLocaleString("en-BD")}</h2>
         </div>
       </div>
 
@@ -227,7 +197,7 @@ export default async function ExpensesPage() {
             <LanguageToggle />
             <ProfileDropdown
               userName={session?.user?.name || "Owner"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userEmail={session?.user?.email || undefined}
               userRole={session?.user?.role || "OWNER"}
               avatarUrl={session?.user?.image}
               onSignOut={async () => {

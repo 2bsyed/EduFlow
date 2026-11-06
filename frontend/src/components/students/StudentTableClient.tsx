@@ -22,7 +22,7 @@ export interface StudentItem {
   batchId: string;
   batchName: string;
   feeStatus: "Paid" | "Due" | "Overdue";
-  attendancePct: number;
+  attendancePct: number | null;
 }
 
 export interface BatchItem {
@@ -114,6 +114,19 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
     }
   };
 
+  const handleExport = () => {
+    const columns = ["Roll number", "Name", "Email", "Guardian", "Guardian phone", "Batch", "Status"];
+    const escapeCsv = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const rows = students.map((student) => [student.rollNo, student.fullName, student.email, student.guardianName, student.guardianPhone, student.batchName, student.status]);
+    const csv = [columns, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "eduflow-students.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-lg">
       {/* Page Header */}
@@ -124,13 +137,13 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
             Manage and view all enrolled students.
           </p>
         </div>
-        <button
+        <div className="flex gap-2"><button onClick={handleExport} className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-white px-3 py-2 text-sm font-medium hover:bg-surface-container"><Icon name="download" className="text-[18px]" />Export CSV</button><button
           onClick={handleOpenAdd}
           className="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:bg-[#173bab] transition-colors flex items-center gap-xs shadow-sm cursor-pointer"
         >
           <Icon name="add" className="text-[18px]" />
           <span>{t("addStudent")}</span>
-        </button>
+        </button></div>
       </div>
 
       {/* Filters Bar */}
@@ -240,9 +253,9 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                   if (student.feeStatus === "Overdue") feeBadgeClass = "bg-[#fce8e6] text-[#c5221f]";
 
                   let attBarClass = "bg-secondary";
-                  if (student.attendancePct < 80 && student.attendancePct >= 60)
+                  if (student.attendancePct !== null && student.attendancePct < 80 && student.attendancePct >= 60)
                     attBarClass = "bg-[#fbbc04]";
-                  if (student.attendancePct < 60) attBarClass = "bg-error";
+                  if (student.attendancePct !== null && student.attendancePct < 60) attBarClass = "bg-error";
 
                   let feeStatusText: string = student.feeStatus;
                   if (student.feeStatus === "Paid") feeStatusText = t("paid");
@@ -308,17 +321,17 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                           <div className="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${attBarClass}`}
-                              style={{ width: `${student.attendancePct}%` }}
+                              style={{ width: `${student.attendancePct ?? 0}%` }}
                             ></div>
                           </div>
                           <span
                             className={`text-caption ${
-                              student.attendancePct < 60
+                              student.attendancePct !== null && student.attendancePct < 60
                                 ? "text-error font-medium"
                                 : "text-on-surface-variant"
                             }`}
                           >
-                            {student.attendancePct}%
+                            {student.attendancePct === null ? "—" : `${student.attendancePct}%`}
                           </span>
                         </div>
                       </td>

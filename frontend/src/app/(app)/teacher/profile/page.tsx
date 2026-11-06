@@ -22,7 +22,7 @@ async function TeacherProfileContent({ instituteId, session }: { instituteId: st
         </div>
         <div>
           <h1 className="font-h2 text-h2 text-on-surface font-bold">
-            {teacher?.user?.name || session?.user?.name || "Kamrul Hasan"}
+            {teacher?.user?.name || session?.user?.name || "Teacher"}
           </h1>
           <p className="font-body-md text-body-md text-primary font-semibold mt-xs">
             Faculty Instructor — {teacher?.subject || "Higher Mathematics"}
@@ -92,7 +92,7 @@ export default async function TeacherProfilePage() {
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={session?.user?.name || "Kamrul Hasan"}
+              userName={session?.user?.name || "Teacher"}
               userEmail={session?.user?.email || "teacher@eduflow.bd"}
               userRole="TEACHER"
               avatarUrl={session?.user?.image}

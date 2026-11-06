@@ -108,8 +108,10 @@ async function TeacherBatchDetailContent({ batchId }: { batchId: string }) {
                   </td>
                 </tr>
               ) : (
-                studentBatches.map((sb: { student: { id: string; fullName: string; rollNo?: string | null; photoUrl?: string | null; email?: string | null; guardianName?: string | null; guardianPhone?: string | null } }) => {
+                studentBatches.map((sb: { student: { id: string; fullName: string; rollNo?: string | null; photoUrl?: string | null; email?: string | null; guardianName?: string | null; guardianPhone?: string | null; attendance?: { status: string }[] } }) => {
                   const student = sb.student;
+                  const attendance = student.attendance || [];
+                  const attendancePct = attendance.length ? Math.round(attendance.filter((item) => item.status === "PRESENT" || item.status === "LATE").length / attendance.length * 100) : null;
                   const initials = student.fullName
                     .split(" ")
                     .map((n) => n[0])
@@ -152,7 +154,7 @@ async function TeacherBatchDetailContent({ batchId }: { batchId: string }) {
                       </td>
                       <td className="py-4">
                         <span className="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-xs font-semibold">
-                          92%
+                          {attendancePct === null ? "—" : `${attendancePct}%`}
                         </span>
                       </td>
                       <td className="py-4 font-body-sm text-body-sm text-on-surface-variant">

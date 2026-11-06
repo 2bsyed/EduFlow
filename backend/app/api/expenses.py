@@ -15,6 +15,8 @@ def create_expense(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can record expenses")
     if expense_in.amount <= 0:
         raise HTTPException(status_code=400, detail="Invalid expense amount")
 
@@ -37,4 +39,6 @@ def get_expenses(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can view institute expenses")
     return db.query(Expense).filter(Expense.institute_id == current_user.institute_id).all()

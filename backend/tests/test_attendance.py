@@ -24,8 +24,11 @@ def test_upsert_attendance_unauthorized_teacher(client, teacher_token):
     
     assert res.status_code == 403
 
-def test_upsert_attendance_success(client, teacher_token):
+def test_upsert_attendance_success(client, teacher_token, db_session):
     headers = {"Authorization": f"Bearer {teacher_token}"}
+    from app.models.models import StudentBatch
+    db_session.add(StudentBatch(id="student-batch-1", institute_id="inst-1", student_id="student-1", batch_id="batch-1"))
+    db_session.commit()
     
     res = client.post("/api/v1/attendances/upsert", json={
         "studentId": "student-1",

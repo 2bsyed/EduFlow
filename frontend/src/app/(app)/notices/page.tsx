@@ -69,34 +69,7 @@ async function NoticesContent({ userRole }: NoticesContentProps) {
     };
   });
 
-  const sampleNotices = [
-    {
-      id: "sn1",
-      title: "Annual Model Test Examination Schedule 2026",
-      content: "All batch students must prepare for the upcoming Annual Model Test starting next Sunday.",
-      category: "EXAM",
-      urgent: true,
-      targetScope: "EVERYONE",
-      batchId: null,
-      author: "Dr. Rafiqul Islam",
-      role: "OWNER",
-      date: "26 Jul 2026",
-    },
-    {
-      id: "sn2",
-      title: "Class 10 Special Revision Lecture Assignment",
-      content: "Special problem-solving session on Chapter 5 Higher Mathematics scheduled for 4 PM.",
-      category: "ACADEMIC",
-      urgent: false,
-      targetScope: "BATCH",
-      batchId: null,
-      author: "Kamrul Hasan",
-      role: "TEACHER",
-      date: "24 Jul 2026",
-    },
-  ];
-
-  const displayNotices = publishedNotices.length > 0 ? publishedNotices : sampleNotices;
+  const displayNotices = publishedNotices;
   const isTeacher = userRole === "TEACHER";
   const teacherHasNoBatches = isTeacher && eligibleBatches.length === 0;
 

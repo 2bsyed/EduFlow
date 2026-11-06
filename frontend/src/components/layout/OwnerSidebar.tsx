@@ -5,11 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 
 interface OwnerSidebarProps {
   activeTab?:
     | "dashboard"
     | "students"
+    | "teachers"
     | "batches"
     | "attendance"
     | "fees"
@@ -27,6 +29,7 @@ export function OwnerSidebar({ activeTab: propActiveTab, instituteName }: OwnerS
   const navItems = [
     { id: "dashboard", label: t("dashboard"), href: "/dashboard", icon: "home" },
     { id: "students", label: t("students"), href: "/students", icon: "group" },
+    { id: "teachers", label: "Teachers", href: "/teachers", icon: "person" },
     { id: "batches", label: t("batches"), href: "/batches", icon: "school" },
     { id: "attendance", label: t("attendance"), href: "/attendance", icon: "calendar_today" },
     { id: "fees", label: t("fees"), href: "/fees", icon: "payments" },
@@ -42,7 +45,7 @@ export function OwnerSidebar({ activeTab: propActiveTab, instituteName }: OwnerS
   return (
     <aside className="docked left-0 h-full w-60 border-r border-outline-variant flex flex-col py-5 px-3 bg-surface-container-lowest hidden md:flex shrink-0">
       <div className="mb-6 px-2 flex flex-col items-start gap-1">
-        <h1 className="text-lg font-semibold tracking-tight text-primary">EduFlow</h1>
+        <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-9 w-auto object-contain" />
         <p className="text-xs text-on-surface-variant truncate w-full">
           {instituteName || "Coaching Management"}
         </p>

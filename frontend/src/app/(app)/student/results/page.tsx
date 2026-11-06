@@ -27,43 +27,16 @@ async function StudentResultsContent() {
     const maxMarks = Number(r.totalMarks) || 100;
     return sum + (marks / maxMarks) * 100;
   }, 0);
-  const averagePercentage = totalExams > 0 ? Math.round(totalPercentageSum / totalExams) : 92;
+  const averagePercentage = totalExams > 0 ? Math.round(totalPercentageSum / totalExams) : 0;
   const overallPercentage = averagePercentage;
 
   // Grade calculation
-  const overallGrade =
-    averagePercentage >= 80
-      ? "A+"
-      : averagePercentage >= 70
-      ? "A"
-      : averagePercentage >= 60
-      ? "A-"
-      : averagePercentage >= 50
-      ? "B"
-      : "C";
-
-  const gpa =
-    averagePercentage >= 80
-      ? "4.00"
-      : averagePercentage >= 70
-      ? "3.75"
-      : averagePercentage >= 60
-      ? "3.50"
-      : "3.00";
-
   // Attendance rate
   const totalAtt = attendances.length;
   const presentAtt = attendances.filter(
     (a: any) => a.status === "PRESENT" || a.status === "LATE"
   ).length;
-  const attPercentage = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : 95;
-
-  const sampleResults = [
-    { id: "s1", subject: "Advanced Mathematics", marksObtained: 96, totalMarks: 100, grade: "A+" },
-    { id: "s2", subject: "Physics", marksObtained: 88, totalMarks: 100, grade: "A" },
-    { id: "s3", subject: "Computer Science", marksObtained: 78, totalMarks: 100, grade: "B+" },
-    { id: "s4", subject: "English Literature", marksObtained: 92, totalMarks: 100, grade: "A" },
-  ];
+  const attPercentage = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : null;
 
   const displayResults =
     results && results.length > 0
@@ -74,9 +47,9 @@ async function StudentResultsContent() {
           totalMarks: Number(r.totalMarks),
           grade: r.grade || "A",
         }))
-      : sampleResults;
+      : [];
 
-  const reportCardExamSlug = "final-term-2024";
+  const reportCardExamSlug = results[0]?.examName;
 
   return (
     <>
@@ -100,53 +73,47 @@ async function StudentResultsContent() {
                 <Icon name="workspace_premium" className="text-primary-container text-[24px]" />
                 <span>Academic Overview</span>
               </h2>
-              <Link
-                href={`/results/report-card/${student?.id || "demo"}/${reportCardExamSlug}`}
+              {reportCardExamSlug && <Link
+                href={`/results/report-card/${student.id}/${encodeURIComponent(reportCardExamSlug)}`}
                 prefetch={true}
                 className="bg-primary-container text-on-primary hover:bg-primary transition-colors px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 shadow-sm font-medium"
               >
                 <Icon name="download" className="text-[18px]" />
                 <span>Download Report Card</span>
-              </Link>
+              </Link>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
               {/* GPA Stat */}
               <div>
                 <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-1">
-                  Overall GPA
+                  Results recorded
                 </p>
                 <div className="flex items-baseline gap-3">
                   <span className="text-5xl font-bold text-primary-container tracking-tight">
-                    {gpa}
+                    {totalExams}
                   </span>
-                  <span className="font-body-md text-body-md text-on-surface-variant">
-                    / 4.0
-                  </span>
-                </div>
-                <div className="inline-flex items-center gap-1 mt-2 bg-secondary-container/30 text-on-secondary-container px-2.5 py-1 rounded-full text-caption font-semibold">
-                  <Icon name="trending_up" className="text-[14px]" /> +0.3 from last term
                 </div>
               </div>
 
               {/* Percentage Stat */}
               <div>
                 <p className="font-label-md text-caption text-on-surface-variant uppercase tracking-wider mb-1">
-                  Overall Percentage
+                  Average score
                 </p>
                 <div className="flex items-baseline gap-3">
                   <span className="text-5xl font-bold text-on-surface tracking-tight">
-                    {overallPercentage}%
+                    {totalExams ? `${overallPercentage}%` : "—"}
                   </span>
                 </div>
                 <div className="w-full bg-surface-variant rounded-full h-2 mt-4 overflow-hidden">
                   <div
                     className="bg-primary-container h-2 rounded-full"
-                    style={{ width: `${overallPercentage}%` }}
+                    style={{ width: `${totalExams ? overallPercentage : 0}%` }}
                   ></div>
                 </div>
                 <p className="font-caption text-caption text-on-surface-variant mt-2 text-right">
-                  Top 5% of class
+                  Based on {totalExams} recorded result{totalExams === 1 ? "" : "s"}
                 </p>
               </div>
             </div>
@@ -176,20 +143,19 @@ async function StudentResultsContent() {
                 ></path>
               </svg>
               <div className="absolute font-bold text-sm text-secondary">
-                {attPercentage}%
+                {attPercentage === null ? "—" : `${attPercentage}%`}
               </div>
             </div>
             <div>
               <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                Excellent attendance record correlates directly with your high performance this
-                term.
+                Attendance based on {totalAtt} recorded session{totalAtt === 1 ? "" : "s"}.
               </p>
             </div>
           </div>
           <div className="bg-surface-container rounded p-3 flex gap-3 items-start border border-outline-variant/30">
             <Icon name="info" className="text-tertiary-container text-[18px] mt-0.5" />
             <p className="font-caption text-caption text-on-surface">
-              Teacher's Note: Outstanding progress in course subjects.
+              {results.find((result: any) => result.comments)?.comments || "No teacher notes have been added."}
             </p>
           </div>
         </div>
@@ -255,6 +221,7 @@ async function StudentResultsContent() {
                   </tr>
                 );
               })}
+              {!displayResults.length && <tr><td colSpan={4} className="px-lg py-10 text-center text-on-surface-variant">No results have been published yet.</td></tr>}
             </tbody>
           </table>
         </div>

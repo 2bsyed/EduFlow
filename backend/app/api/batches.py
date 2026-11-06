@@ -28,6 +28,8 @@ def get_batches(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Batch list is not available for this role")
     query = db.query(Batch).options(
         joinedload(Batch.teacher).joinedload(Teacher.user),
         joinedload(Batch.student_batches),
@@ -69,6 +71,12 @@ def create_batch(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can create batches")
+    if batch.teacher_id:
+        teacher = db.query(Teacher).filter(Teacher.id == batch.teacher_id, Teacher.institute_id == current_user.institute_id).first()
+        if not teacher:
+            raise HTTPException(status_code=400, detail="Teacher must belong to your institute")
     db_batch = Batch(
         institute_id=current_user.institute_id,
         name=batch.name,
@@ -98,6 +106,8 @@ def assign_student_to_batch(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can assign students to batches")
     student = db.query(Student).filter(
         Student.id == assignment.student_id,
         Student.institute_id == current_user.institute_id
@@ -143,6 +153,8 @@ def get_batch_students(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Batch roster is not available for this role")
     if current_user.role == "TEACHER":
         teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id).first()
         batch = db.query(Batch).filter(Batch.id == batch_id, Batch.institute_id == current_user.institute_id).first()
@@ -168,3 +180,42 @@ def get_batch_students(
                 }
             })
     return result
+
+@router.get("/{batch_id}")
+def get_batch_detail(
+    batch_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Batch details are not available for this role")
+    query = db.query(Batch).options(
+        joinedload(Batch.teacher).joinedload(Teacher.user),
+        joinedload(Batch.student_batches).joinedload(StudentBatch.student).joinedload(Student.attendances),
+    ).filter(Batch.id == batch_id, Batch.institute_id == current_user.institute_id)
+    if current_user.role == "TEACHER":
+        teacher = db.query(Teacher).filter(Teacher.user_id == current_user.id, Teacher.institute_id == current_user.institute_id).first()
+        if not teacher:
+            raise HTTPException(status_code=403, detail="Teacher profile not found")
+        query = query.filter(Batch.teacher_id == teacher.id)
+    batch = query.first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    return {
+        "id": batch.id,
+        "name": batch.name,
+        "subject": batch.subject,
+        "schedule": batch.schedule,
+        "teacherId": batch.teacher_id,
+        "teacherName": batch.teacher.user.name if batch.teacher and batch.teacher.user else None,
+        "studentBatches": [{"student": {
+            "id": sb.student.id,
+            "fullName": sb.student.full_name,
+            "rollNo": sb.student.roll_no,
+            "photoUrl": sb.student.photo_url,
+            "email": sb.student.email,
+            "guardianName": sb.student.guardian_name,
+            "guardianPhone": sb.student.guardian_phone,
+            "attendance": [{"status": a.status.value if hasattr(a.status, "value") else str(a.status)} for a in sb.student.attendances if a.batch_id == batch.id],
+        }} for sb in batch.student_batches if sb.student],
+    }

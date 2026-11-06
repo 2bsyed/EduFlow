@@ -1,39 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, Form
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from app.db.database import get_db
 from app.core.security import get_current_user
 from app.models.models import User, Institute, Student, Fee, Attendance, ActivityLog, Teacher, Batch
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from pydantic import BaseModel
 from typing import Optional, List
 import json
 
 router = APIRouter()
-
-class FeeReminderReq(BaseModel):
-    studentId: str
-    amount: str
-
-@router.post("/dashboard/fee-reminder")
-def send_fee_reminder(req: FeeReminderReq, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    institute_id = current_user.institute_id
-    if not institute_id:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    
-    student = db.query(Student).filter(Student.id == req.studentId, Student.institute_id == institute_id).first()
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found in your institute")
-    
-    log = ActivityLog(
-        institute_id=institute_id,
-        user_id=current_user.id,
-        action="FEE_REMINDER_SENT",
-        details=f"Sent fee reminder to {student.full_name} for amount ৳ {req.amount}"
-    )
-    db.add(log)
-    db.commit()
-    return {"success": True, "message": f"Reminder sent to {student.full_name}"}
 
 @router.get("/dashboard/kpi")
 def get_dashboard_kpis(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -41,64 +17,74 @@ def get_dashboard_kpis(db: Session = Depends(get_db), current_user: User = Depen
     if not institute_id:
         raise HTTPException(status_code=403, detail="Unauthorized")
     
-    # 1. Total Students Count
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Dashboard is not available for this role")
+
     total_students = db.query(Student).filter(Student.institute_id == institute_id, Student.status == "ACTIVE").count()
-    
-    # 2. Monthly Revenue Sum (Paid Fees)
-    revenue_sum = db.query(func.sum(Fee.amount)).filter(Fee.institute_id == institute_id, Fee.status == "PAID").scalar() or 0
-    
-    # 3. Pending Fees Sum (Pending / Overdue Fees)
-    pending_sum = db.query(func.sum(Fee.amount)).filter(Fee.institute_id == institute_id, Fee.status.in_(["PENDING", "OVERDUE"])).scalar() or 0
-    
-    # 4. Today's Attendance Breakdown
     today = date.today()
-    # Need to match just the date part of datetime
-    attendance_logs = db.query(Attendance).filter(Attendance.institute_id == institute_id).all() # Just getting all for simplicity, can filter in python if DB date is tricky
-    
-    today_logs = [log for log in attendance_logs if log.date and log.date == today]
-    
+    month_start = today.replace(day=1)
+    revenue_sum = db.query(func.sum(Fee.amount)).filter(
+        Fee.institute_id == institute_id, Fee.status == "PAID",
+        Fee.payment_date >= datetime.combine(month_start, datetime.min.time()),
+        Fee.payment_date < datetime.combine(today + timedelta(days=1), datetime.min.time()),
+    ).scalar() or 0
+    pending_sum = db.query(func.sum(Fee.amount)).filter(
+        Fee.institute_id == institute_id, Fee.status.in_(["PENDING", "OVERDUE"])
+    ).scalar() or 0
+    today_logs = db.query(Attendance).filter(
+        Attendance.institute_id == institute_id, Attendance.date == today
+    ).all()
     present = sum(1 for log in today_logs if log.status == "PRESENT")
     absent = sum(1 for log in today_logs if log.status == "ABSENT")
     late = sum(1 for log in today_logs if log.status == "LATE")
     
     total_att = len(today_logs)
-    attendance_pct = round((present / total_att) * 100) if total_att > 0 else 94
+    attendance_pct = round((present / total_att) * 100) if total_att > 0 else None
     
-    # 6. Recent Activity Log (Top 10)
-    recent_logs = db.query(ActivityLog).filter(ActivityLog.institute_id == institute_id).order_by(ActivityLog.created_at.desc()).limit(10).all()
-    
-    # 7. Pending Fee Records (Top 5)
-    pending_records_db = db.query(Fee).filter(
+    # Pending fee records (top 5)
+    pending_records_db = db.query(Fee).join(Student, and_(Student.id == Fee.student_id, Student.institute_id == institute_id)).filter(
         Fee.institute_id == institute_id,
         Fee.status.in_(["PENDING", "OVERDUE"])
-    ).limit(5).all()
+    ).order_by(Fee.created_at.desc()).limit(5).all()
     
     pending_records = []
     for fee in pending_records_db:
-        st = db.query(Student).filter(Student.id == fee.student_id).first()
+        st = fee.student
         if st:
             pending_records.append({
                 "studentId": st.id,
                 "studentName": st.full_name,
-                "amount": "{:,.0f}".format(fee.amount)
+                "amount": "{:,.0f}".format(fee.amount),
+                "monthYear": fee.month_year,
+                "status": fee.status.value if hasattr(fee.status, "value") else str(fee.status),
             })
+
+    recent_students = db.query(Student).filter(
+        Student.institute_id == institute_id
+    ).order_by(Student.admission_date.desc()).limit(5).all()
+    active_batches = db.query(Batch).filter(Batch.institute_id == institute_id).order_by(Batch.name).limit(6).all()
+    batch_rows = []
+    for batch in active_batches:
+        teacher_name = None
+        if batch.teacher_id:
+            teacher = db.query(Teacher).filter(Teacher.id == batch.teacher_id, Teacher.institute_id == institute_id).first()
+            teacher_name = teacher.user.name if teacher and teacher.user else None
+        batch_rows.append({"id": batch.id, "name": batch.name, "subject": batch.subject, "schedule": batch.schedule, "teacher": teacher_name})
 
     return {
         "totalStudents": total_students,
-        "monthlyRevenue": float(revenue_sum),
+        "feesCollectedThisMonth": float(revenue_sum),
         "pendingFees": float(pending_sum),
+        "activeBatches": db.query(Batch).filter(Batch.institute_id == institute_id).count(),
+        "today": today.isoformat(),
+        "batches": batch_rows,
+        "recentStudents": [{"id": st.id, "rollNo": st.roll_no, "name": st.full_name, "status": st.status.value if hasattr(st.status, "value") else st.status} for st in recent_students],
         "attendance": {
             "present": present,
             "absent": absent,
             "late": late,
             "percentage": attendance_pct
         },
-        "recentLogs": [{
-            "id": log.id,
-            "action": log.action,
-            "details": log.details,
-            "createdAt": log.created_at.isoformat() if log.created_at else None
-        } for log in recent_logs],
         "pendingFeeRecords": pending_records
     }
 
@@ -116,6 +102,12 @@ def create_notice(req: NoticeReq, db: Session = Depends(get_db), current_user: U
     role = current_user.role
     if not institute_id or role not in ["OWNER", "TEACHER"]:
         raise HTTPException(status_code=403, detail="Unauthorized")
+    if req.targetScope not in ["EVERYONE", "BATCH"]:
+        raise HTTPException(status_code=422, detail="Unsupported notice audience")
+    if req.targetScope == "BATCH":
+        target_batch = db.query(Batch).filter(Batch.id == req.batchId, Batch.institute_id == institute_id).first() if req.batchId else None
+        if not target_batch:
+            raise HTTPException(status_code=404, detail="Batch not found in your institute")
     
     if role == "TEACHER":
         if req.targetScope != "BATCH" or not req.batchId:
@@ -154,6 +146,8 @@ def get_notices(db: Session = Depends(get_db), current_user: User = Depends(get_
     institute_id = current_user.institute_id
     if not institute_id:
         raise HTTPException(status_code=403, detail="Unauthorized")
+    if current_user.role not in ["OWNER", "TEACHER", "STUDENT"]:
+        raise HTTPException(status_code=403, detail="Notices are not available for this role")
         
     role = current_user.role
     
@@ -167,6 +161,10 @@ def get_notices(db: Session = Depends(get_db), current_user: User = Depends(get_
         if teacher:
             batch_records = db.query(Batch).filter(Batch.institute_id == institute_id, Batch.teacher_id == teacher.id).order_by(Batch.name).all()
             batches = [{"id": b.id, "name": b.name, "subject": b.subject} for b in batch_records]
+    elif role == "STUDENT":
+        student = db.query(Student).filter(Student.user_id == current_user.id, Student.institute_id == institute_id).first()
+        if student:
+            batches = [{"id": sb.batch.id, "name": sb.batch.name, "subject": sb.batch.subject} for sb in student.student_batches if sb.batch]
             
     # Notices
     logs = db.query(ActivityLog).filter(
@@ -175,9 +173,16 @@ def get_notices(db: Session = Depends(get_db), current_user: User = Depends(get_
     ).order_by(ActivityLog.created_at.desc()).all()
     
     notices = []
+    visible_batch_ids = {batch["id"] for batch in batches}
     for log in logs:
         try:
             details = json.loads(log.details) if log.details else {}
+            scope = details.get("targetScope", "EVERYONE")
+            batch_id = details.get("batchId")
+            if role == "STUDENT" and not (scope == "EVERYONE" or (scope == "BATCH" and batch_id in visible_batch_ids)):
+                continue
+            if role == "TEACHER" and not (scope == "EVERYONE" or (scope == "BATCH" and batch_id in visible_batch_ids)):
+                continue
             notices.append({
                 "id": log.id,
                 "action": log.action,

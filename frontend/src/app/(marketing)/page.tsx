@@ -10,9 +10,6 @@ export default function MarketingLandingPage() {
   const tHero = useTranslations("Hero");
   const tBenefits = useTranslations("Benefits");
   const tHow = useTranslations("HowItWorks");
-  const tTestimonials = useTranslations("Testimonials");
-  const tPricing = useTranslations("Pricing");
-  const tCta = useTranslations("FinalCta");
   const tFooter = useTranslations("Footer");
   const tNav = useTranslations("Nav");
 
@@ -23,7 +20,7 @@ export default function MarketingLandingPage() {
       <header className="bg-surface dark:bg-surface-container-highest w-full sticky top-0 z-50 border-b border-outline-variant shadow-sm">
         <nav className="flex justify-between items-center h-20 px-margin max-w-7xl mx-auto">
           <Link href="/" className="flex items-center">
-            <h1 className="text-xl font-bold text-primary">EduFlow</h1>
+            <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-10 w-auto object-contain" />
           </Link>
 
           <div className="hidden md:flex items-center gap-gutter">
@@ -33,11 +30,11 @@ export default function MarketingLandingPage() {
             <a href="#how-it-works" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
               How It Works
             </a>
-            <a href="#pricing" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
-              {tNav("pricing")}
+            <a href="#capabilities" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
+              Capabilities
             </a>
-            <a href="#testimonials" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
-              {tNav("about")}
+            <a href="#features" className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200">
+              Product
             </a>
           </div>
 
@@ -61,7 +58,7 @@ export default function MarketingLandingPage() {
             <div className="inline-flex items-center gap-sm bg-surface-container-low border border-outline-variant rounded-full px-md py-xs w-max">
               <Icon name="verified" className="text-[18px] text-secondary" />
               <span className="font-label-md text-label-md text-on-surface-variant">
-                {tHero("trustedBadge")}
+                EduFlow institute management
               </span>
             </div>
 
@@ -79,33 +76,18 @@ export default function MarketingLandingPage() {
                 href="/register"
                 className="bg-primary-container text-on-primary font-label-md text-label-md px-lg py-md rounded-lg shadow-sm hover:opacity-90 transition-opacity whitespace-nowrap inline-flex items-center gap-2"
               >
-                <span>{tHero("startTrial")}</span>
+                <span>Create institute account</span>
                 <Icon name="arrow_forward" className="text-[18px]" />
               </Link>
               <Link
-                href="/demo"
+                href="/#features"
                 className="bg-surface-container-lowest text-primary-container border border-primary-container font-label-md text-label-md px-lg py-md rounded-lg hover:bg-surface-container-low transition-colors whitespace-nowrap inline-flex items-center gap-2"
               >
-                <Icon name="play_circle" className="text-[20px]" />
-                <span>{tHero("watchDemo")}</span>
+                <Icon name="arrow_downward" className="text-[20px]" />
+                <span>Explore features</span>
               </Link>
             </div>
 
-            <p className="font-caption text-caption text-outline">
-              {tHero("guarantee")}
-            </p>
-
-            <div className="mt-lg pt-lg border-t border-outline-variant flex flex-col gap-md">
-              <span className="font-caption text-caption text-on-surface-variant">
-                {tHero("usedBy")}
-              </span>
-              <div className="flex flex-wrap items-center gap-lg opacity-75">
-                <span className="font-h4 text-h4 text-on-surface font-semibold">Ideal Coaching</span>
-                <span className="font-h4 text-h4 text-on-surface font-semibold">Success Academy</span>
-                <span className="font-h4 text-h4 text-on-surface font-semibold">Udvash Care</span>
-                <span className="font-h4 text-h4 text-on-surface font-semibold">Retina Medical</span>
-              </div>
-            </div>
           </div>
 
           {/* Right Hero Image Block */}
@@ -120,60 +102,24 @@ export default function MarketingLandingPage() {
                 className="w-full h-full object-cover rounded-xl"
               />
 
-              {/* Floating UI Widget Element */}
-              <div className="absolute bottom-6 -left-4 md:-left-8 bg-surface-container-lowest/90 backdrop-blur-md rounded-lg shadow-xl border border-outline-variant p-md flex flex-col gap-xs max-w-[220px]">
-                <div className="flex items-center gap-sm">
-                  <div className="bg-secondary-container rounded-full p-xs flex items-center justify-center text-secondary">
-                    <Icon name="trending_up" className="text-[16px]" />
-                  </div>
-                  <span className="font-label-md text-label-md text-on-surface font-medium">
-                    {tHero("attendanceRate")}
-                  </span>
-                </div>
-                <div className="flex items-end gap-md">
-                  <span className="font-h3 text-h3 text-on-surface font-bold">94%</span>
-                  <span className="font-caption text-caption text-secondary flex items-center mb-1 font-semibold">
-                    <Icon name="arrow_upward" className="text-[12px]" /> 2.1%
-                  </span>
-                </div>
-                <div className="w-full h-6 mt-xs flex items-end gap-1">
-                  <div className="w-1/6 bg-surface-container h-1/3 rounded-t-sm"></div>
-                  <div className="w-1/6 bg-surface-container h-1/2 rounded-t-sm"></div>
-                  <div className="w-1/6 bg-surface-container h-2/3 rounded-t-sm"></div>
-                  <div className="w-1/6 bg-surface-container h-1/2 rounded-t-sm"></div>
-                  <div className="w-1/6 bg-surface-container h-3/4 rounded-t-sm"></div>
-                  <div className="w-1/6 bg-secondary h-full rounded-t-sm"></div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 2: TRUST BAR & BENEFITS GRID */}
-      <section id="features" className="py-lg border-b border-outline-variant/30 bg-surface-container-low/50">
+      {/* SECTION 2: PRODUCT CAPABILITIES */}
+      <section id="features" className="py-xl border-b border-outline-variant/30 bg-surface-container-low/50">
         <div className="max-w-7xl mx-auto px-margin">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-lg">
-            <div className="flex flex-col items-center justify-center text-center p-sm">
-              <Icon name="groups" className="text-outline mb-xs text-3xl" />
-              <p className="font-h3 text-h3 text-on-surface">500+</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">{tBenefits("trustStudents")}</p>
-            </div>
-            <div className="flex flex-col items-center justify-center text-center p-sm">
-              <Icon name="payments" className="text-outline mb-xs text-3xl" />
-              <p className="font-h3 text-h3 text-on-surface">৳ Lakhs</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">{tBenefits("trustFees")}</p>
-            </div>
-            <div className="flex flex-col items-center justify-center text-center p-sm">
-              <Icon name="dns" className="text-outline mb-xs text-3xl" />
-              <p className="font-h3 text-h3 text-on-surface">99.9%</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">{tBenefits("trustUptime")}</p>
-            </div>
-            <div className="flex flex-col items-center justify-center text-center p-sm">
-              <Icon name="language" className="text-outline mb-xs text-3xl" />
-              <p className="font-h3 text-h3 text-on-surface">Bangla + English</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">{tBenefits("trustSupport")}</p>
-            </div>
+            {[
+              { icon: "groups", label: "Student and teacher records" },
+              { icon: "calendar_today", label: "Batch attendance" },
+              { icon: "payments", label: "Manual fee tracking" },
+              { icon: "grade", label: "Results and report cards" },
+            ].map((item) => <div key={item.label} className="flex flex-col items-center justify-center gap-sm p-sm text-center text-on-surface-variant">
+              <Icon name={item.icon} className="text-3xl" />
+              <span className="font-body-sm text-body-sm">{item.label}</span>
+            </div>)}
           </div>
         </div>
       </section>
@@ -219,10 +165,10 @@ export default function MarketingLandingPage() {
             {/* Benefit 4 */}
             <div className="bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-lg shadow-sm hover:shadow-md transition-shadow duration-300 group">
               <div className="w-12 h-12 rounded-full bg-error-container flex items-center justify-center mb-md group-hover:scale-105 transition-transform text-on-error-container">
-                <Icon name="sms" className="text-[24px]" />
+                <Icon name="receipt_long" className="text-[24px]" />
               </div>
-              <h3 className="font-h4 text-h4 text-on-surface mb-xs">{tBenefits("smsTitle")} <span className="text-primary text-sm">(Coming Soon)</span></h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">{tBenefits("smsDesc")}</p>
+              <h3 className="font-h4 text-h4 text-on-surface mb-xs">Student records</h3>
+              <p className="font-body-md text-body-md text-on-surface-variant">Maintain student profiles and export the directory as CSV.</p>
             </div>
 
             {/* Benefit 5 */}
@@ -230,8 +176,8 @@ export default function MarketingLandingPage() {
               <div className="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-md group-hover:scale-105 transition-transform text-on-surface">
                 <Icon name="bar_chart" className="text-[24px]" />
               </div>
-              <h3 className="font-h4 text-h4 text-on-surface mb-xs">{tBenefits("reportsTitle")}</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">{tBenefits("reportsDesc")}</p>
+              <h3 className="font-h4 text-h4 text-on-surface mb-xs">Institute expenses</h3>
+              <p className="font-body-md text-body-md text-on-surface-variant">Record and review expenses entered by the institute owner.</p>
             </div>
 
             {/* Benefit 6 */}
@@ -298,392 +244,54 @@ export default function MarketingLandingPage() {
         </div>
       </section>
 
-      {/* DASHBOARD BROWSER MOCKUP SHOWCASE */}
+      {/* Product overview */}
       <section className="py-xxl px-margin w-full bg-surface-container-low/40 overflow-hidden border-t border-b border-outline-variant/30">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-xl">
-            <h2 className="font-h1 text-h1 text-on-surface md:font-h1 font-h1-mobile">
-              {tHow("showcaseTitle")}
-            </h2>
-            <p className="mt-md font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
-              {tHow("showcaseSubhead")}
-            </p>
-          </div>
-
-          {/* Mockup Browser Window */}
-          <div className="mt-xl mx-auto max-w-5xl rounded-xl bg-surface border border-outline-variant shadow-xl overflow-hidden flex flex-col">
-            <div className="bg-surface-container-lowest border-b border-outline-variant h-12 flex items-center px-md gap-sm">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-error-container border border-error/20"></div>
-                <div className="w-3 h-3 rounded-full bg-tertiary-fixed-dim border border-tertiary/20"></div>
-                <div className="w-3 h-3 rounded-full bg-secondary-fixed border border-secondary/20"></div>
-              </div>
-              <div className="flex-1 ml-lg">
-                <div className="bg-surface-container-low h-6 rounded-md w-1/2 max-w-md border border-outline-variant/50 flex items-center px-sm mx-auto">
-                  <Icon name="lock" className="text-[14px] text-on-surface-variant/50 mr-2" />
-                  <span className="font-caption text-caption text-on-surface-variant/70">app.eduflow.com/dashboard</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Dashboard Mockup Content Grid */}
-            <div className="bg-surface-bright flex-1 p-lg md:p-xl grid grid-cols-1 md:grid-cols-4 gap-lg">
-              <div className="md:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-md">
-                <div className="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
-                  <span className="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                    <Icon name="account_balance_wallet" className="text-[18px] text-secondary" />
-                    {tHow("totalRevenue")}
-                  </span>
-                  <span className="font-h2 text-h2 text-on-surface mt-sm font-bold">৳ 2.4L</span>
-                  <span className="font-caption text-caption text-secondary mt-xs flex items-center gap-1 font-semibold">
-                    <Icon name="trending_up" className="text-[14px]" /> +12.5% this month
-                  </span>
-                </div>
-
-                <div className="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
-                  <span className="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                    <Icon name="check_circle" className="text-[18px] text-primary" />
-                    {tHow("attendanceRate")}
-                  </span>
-                  <span className="font-h2 text-h2 text-on-surface mt-sm font-bold">94%</span>
-                  <span className="font-caption text-caption text-secondary mt-xs flex items-center gap-1 font-semibold">
-                    <Icon name="trending_up" className="text-[14px]" /> +2% vs last week
-                  </span>
-                </div>
-
-                <div className="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
-                  <span className="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                    <Icon name="pending_actions" className="text-[18px] text-error" />
-                    {tHow("pendingFees")}
-                  </span>
-                  <span className="font-h2 text-h2 text-error mt-sm font-bold">৳ 45K</span>
-                  <span className="font-caption text-caption text-error mt-xs flex items-center gap-1 font-semibold">
-                    <Icon name="warning" className="text-[14px]" /> 15 students pending
-                  </span>
-                </div>
-
-                <div className="bg-surface p-md rounded-lg border border-outline-variant/50 shadow-sm flex flex-col">
-                  <span className="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
-                    <Icon name="groups" className="text-[18px] text-tertiary" />
-                    {tHow("activeStudents")}
-                  </span>
-                  <span className="font-h2 text-h2 text-on-surface mt-sm font-bold">342</span>
-                  <span className="font-caption text-caption text-secondary mt-xs flex items-center gap-1 font-semibold">
-                    <Icon name="trending_up" className="text-[14px]" /> +8 new admissions
-                  </span>
-                </div>
-              </div>
-
-              {/* Chart & Activity */}
-              <div className="md:col-span-3 bg-surface p-lg rounded-lg border border-outline-variant/50 shadow-sm flex flex-col min-h-[260px]">
-                <h3 className="font-h4 text-h4 text-on-surface mb-lg flex justify-between items-center">
-                  <span>{tHow("studentGrowth")}</span>
-                  <Icon name="more_horiz" className="text-on-surface-variant" />
-                </h3>
-                <div className="flex-1 relative flex items-end justify-between pt-lg border-b border-l border-outline-variant/30 pl-sm pb-sm">
-                  <div className="w-full h-full flex items-end justify-around px-md">
-                    <div className="w-8 bg-primary-container/20 rounded-t-sm h-[40%]"></div>
-                    <div className="w-8 bg-primary-container/40 rounded-t-sm h-[55%]"></div>
-                    <div className="w-8 bg-primary-container/60 rounded-t-sm h-[70%]"></div>
-                    <div className="w-8 bg-primary-container/80 rounded-t-sm h-[85%]"></div>
-                    <div className="w-8 bg-primary-container rounded-t-sm h-[95%]"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="md:col-span-1 bg-surface p-lg rounded-lg border border-outline-variant/50 shadow-sm flex flex-col justify-between">
-                <div>
-                  <h3 className="font-h4 text-h4 text-on-surface mb-md">{tHow("recentActivity")}</h3>
-                  <div className="flex flex-col gap-md text-left">
-                    <div className="flex items-start gap-sm">
-                      <div className="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-                        <Icon name="payments" className="text-[14px]" />
-                      </div>
-                      <div>
-                        <p className="font-label-md text-label-md text-on-surface line-clamp-1">{tHow("feeCollected")}</p>
-                        <p className="font-caption text-caption text-on-surface-variant">2 mins ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-sm">
-                      <div className="w-7 h-7 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0">
-                        <Icon name="person_add" className="text-[14px]" />
-                      </div>
-                      <div>
-                        <p className="font-label-md text-label-md text-on-surface line-clamp-1">{tHow("newAdmission")}</p>
-                        <p className="font-caption text-caption text-on-surface-variant">1 hour ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button className="mt-md text-primary font-label-md text-label-md hover:underline w-full text-center cursor-pointer">
-                  {tHow("viewAll")}
-                </button>
-              </div>
-            </div>
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="font-h1 text-h1 text-on-surface">Institute records in one workspace</h2>
+          <p className="mt-md font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">The dashboard summarizes records your institute has entered, including attendance, batches, fees and students.</p>
+          <div className="mt-xl grid gap-md sm:grid-cols-2 lg:grid-cols-4">
+            {[['groups', 'Student directory'], ['calendar_today', 'Batch attendance'], ['payments', 'Manual fee records'], ['grade', 'Exam results']].map(([icon, label]) => <div key={label} className="flex items-center gap-sm rounded-lg border border-outline-variant bg-surface p-lg text-left"><Icon name={icon} className="text-primary text-2xl" /><span className="font-label-md text-label-md text-on-surface">{label}</span></div>)}
           </div>
         </div>
       </section>
 
-      {/* SECTION 4: TESTIMONIALS SECTION */}
-      <section id="testimonials" className="py-xxl md:py-24 bg-surface-container-low px-margin border-b border-outline-variant/30">
+      {/* SECTION 5: CURRENT PRODUCT CAPABILITIES */}
+      <section id="capabilities" className="py-xxl px-margin bg-background">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-xl">
-            <h2 className="font-h2 text-h2 text-on-background mb-sm">{tTestimonials("title")}</h2>
-            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
-              {tTestimonials("subhead")}
-            </p>
+          <div className="mb-xl text-center">
+            <h2 className="font-h1 text-h1 text-on-background mb-sm">The daily tools institutes need</h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Manage academic records and institute operations from one workspace.</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {/* Testimonial Card 1 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-              <div className="flex gap-1 mb-md text-secondary">
-                {[...Array(5)].map((_, i) => (
-                  <Icon
-                    name="star"
-                    key={i}
-                    className="text-[20px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  />
-                ))}
-              </div>
-              <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
-                "{tTestimonials("quote1")}"
-              </blockquote>
-              <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
-                  <Image
-                    src="/images/testimonial-1.png"
-                    alt={tTestimonials("author1Name")}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author1Name")}</p>
-                  <p className="font-caption text-caption text-on-surface-variant">{tTestimonials("author1Role")}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial Card 2 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-              <div className="flex gap-1 mb-md text-secondary">
-                {[...Array(5)].map((_, i) => (
-                  <Icon
-                    name="star"
-                    key={i}
-                    className="text-[20px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  />
-                ))}
-              </div>
-              <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
-                "{tTestimonials("quote2")}"
-              </blockquote>
-              <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
-                  <Image
-                    src="/images/testimonial-2.png"
-                    alt={tTestimonials("author2Name")}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author2Name")}</p>
-                  <p className="font-caption text-caption text-on-surface-variant">{tTestimonials("author2Role")}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial Card 3 */}
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
-              <div className="flex gap-1 mb-md text-secondary">
-                {[...Array(5)].map((_, i) => (
-                  <Icon
-                    name="star"
-                    key={i}
-                    className="text-[20px]"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  />
-                ))}
-              </div>
-              <blockquote className="font-body-md text-body-md text-on-surface flex-grow mb-lg italic">
-                "{tTestimonials("quote3")}"
-              </blockquote>
-              <div className="flex items-center gap-md pt-md border-t border-surface-variant mt-auto">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 shadow-sm">
-                  <Image
-                    src="/images/testimonial-3.png"
-                    alt={tTestimonials("author3Name")}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="font-label-md text-label-md text-on-background font-semibold">{tTestimonials("author3Name")}</p>
-                  <p className="font-caption text-caption text-on-surface-variant">{tTestimonials("author3Role")}</p>
-                </div>
-              </div>
-            </div>
+          <div className="grid gap-lg md:grid-cols-3">
+            {[
+              { title: "Academic records", items: ["Students and teacher directory", "Batches and attendance", "Exam results and report cards"] },
+              { title: "Fees and expenses", items: ["Record payments manually", "Track pending fees and receipts", "Log institute expenses"] },
+              { title: "Institute operations", items: ["Role-based owner, teacher and student views", "Notices for institute or assigned batches", "Export student records to CSV"] },
+            ].map((group) => <article key={group.title} className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
+              <h3 className="font-h3 text-h3 font-semibold text-on-background">{group.title}</h3>
+              <ul className="mt-md space-y-sm">{group.items.map((item) => <li key={item} className="flex items-start gap-sm font-body-md text-body-md text-on-surface"><Icon name="check_circle" className="mt-0.5 text-secondary text-[20px]" />{item}</li>)}</ul>
+            </article>)}
           </div>
-        </div>
-      </section>
-
-      {/* SECTION 5: PRICING SECTION */}
-      <section id="pricing" className="py-xxl px-margin relative overflow-hidden bg-background">
-        <div className="max-w-7xl w-full mx-auto flex flex-col items-center text-center mb-xl">
-          <h1 className="font-h1 text-h1 text-on-background mb-sm">{tPricing("title")}</h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">{tPricing("subhead")}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg max-w-7xl w-full mx-auto relative z-10">
-          {/* Starter Card */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-lg transition-shadow duration-300 relative group">
-            <div className="mb-lg">
-              <h2 className="font-h3 text-h3 text-on-background mb-xs">{tPricing("starterTitle")}</h2>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mb-md">{tPricing("starterSubhead")}</p>
-              <div className="flex items-baseline gap-xs">
-                <span className="font-h2 text-h2 text-on-background">{tPricing("starterPrice")}</span>
-                <span className="font-body-md text-body-md text-on-surface-variant">{tPricing("perMonth")}</span>
-              </div>
-              <p className="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">
-                {tPricing("starterCap")}
-              </p>
-            </div>
-            <ul className="flex flex-col gap-md mb-xl flex-grow text-left">
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Digital Attendance
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Basic Fee Tracking
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                SMS Notifications (Coming Soon)
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Bangla Support
-              </li>
-            </ul>
-            <Link
-              href="/register"
-              className="w-full text-center border-2 border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg mt-auto block"
-            >
-              {tPricing("startTrial")}
-            </Link>
-          </div>
-
-          {/* Growth Card (Most Popular) */}
-          <div className="bg-surface-container-lowest border-2 border-primary-container rounded-xl p-lg flex flex-col shadow-xl md:-mt-md md:mb-md relative z-20 transform transition-transform duration-300 hover:-translate-y-2">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary font-label-md text-label-md px-md py-xs rounded-full shadow-sm whitespace-nowrap">
-              {tPricing("mostPopular")}
-            </div>
-            <div className="mb-lg mt-sm">
-              <h2 className="font-h3 text-h3 text-on-background mb-xs">{tPricing("growthTitle")}</h2>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mb-md">{tPricing("growthSubhead")}</p>
-              <div className="flex items-baseline gap-xs">
-                <span className="font-h2 text-h2 text-on-background">{tPricing("growthPrice")}</span>
-                <span className="font-body-md text-body-md text-on-surface-variant">{tPricing("perMonth")}</span>
-              </div>
-              <p className="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">
-                {tPricing("growthCap")}
-              </p>
-            </div>
-            <ul className="flex flex-col gap-md mb-xl flex-grow text-left">
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background font-medium">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Everything in Starter
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Results & Report Cards
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                bKash & Nagad Integration (Coming Soon)
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Advanced Analytics
-              </li>
-            </ul>
-            <Link
-              href="/register"
-              className="w-full text-center bg-primary-container text-on-primary hover:bg-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg shadow-md mt-auto block"
-            >
-              {tPricing("startTrial")}
-            </Link>
-          </div>
-
-          {/* Pro Card */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col hover:shadow-lg transition-shadow duration-300 relative group">
-            <div className="mb-lg">
-              <h2 className="font-h3 text-h3 text-on-background mb-xs">{tPricing("proTitle")}</h2>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mb-md">{tPricing("proSubhead")}</p>
-              <div className="flex items-baseline gap-xs">
-                <span className="font-h2 text-h2 text-on-background">{tPricing("proPrice")}</span>
-                <span className="font-body-md text-body-md text-on-surface-variant">{tPricing("perMonth")}</span>
-              </div>
-              <p className="font-label-md text-label-md text-primary mt-sm bg-surface-container-low inline-block px-sm py-xs rounded-full">
-                {tPricing("proCap")}
-              </p>
-            </div>
-            <ul className="flex flex-col gap-md mb-xl flex-grow text-left">
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background font-medium">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Everything in Growth
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Multi-branch Management
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Staff Payroll
-              </li>
-              <li className="flex items-center gap-sm font-body-md text-body-md text-on-background">
-                <Icon name="check_circle" className="text-secondary text-[20px]" />
-                Priority Support
-              </li>
-            </ul>
-            <Link
-              href="/register"
-              className="w-full text-center border-2 border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors duration-200 font-label-md text-label-md py-md rounded-lg mt-auto block"
-            >
-              {tPricing("startTrial")}
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-xl text-center flex items-center justify-center gap-sm bg-surface-container-low px-lg py-md rounded-full shadow-sm max-w-3xl w-full mx-auto">
-          <Icon name="info" className="text-primary" />
-          <p className="font-body-md text-body-md text-on-surface-variant">{tPricing("guarantee")}</p>
+          <p className="mt-lg text-center font-body-sm text-body-sm text-on-surface-variant">Payment gateways, automated messaging, payroll and multi-branch tools are not part of this version.</p>
         </div>
       </section>
 
       {/* SECTION 6: FINAL CTA & MULTI-COLUMN FOOTER */}
       <section className="bg-primary-container text-on-primary py-xxl px-margin">
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-          <h2 className="font-h2 text-h2 text-on-primary mb-md">
-            {tCta("title")}
-          </h2>
+          <h2 className="font-h2 text-h2 text-on-primary mb-md">Start managing your institute in one place</h2>
           <p className="font-body-lg text-body-lg text-on-primary opacity-90 mb-xl max-w-2xl">
-            {tCta("subhead")}
+            Create an owner account, add teachers and students, then manage day-to-day academic and fee records.
           </p>
           <Link
             href="/register"
             className="bg-surface-container-lowest text-primary-container hover:bg-surface-container-low transition-colors duration-200 font-label-md text-label-md px-xl py-md rounded-lg shadow-sm mb-md inline-flex items-center gap-sm"
           >
-            <span>{tCta("button")}</span>
+            <span>Create institute account</span>
             <Icon name="arrow_forward" className="text-[20px]" />
           </Link>
           <p className="font-caption text-caption text-on-primary opacity-80">
-            {tCta("note")}
+            Manual fee recording is available. Payment processing and automated messaging are not connected.
           </p>
         </div>
       </section>
@@ -694,15 +302,9 @@ export default function MarketingLandingPage() {
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-2 flex flex-col gap-md">
             <Link href="/">
-              <h1 className="text-xl font-bold text-primary">EduFlow</h1>
+              <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} className="h-9 w-auto object-contain" />
             </Link>
-            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
-              {tFooter("brandDesc")}
-            </p>
-            <div className="flex gap-md mt-sm text-on-surface-variant">
-              <Icon name="qr_code_2" className="text-[22px]" />
-              <Icon name="mail" className="text-[22px]" />
-            </div>
+            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xs">An operations workspace for coaching institutes and learning centers.</p>
           </div>
 
           {/* Product Column */}
@@ -710,35 +312,24 @@ export default function MarketingLandingPage() {
             <h4 className="font-label-md text-label-md text-on-surface font-semibold">{tFooter("product")}</h4>
             <ul className="flex flex-col gap-sm">
               <li><a href="#features" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("features")}</a></li>
-              <li><a href="#pricing" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("pricing")}</a></li>
-              <li><Link href="/demo" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("demo")}</Link></li>
+              <li><a href="#capabilities" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Capabilities</a></li>
+              <li><Link href="/register" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Create an institute account</Link></li>
             </ul>
           </div>
 
           {/* Company Column */}
           <div className="col-span-1 lg:col-span-1 flex flex-col gap-md">
-            <h4 className="font-label-md text-label-md text-on-surface font-semibold">{tFooter("company")}</h4>
-            <ul className="flex flex-col gap-sm">
-              <li><a href="#testimonials" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("about")}</a></li>
-              <li><a href="#features" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("contact")}</a></li>
-              <li><a href="#features" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("blog")}</a></li>
-            </ul>
+            <h4 className="font-label-md text-label-md text-on-surface font-semibold">About EduFlow</h4>
+            <p className="font-body-sm text-body-sm text-on-surface-variant">Tools for student records, attendance, fees, results, and institute notices.</p>
           </div>
 
           {/* Support Column */}
           <div className="col-span-2 lg:col-span-2 flex flex-col gap-md">
-            <h4 className="font-label-md text-label-md text-on-surface font-semibold">{tFooter("support")}</h4>
+            <h4 className="font-label-md text-label-md text-on-surface font-semibold">Language</h4>
             <ul className="flex flex-col gap-sm">
-              <li><a href="/demo" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">{tFooter("helpCenter")}</a></li>
               <li className="flex items-center gap-sm">
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Language:</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">Choose display language:</span>
                 <LanguageToggle />
-              </li>
-              <li>
-                <a href="https://wa.me/8801700000000" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-sm font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors">
-                  <Icon name="chat" className="text-[18px]" />
-                  {tFooter("whatsapp")}
-                </a>
               </li>
             </ul>
           </div>
@@ -749,10 +340,6 @@ export default function MarketingLandingPage() {
           <p className="font-caption text-caption text-on-surface-variant">
             {tFooter("copyright")}
           </p>
-          <div className="flex gap-lg font-caption text-caption text-on-surface-variant">
-            <a href="/register" className="hover:text-primary transition-colors">{tFooter("privacy")}</a>
-            <a href="/register" className="hover:text-primary transition-colors">{tFooter("terms")}</a>
-          </div>
         </div>
       </footer>
     </div>

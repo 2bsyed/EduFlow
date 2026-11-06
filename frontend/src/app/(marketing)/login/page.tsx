@@ -17,6 +17,7 @@ export default function LoginPage() {
   const callbackUrl = searchParams.get("callbackUrl");
 
   const isExpired = searchParams.get("expired") === "1";
+  const accountCreated = searchParams.get("created") === "1";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,12 +71,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickFill = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword("password123");
-    setError("");
-  };
-
   return (
     <div className="bg-pattern min-h-screen flex flex-col font-sans text-on-surface antialiased relative">
       {/* Top Navigation for Language Toggle */}
@@ -90,7 +85,7 @@ export default function LoginPage() {
           {/* Logo & Header */}
           <div className="text-center mb-xl">
             <div className="flex justify-center mb-md">
-              <h1 className="text-xl font-bold text-primary">EduFlow</h1>
+              <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-10 w-auto object-contain" />
             </div>
             <h1 className="font-h2 text-h2 text-primary mb-sm">{t("welcomeBack")}</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">
@@ -105,6 +100,7 @@ export default function LoginPage() {
               <span>Your session has expired. Please sign in again.</span>
             </div>
           )}
+          {accountCreated && <div role="status" className="mb-lg rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">Your institute account is ready. Sign in with your new credentials.</div>}
 
           {/* Error Message */}
           {error && (
@@ -144,13 +140,9 @@ export default function LoginPage() {
                 <label className="font-label-md text-label-md text-on-surface block" htmlFor="password">
                   {t("passwordLabel")}
                 </label>
-                <button
-                  type="button"
-                  onClick={() => alert("Password resets are managed by your Institute Admin. Please contact support@eduflow.bd if you need assistance.")}
-                  className="font-label-md text-label-md text-primary hover:text-surface-tint transition-colors cursor-pointer bg-transparent border-none p-0"
-                >
+                <span className="font-caption text-caption text-on-surface-variant text-right max-w-[230px]">
                   {t("forgotPassword")}
-                </button>
+                </span>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
@@ -210,48 +202,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="mt-xl relative">
-            <div aria-hidden="true" className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-surface-container-highest"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-md bg-surface-container-lowest font-body-sm text-body-sm text-on-surface-variant">
-                {t("orContinueWith")}
-              </span>
-            </div>
-          </div>
-
-          {/* Demo Quick Login Options */}
-          <div className="mt-lg space-y-sm">
-            <p className="font-caption text-caption text-center text-on-surface-variant font-medium mb-xs">
-              {t("demoCredentialsTitle")}
-            </p>
-            <div className="grid grid-cols-3 gap-xs">
-              <button
-                type="button"
-                onClick={() => handleQuickFill("owner@eduflow.bd")}
-                className="px-2 py-1.5 bg-surface-container-low hover:bg-surface-container border border-outline-variant rounded text-xs font-label-md text-primary text-center transition-colors cursor-pointer"
-              >
-                {t("ownerRole")}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill("kamrul@eduflow.bd")}
-                className="px-2 py-1.5 bg-surface-container-low hover:bg-surface-container border border-outline-variant rounded text-xs font-label-md text-secondary text-center transition-colors cursor-pointer"
-              >
-                {t("teacherRole")}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill("student1@eduflow.bd")}
-                className="px-2 py-1.5 bg-surface-container-low hover:bg-surface-container border border-outline-variant rounded text-xs font-label-md text-tertiary text-center transition-colors cursor-pointer"
-              >
-                {t("studentRole")}
-              </button>
-            </div>
-          </div>
-
           {/* Footer Link */}
           <div className="mt-xl text-center">
             <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -260,7 +210,7 @@ export default function LoginPage() {
                 href="/register"
                 className="font-label-md text-label-md text-primary hover:text-surface-tint font-semibold transition-colors ml-xs"
               >
-                {t("freeTrial")}
+                Create an institute account
               </Link>
             </p>
           </div>

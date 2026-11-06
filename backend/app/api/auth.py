@@ -5,14 +5,18 @@ from typing import Optional
 import time
 
 from app.db.database import get_db
-from app.models.models import User
+from app.models.models import User, Institute, Role
 from app.core.security import (
     verify_password,
     create_access_token,
     create_refresh_token,
-    ACCESS_TOKEN_EXPIRE_MINUTES
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    get_password_hash,
 )
 from datetime import timedelta
+from uuid import uuid4
+from sqlalchemy.exc import IntegrityError
+from pydantic import Field, field_validator
 
 router = APIRouter()
 
@@ -26,6 +30,57 @@ failed_attempts_store = {}
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class RegisterRequest(BaseModel):
+    institute_name: str = Field(min_length=2, max_length=160)
+    owner_name: str = Field(min_length=2, max_length=120)
+    email: str = Field(min_length=5, max_length=254)
+    phone: str = Field(min_length=5, max_length=40)
+    password: str = Field(min_length=12, max_length=72)
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str) -> str:
+        value = value.strip().lower()
+        if value.count("@") != 1 or "." not in value.rsplit("@", 1)[1]:
+            raise ValueError("Enter a valid email address")
+        return value
+
+    @field_validator("password")
+    @classmethod
+    def validate_password_length(cls, value: str) -> str:
+        if len(value.encode("utf-8")) > 72:
+            raise ValueError("Password must be 72 UTF-8 bytes or fewer")
+        return value
+
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register_owner(request: RegisterRequest, db: Session = Depends(get_db)):
+    if db.query(User).filter(User.email == request.email).first():
+        raise HTTPException(status_code=409, detail="An account with this email already exists")
+    institute = Institute(
+        name=request.institute_name.strip(),
+        code=f"EF-{uuid4().hex[:10].upper()}",
+        phone=request.phone.strip(),
+        currency="BDT",
+        timezone="Asia/Dhaka",
+        default_language="en",
+    )
+    db.add(institute)
+    db.flush()
+    owner = User(
+        institute_id=institute.id,
+        name=request.owner_name.strip(),
+        email=request.email,
+        password_hash=get_password_hash(request.password),
+        role=Role.OWNER,
+    )
+    db.add(owner)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Unable to create account with these details")
+    return {"success": True, "message": "Institute account created", "email": owner.email}
 
 class TokenResponse(BaseModel):
     access_token: str

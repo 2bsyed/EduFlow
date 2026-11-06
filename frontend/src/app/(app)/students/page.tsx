@@ -37,7 +37,7 @@ async function StudentsContent() {
     // Compute Attendance Percentage
     const totalAtt = (s.attendances || []).length;
     const presentAtt = (s.attendances || []).filter((a: any) => a.status === "PRESENT").length;
-    const attendancePct = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : 95;
+    const attendancePct = totalAtt > 0 ? Math.round((presentAtt / totalAtt) * 100) : null;
 
     return {
       id: s.id,
@@ -100,8 +100,8 @@ export default async function StudentsPage() {
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={session?.user?.name || "Dr. Rafiqul Islam"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userName={session?.user?.name || "Account"}
+              userEmail={session?.user?.email || undefined}
               userRole={session?.user?.role || "OWNER"}
               avatarUrl={session?.user?.image}
               onSignOut={async () => {

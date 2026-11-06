@@ -15,28 +15,30 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [plan, setPlan] = useState("growth");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
-      // Automatic quick login with demo owner credentials for trial access
-      const res = await signIn("credentials", {
-        email: "owner@eduflow.bd",
-        password: "password123",
-        redirect: false,
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiBase}/api/v1/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ institute_name: instituteName, owner_name: ownerName, email, phone, password }),
       });
-
-      if (res?.ok) {
-        router.push("/dashboard");
-      } else {
-        router.push("/login");
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(typeof result.detail === "string" ? result.detail : "Could not create the account.");
+      const signedIn = await signIn("credentials", { email, password, redirect: false });
+      if (signedIn?.ok) router.push("/dashboard");
+      else {
+        router.push("/login?created=1");
       }
-    } catch {
-      router.push("/dashboard");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not create the account.");
     } finally {
       setLoading(false);
     }
@@ -47,10 +49,7 @@ export default function RegisterPage() {
       {/* Header */}
       <header className="w-full flex justify-between items-center p-margin max-w-7xl mx-auto z-10">
         <Link href="/" className="flex items-center gap-xs">
-          <Icon name="school" className="text-[28px] text-primary" />
-          <Link href="/">
-              <h1 className="text-xl font-bold text-primary">EduFlow</h1>
-            </Link>
+          <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-10 w-auto object-contain" />
         </Link>
         <div className="flex items-center gap-md">
           <Link
@@ -72,9 +71,9 @@ export default function RegisterPage() {
             <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-container/10 rounded-full mb-md text-primary mx-auto">
               <Icon name="rocket_launch" className="text-[30px]" />
             </div>
-            <h1 className="font-h2 text-h2 text-primary font-bold mb-xs">Start Your 14-Day Free Trial</h1>
+            <h1 className="font-h2 text-h2 text-primary font-bold mb-xs">Create your institute account</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              Register your coaching center in minutes. No credit card required.
+              Set up an owner account for your institute.
             </p>
           </div>
 
@@ -181,39 +180,14 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create password"
+                  placeholder="At least 12 characters"
+                  minLength={12}
                   className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface rounded-lg pl-[44px] pr-md py-[10px] focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors font-body-md text-body-md placeholder:text-outline"
                 />
               </div>
             </div>
 
-            {/* Plan selection */}
-            <div className="space-y-xs pt-xs">
-              <label className="font-label-md text-label-md text-on-surface block">
-                Select Trial Plan
-              </label>
-              <div className="grid grid-cols-3 gap-xs">
-                {[
-                  { id: "starter", name: "Starter", cap: "100 Students" },
-                  { id: "growth", name: "Growth", cap: "500 Students" },
-                  { id: "pro", name: "Pro", cap: "Unlimited" },
-                ].map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => setPlan(p.id)}
-                    className={`p-xs rounded-lg border text-center transition-all cursor-pointer ${
-                      plan === p.id
-                        ? "border-primary bg-primary/5 text-primary font-bold shadow-sm"
-                        : "border-outline-variant text-on-surface-variant hover:border-primary/50"
-                    }`}
-                  >
-                    <div className="text-xs font-semibold">{p.name}</div>
-                    <div className="text-[10px] opacity-75">{p.cap}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
+            {error && <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p>}
 
             {/* Submit Button */}
             <button
@@ -222,20 +196,20 @@ export default function RegisterPage() {
               className="w-full bg-primary hover:bg-surface-tint text-on-primary font-label-md text-label-md py-md rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center gap-sm active:scale-[0.98] cursor-pointer disabled:opacity-60 mt-md"
             >
               {loading ? (
-                <span>Launching Your Trial...</span>
+                <span>Creating your account…</span>
               ) : (
                 <>
-                  <span>Create Account & Launch Trial</span>
+                  <span>Create account</span>
                   <Icon name="arrow_forward" className="text-[20px]" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Quick Demo Access Option */}
+          {/* Sign-in option */}
           <div className="mt-lg pt-md border-t border-surface-container-highest text-center">
             <p className="font-body-sm text-body-sm text-on-surface-variant mb-xs">
-              Already have an account or want a quick test?
+              Already have an account?
             </p>
             <div className="flex items-center justify-center gap-md">
               <Link
@@ -244,14 +218,6 @@ export default function RegisterPage() {
               >
                 Sign In Instead
               </Link>
-              <span className="text-outline">•</span>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="font-label-md text-label-md text-secondary font-semibold hover:underline cursor-pointer"
-              >
-                Instant Demo Access
-              </button>
             </div>
           </div>
 

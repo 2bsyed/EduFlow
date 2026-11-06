@@ -4,7 +4,6 @@ from sqlalchemy.orm import joinedload
 from typing import List, Optional, Any
 import math
 import random
-from datetime import datetime
 
 from app.db.database import get_db
 from app.models.models import User, Fee, Student, StudentBatch, Batch, ActivityLog, FeeStatus, PaymentMethod
@@ -13,18 +12,14 @@ from app.schemas.schemas import FeeResponse, FeeCreate
 
 router = APIRouter(prefix="/fees", tags=["fees"])
 
-def process_payment(method: str, amount: float):
-    return {
-        "transactionId": f"{method.lower()}_tx_{int(datetime.now().timestamp() * 1000)}",
-        "status": FeeStatus.PAID
-    }
-
 @router.post("/", response_model=FeeResponse)
 def record_fee(
     fee_in: FeeCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Only institute owners can record fee payments")
     student = db.query(Student).filter(
         Student.id == fee_in.student_id,
         Student.institute_id == current_user.institute_id
@@ -36,8 +31,6 @@ def record_fee(
     if fee_in.amount <= 0:
         raise HTTPException(status_code=400, detail="Invalid payment amount")
 
-    processed = process_payment(fee_in.payment_method, fee_in.amount)
-    
     receipt_no = fee_in.receipt_no or f"RCPT-{math.floor(100000 + random.random() * 900000)}"
     month_year = fee_in.date.strftime("%b %Y")
 
@@ -47,9 +40,9 @@ def record_fee(
         receipt_no=receipt_no,
         amount=fee_in.amount,
         month_year=month_year,
-        status=processed["status"],
+        status=FeeStatus.PAID,
         payment_method=fee_in.payment_method,
-        transaction_id=processed["transactionId"],
+        transaction_id=None,
         payment_date=fee_in.date,
         notes=f"Recorded via web dashboard by {current_user.name}"
     )
@@ -75,6 +68,8 @@ def get_fees(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "OWNER":
+        raise HTTPException(status_code=403, detail="Use the student fee view for personal fee records")
     query = db.query(Fee).options(joinedload(Fee.student).joinedload(Student.student_batches).joinedload(StudentBatch.batch)).filter(Fee.institute_id == current_user.institute_id)
     if status:
         query = query.filter(Fee.status == status)
@@ -110,6 +105,8 @@ def get_my_fees(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role != "STUDENT":
+        raise HTTPException(status_code=403, detail="Personal fee records are available to student accounts")
     student = db.query(Student).filter(Student.user_id == current_user.id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")

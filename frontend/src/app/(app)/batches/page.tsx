@@ -207,8 +207,8 @@ export default async function OwnerBatchesPage() {
             <NotificationBell />
             <LanguageToggle />
             <ProfileDropdown
-              userName={session?.user?.name || "Dr. Rafiqul Islam"}
-              userEmail={session?.user?.email || "owner@eduflow.bd"}
+              userName={session?.user?.name || "Account"}
+              userEmail={session?.user?.email || undefined}
               userRole={session?.user?.role || "OWNER"}
               avatarUrl={session?.user?.image}
               onSignOut={async () => {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
+import Image from "next/image";
 
 interface TeacherSidebarProps {
   activeTab?: "dashboard" | "batches" | "attendance" | "results" | "timetable" | "notices" | "profile";
@@ -30,7 +31,7 @@ export function TeacherSidebar({ activeTab: propActiveTab, instituteName }: Teac
   return (
     <aside className="docked left-0 h-full w-60 border-r border-outline-variant flex flex-col py-5 px-3 bg-surface-container-lowest hidden md:flex shrink-0">
       <div className="mb-6 px-2 flex flex-col items-start gap-1">
-        <h1 className="text-lg font-semibold tracking-tight text-primary">EduFlow</h1>
+        <Image src="/images/eduflow-logo.png" alt="EduFlow" width={145} height={49} priority className="h-9 w-auto object-contain" />
         <p className="text-xs text-on-surface-variant truncate w-full">
           {instituteName || "Teacher Portal"}
         </p>

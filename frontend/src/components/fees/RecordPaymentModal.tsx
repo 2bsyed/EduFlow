@@ -277,6 +277,7 @@ export function RecordPaymentModal({
                     </span>
                   </label>
                 </div>
+                <p className="mt-2 text-xs text-on-surface-variant">This records a payment received by the institute. It does not contact bKash, Nagad, or a bank.</p>
               </div>
 
               {/* Receipt Info */}

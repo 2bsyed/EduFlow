@@ -12,49 +12,6 @@ async function StudentNoticesContent() {
   const noticesData = await fetchApi("/api/v1/core/notices").catch(() => ({ notices: [] }));
   const rawNoticeLogs: Array<any> = noticesData.notices || [];
 
-  const sampleNotices = [
-    {
-      id: "n1",
-      title: "Annual Term Final Examination Schedule 2026",
-      category: "EXAM",
-      date: "26 Jul 2026",
-      urgent: true,
-      author: "Academic Control Committee",
-      content:
-        "The routine for the upcoming Annual Term Final Examination has been published. All students are advised to clear their pending tuition fees before collecting their admit cards from the admin office.",
-    },
-    {
-      id: "n2",
-      title: "Special Model Test & Performance Review",
-      category: "ACADEMIC",
-      date: "22 Jul 2026",
-      urgent: false,
-      author: "HSC Academic Care",
-      content:
-        "Special revision model test classes for Physics and Higher Mathematics will be held this Friday from 09:00 AM to 12:00 PM. Attendance is mandatory for all registered batch students.",
-    },
-    {
-      id: "n3",
-      title: "Holiday Notice: National Mourning Day",
-      category: "HOLIDAY",
-      date: "15 Jul 2026",
-      urgent: false,
-      author: "Institute Administration",
-      content:
-        "Please be informed that all regular classes and administrative activities will remain closed on August 15 in observance of National Mourning Day. Regular classes resume on August 16.",
-    },
-    {
-      id: "n4",
-      title: "Monthly Tuition Fee Reminder for July 2026",
-      category: "FEES",
-      date: "10 Jul 2026",
-      urgent: true,
-      author: "Accounts Department",
-      content:
-        "Guardians and students are requested to clear monthly tuition fees for July 2026 via bKash or Nagad online merchant gateways to avoid late registration charges.",
-    },
-  ];
-
   const parsedNotices = rawNoticeLogs.map((log: any) => {
     let data: any = {};
     if (log && typeof log.details === "object" && log.details !== null) {
@@ -96,7 +53,7 @@ async function StudentNoticesContent() {
     };
   });
 
-  const notices = parsedNotices.length > 0 ? parsedNotices : sampleNotices;
+  const notices = parsedNotices;
 
   return (
     <>
