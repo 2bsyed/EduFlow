@@ -36,77 +36,79 @@
   }
 }
 
-/* Signed-in workspaces use a restrained Fluent-style surface system. */
-body:has(aside) {
-  background: var(--eduflow-canvas);
-}
+/* Signed-in workspaces default styling */
+@layer components {
+  body:has(aside) {
+    background: var(--eduflow-canvas);
+  }
 
-body:has(aside) aside {
-  background: #fff;
-  box-shadow: none;
-  border-color: #e1e1e1;
-}
+  body:has(aside) aside {
+    background: #fff;
+    box-shadow: none;
+    border-color: #e1e1e1;
+  }
 
-body:has(aside) header.sticky {
-  background: #fff;
-  box-shadow: none;
-  border-color: #e1e1e1;
-}
+  body:has(aside) header.sticky {
+    background: #fff;
+    box-shadow: none;
+    border-color: #e1e1e1;
+  }
 
-body:has(aside) main {
-  background: #f5f7f9;
-}
+  body:has(aside) main {
+    background: #f5f7f9;
+  }
 
-body:has(aside) .shadow-sm,
-body:has(aside) .shadow,
-body:has(aside) .shadow-md {
-  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
-}
+  body:has(aside) .shadow-sm,
+  body:has(aside) .shadow,
+  body:has(aside) .shadow-md {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  }
 
-body:has(aside) [class*="hover:-translate"]:hover {
-  transform: none;
-}
+  body:has(aside) [class*="hover:-translate"]:hover {
+    transform: none;
+  }
 
-body:has(aside) input,
-body:has(aside) select,
-body:has(aside) textarea {
-  border-color: #8a8886;
-  border-radius: 4px;
-  background-color: #fff;
-}
+  body:has(aside) input:not([type="checkbox"]):not([type="radio"]),
+  body:has(aside) select,
+  body:has(aside) textarea {
+    border-color: #8a8886;
+    border-radius: 4px;
+    background-color: #fff;
+  }
 
-body:has(aside) input:focus,
-body:has(aside) select:focus,
-body:has(aside) textarea:focus {
-  border-color: #0f6cbd;
-  box-shadow: inset 0 0 0 1px #0f6cbd;
-  outline: none;
-}
+  body:has(aside) input:not([type="checkbox"]):not([type="radio"]):focus,
+  body:has(aside) select:focus,
+  body:has(aside) textarea:focus {
+    border-color: #0f6cbd;
+    box-shadow: inset 0 0 0 1px #0f6cbd;
+    outline: none;
+  }
 
-body:has(aside) table {
-  border-collapse: collapse;
-  width: 100%;
-}
+  body:has(aside) table {
+    border-collapse: collapse;
+    width: 100%;
+  }
 
-body:has(aside) th {
-  color: #5c5c5c;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-align: left;
-  white-space: nowrap;
-}
+  body:has(aside) th {
+    color: #5c5c5c;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: left;
+    white-space: nowrap;
+  }
 
-body:has(aside) th,
-body:has(aside) td {
-  border-bottom: 1px solid #e1e1e1;
-  vertical-align: middle;
-}
+  body:has(aside) th,
+  body:has(aside) td {
+    border-bottom: 1px solid #e1e1e1;
+    vertical-align: middle;
+  }
 
-body:has(aside) a:focus-visible,
-body:has(aside) button:focus-visible {
-  outline: 2px solid #0f6cbd;
-  outline-offset: 2px;
+  body:has(aside) a:focus-visible,
+  body:has(aside) button:focus-visible {
+    outline: 2px solid #0f6cbd;
+    outline-offset: 2px;
+  }
 }
 
 @media (max-width: 767px) {
