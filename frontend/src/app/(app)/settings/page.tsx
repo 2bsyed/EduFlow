@@ -1,7 +1,5 @@
 import React, { Suspense } from "react";
-import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
-import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { ProfileDropdown } from "@/components/ui/ProfileDropdown";

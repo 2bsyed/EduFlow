@@ -105,6 +105,9 @@ export async function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
+export { proxy as middleware };
+export default proxy;
+
 export const config = {
   matcher: [
     "/dashboard/:path*",

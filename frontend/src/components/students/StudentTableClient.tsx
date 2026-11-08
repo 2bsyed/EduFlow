@@ -44,7 +44,8 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const actionParam = searchParams.get("action");
+  const [isPanelOpen, setIsPanelOpen] = useState(() => actionParam === "new");
   const [editingStudent, setEditingStudent] = useState<StudentItem | null>(null);
 
   // Delete Confirmation Modal State
@@ -53,11 +54,10 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
   const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
-    if (searchParams.get("action") === "new") {
-      setEditingStudent(null);
+    if (actionParam === "new") {
       setIsPanelOpen(true);
     }
-  }, [searchParams]);
+  }, [actionParam]);
 
   // Filtered Students
   const filteredStudents = useMemo(() => {
@@ -288,8 +288,13 @@ export function StudentTableClient({ students, batches }: StudentTableClientProp
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="font-label-md text-label-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors">
-                              {student.fullName}
+                            <p className="font-label-md text-label-md text-on-surface font-semibold truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
+                              <span>{student.fullName}</span>
+                              {student.status !== "ACTIVE" && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700">
+                                  {statusText}
+                                </span>
+                              )}
                             </p>
                             <p className="font-caption text-caption text-on-surface-variant truncate">
                               {student.email || student.phone || "No contact info"}

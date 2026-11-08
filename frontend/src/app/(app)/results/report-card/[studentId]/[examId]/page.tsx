@@ -55,7 +55,7 @@ export default async function ReportCardPage({ params }: ReportCardPageProps) {
       : [];
 
   // Compute total marks
-  const totalObtained = displaySubjects.reduce((acc: number, curr: { marks: number; marksObtained?: number }) => acc + curr.marksObtained, 0);
+  const totalObtained = displaySubjects.reduce((acc: number, curr: { marksObtained: number }) => acc + (curr.marksObtained || 0), 0);
   const totalMax = displaySubjects.reduce((acc: number, curr: { totalMarks: number }) => acc + curr.totalMarks, 0);
   const avgPercentage = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
 

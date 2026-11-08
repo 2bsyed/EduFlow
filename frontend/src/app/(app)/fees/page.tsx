@@ -24,9 +24,9 @@ async function FeesContent({ instituteId }: { instituteId: string }) {
 
   const studentOptions: StudentOption[] = rawStudents.map((s: any) => ({
     id: s.id,
-    name: s.full_name,
-    rollNo: s.roll_no,
-    batchName: "General Batch", 
+    name: s.fullName || s.full_name || "Unknown",
+    rollNo: s.rollNo || s.roll_no || "—",
+    batchName: s.studentBatches?.[0]?.batch?.name || "General Batch", 
   }));
 
   let totalCollected = 0;

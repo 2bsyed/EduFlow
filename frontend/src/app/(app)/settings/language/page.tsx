@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
-import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
-import { Icon } from "@/components/ui/Icon";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
+import { NotificationBell } from "@/components/ui/NotificationBell";
+import { ProfileDropdown } from "@/components/ui/ProfileDropdown";
 import { SettingsSubNav } from "@/components/settings/SettingsSubNav";
 import { LanguageSettingsClient } from "@/components/settings/LanguageSettingsClient";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
@@ -49,33 +49,19 @@ export default async function SettingsLanguagePage() {
           <div className="flex items-center gap-md">
             <h2 className="font-h4 text-h4 font-semibold text-on-surface">Settings</h2>
           </div>
-          <div className="flex items-center gap-md">
-            <button className="text-on-surface-variant hover:text-primary transition-colors p-sm rounded-full hover:bg-surface-container cursor-pointer">
-              <Icon name="notifications" className="text-[20px]" />
-            </button>
+          <div className="flex items-center gap-md shrink-0 flex-nowrap">
+            <NotificationBell />
             <LanguageToggle />
-            <div className="flex items-center gap-sm ml-sm">
-              <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md font-bold">
-                {session?.user?.name?.[0] || "A"}
-              </div>
-              <span className="font-label-md hidden lg:block text-on-surface">
-                {session?.user?.name || "Admin"}
-              </span>
-              <form
-                action={async () => {
-                  "use server";
-                  await signOut({ redirectTo: "/login" });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="p-1 text-on-surface-variant hover:text-error transition-colors cursor-pointer"
-                  title="Log Out"
-                >
-                  <Icon name="logout" className="text-[20px]" />
-                </button>
-              </form>
-            </div>
+            <ProfileDropdown
+              userName={session?.user?.name || "Account"}
+              userEmail={session?.user?.email || undefined}
+              userRole={session?.user?.role || "OWNER"}
+              avatarUrl={session?.user?.image}
+              onSignOut={async () => {
+                "use server";
+                await signOut({ redirectTo: "/login" });
+              }}
+            />
           </div>
         </header>
 

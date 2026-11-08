@@ -23,7 +23,7 @@ async function BatchesContent() {
   const teachers: any[] = teachersRaw || [];
   const students = (studentsRaw || [])
     .filter((s: any) => s.status === "ACTIVE")
-    .sort((a: any, b: any) => a.fullName.localeCompare(b.fullName));
+    .sort((a: any, b: any) => (a.fullName || a.full_name || "").localeCompare(b.fullName || b.full_name || ""));
 
   return (
     <div className="space-y-lg">

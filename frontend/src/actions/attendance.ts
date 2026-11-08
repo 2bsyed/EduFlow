@@ -15,7 +15,6 @@ export async function upsertAttendanceAction(
     return { success: false, error: "Unauthorized" };
   }
 
-  const instituteId = session.user.instituteId;
   const parsedDate = new Date(dateStr);
   parsedDate.setHours(0, 0, 0, 0);
 
@@ -71,7 +70,8 @@ export async function bulkMarkPresentAction(
   // Explicit Institute-Ownership Check for studentIds
   const validStudents = await fetchApi("/api/v1/students/");
 
-  const validStudentIds = validStudents.map((s: any) => s.id);
+  const validIdSet = new Set((validStudents || []).map((s: any) => s.id));
+  const validStudentIds = (studentIds || []).filter((id) => validIdSet.has(id));
   if (validStudentIds.length === 0) {
     return { success: false, error: "No valid students found in your institute" };
   }

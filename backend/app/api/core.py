@@ -4,7 +4,7 @@ from sqlalchemy import func, and_
 from app.db.database import get_db
 from app.core.security import get_current_user
 from app.models.models import User, Institute, Student, Fee, Attendance, ActivityLog, Teacher, Batch
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from pydantic import BaseModel
 from typing import Optional, List
 import json
@@ -128,7 +128,7 @@ def create_notice(req: NoticeReq, db: Session = Depends(get_db), current_user: U
         "batchId": req.batchId,
         "author": current_user.name or ("Institute Owner" if role == "OWNER" else "Teacher"),
         "role": role,
-        "date": datetime.utcnow().isoformat()
+        "date": datetime.now(timezone.utc).isoformat()
     }
     
     log = ActivityLog(

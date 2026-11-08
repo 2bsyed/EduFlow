@@ -1,9 +1,7 @@
 import { fetchApi } from "@/lib/api";
 import React, { Suspense } from "react";
-import Link from "next/link";
 import { auth, signOut } from "@/lib/auth/auth";
 import { Icon } from "@/components/ui/Icon";
-import Image from "next/image";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
