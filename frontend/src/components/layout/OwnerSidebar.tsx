@@ -20,6 +20,7 @@ interface OwnerSidebarProps {
     | "reports"
     | "expenses"
     | "notices"
+    | "admissions"
     | "settings";
   instituteName?: string;
   hideLogo?: boolean;
@@ -47,7 +48,7 @@ export function OwnerSidebar({
   ];
 
   const bottomNavItems = [
-    { id: "website", label: "Institute Website", href: "/", icon: "language" },
+    { id: "admissions", label: "Website & Admissions", href: "/admissions", icon: "language" },
     { id: "settings", label: t("settings"), href: "/settings", icon: "settings" },
   ];
 

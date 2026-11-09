@@ -9,6 +9,7 @@ from app.api.fees import router as fees_real_router
 from app.api.results import router as results_real_router
 from app.api.expenses import router as expenses_real_router
 from app.api.core import router as core_router
+from app.api.admissions import router as admissions_router
 
 api_router = APIRouter()
 
@@ -61,4 +62,7 @@ api_router.include_router(expenses_real_router)
 core_router_with_prefix = APIRouter(prefix="/core", tags=["core"])
 core_router_with_prefix.include_router(core_router)
 api_router.include_router(core_router_with_prefix)
+
+# Admissions & Website Showcase
+api_router.include_router(admissions_router, tags=["admissions"])
 

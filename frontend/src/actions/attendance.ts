@@ -48,9 +48,9 @@ export async function upsertAttendanceAction(
     revalidatePath("/dashboard");
 
     return { success: true, attendance };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to upsert attendance:", error);
-    return { success: false, error: error.message || "Failed to save attendance" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to save attendance" };
   }
 }
 
@@ -100,8 +100,52 @@ export async function bulkMarkPresentAction(
     revalidatePath("/dashboard");
 
     return { success: true, message: `Marked ${validStudentIds.length} students present` };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to bulk mark attendance present:", error);
-    return { success: false, error: error.message || "Failed to bulk save attendance" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to bulk save attendance" };
   }
 }
+
+export type AttendanceReportStudent = {
+  id: string;
+  name: string;
+  rollNo: string;
+  present: number;
+  absent: number;
+  late: number;
+  total: number;
+  percentage: number;
+};
+
+export type AttendanceReportResult = {
+  startDate: string;
+  endDate: string;
+  totalSessions: number;
+  totalRecords: number;
+  overallPercentage: number;
+  students: AttendanceReportStudent[];
+};
+
+export async function getAttendanceReportAction(
+  startDate?: string,
+  endDate?: string,
+  batchId?: string
+): Promise<{ success: boolean; data?: AttendanceReportResult; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.instituteId) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const params = new URLSearchParams();
+    if (startDate) params.set("start_date", startDate);
+    if (endDate) params.set("end_date", endDate);
+    if (batchId && batchId !== "all") params.set("batch_id", batchId);
+
+    const data = await fetchApi(`/api/v1/core/reports/attendance?${params.toString()}`);
+    return { success: true, data };
+  } catch (error: unknown) {
+    return { success: false, error: error instanceof Error ? error.message : "Failed to fetch attendance report" };
+  }
+}
+

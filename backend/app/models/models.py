@@ -35,6 +35,12 @@ class FeeStatus(str, enum.Enum):
     PENDING = "PENDING"
     OVERDUE = "OVERDUE"
 
+class InquiryStatus(str, enum.Enum):
+    NEW = "NEW"
+    CONTACTED = "CONTACTED"
+    ENROLLED = "ENROLLED"
+    REJECTED = "REJECTED"
+
 class Institute(Base):
     __tablename__ = "institutes"
 
@@ -49,6 +55,14 @@ class Institute(Base):
     currency = Column(String, default="BDT")
     timezone = Column(String, default="Asia/Dhaka")
     default_language = Column(String, default="en")
+    hero_headline = Column(String)
+    hero_subhead = Column(String)
+    hero_image_url = Column(String)
+    about_text = Column(Text)
+    contact_phone = Column(String)
+    contact_email = Column(String)
+    features_json = Column(Text)
+    is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now(), onupdate=func.now())
 
@@ -62,6 +76,7 @@ class Institute(Base):
     results = relationship("Result", back_populates="institute", cascade="all, delete-orphan")
     expenses = relationship("Expense", back_populates="institute", cascade="all, delete-orphan")
     activity_logs = relationship("ActivityLog", back_populates="institute", cascade="all, delete-orphan")
+    admission_inquiries = relationship("AdmissionInquiry", back_populates="institute", cascade="all, delete-orphan")
 
 class User(Base):
     __tablename__ = "users"
@@ -75,6 +90,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String)
     role = Column(Enum(Role), default=Role.STUDENT)
+    is_active = Column(Boolean, default=True, nullable=False)
     avatar_url = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now(), onupdate=func.now())
@@ -326,3 +342,22 @@ class ActivityLog(Base):
 
     institute = relationship("Institute", back_populates="activity_logs")
     user = relationship("User", back_populates="activity_logs")
+
+class AdmissionInquiry(Base):
+    __tablename__ = "admission_inquiries"
+    __table_args__ = (
+        Index("idx_inquiry_institute_id", "institute_id"),
+    )
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    institute_id = Column(String, ForeignKey("institutes.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
+    email = Column(String)
+    course_interest = Column(String)
+    notes = Column(Text)
+    status = Column(Enum(InquiryStatus), default=InquiryStatus.NEW)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), default=func.now(), server_default=func.now(), onupdate=func.now())
+
+    institute = relationship("Institute", back_populates="admission_inquiries")

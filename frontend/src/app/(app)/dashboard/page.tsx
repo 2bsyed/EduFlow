@@ -1,20 +1,23 @@
 import Link from "next/link";
-import Image from "next/image";
 import { auth } from "@/lib/auth/auth";
 import { fetchApi } from "@/lib/api";
 import { Icon } from "@/components/ui/Icon";
 import { OwnerSidebar } from "@/components/layout/OwnerSidebar";
 import { AttendanceDonut } from "@/components/dashboard/AttendanceDonut";
+import { GlobalSearch } from "@/components/layout/GlobalSearch";
 
 type DashboardData = {
   totalStudents?: number;
   activeBatches?: number;
   feesCollectedThisMonth?: number;
   pendingFees?: number;
+  today?: string;
+  todayDhaka?: string;
   attendance?: { present: number; absent: number; late: number; percentage: number | null };
   pendingFeeRecords?: { studentId: string; studentName: string; amount: string; monthYear: string; status: string }[];
   batches?: { id: string; name: string; subject?: string | null; schedule?: string | null; teacher?: string | null }[];
-  recentStudents?: { id: string; rollNo: string; name: string; status: string }[];
+  todaysClasses?: { id: string; title: string; batch: string; teacher: string; room?: string; time: string; status: string }[];
+  recentStudents?: { id: string; rollNo?: string; name: string; status: string }[];
 };
 
 function MiniSparkline({ color }: { color: "blue" | "green" | "orange" | "purple" }) {
@@ -48,17 +51,17 @@ export default async function OwnerDashboardPage() {
 
   const data = await fetchApi("/api/v1/core/dashboard/kpi").catch(() => null) as DashboardData | null;
 
-  // Use values from the exact design mockup, gracefully adopting live data when available
-  const totalStudents = data?.totalStudents && data.totalStudents > 0 ? data.totalStudents : 1284;
-  const activeBatches = data?.activeBatches && data.activeBatches > 0 ? data.activeBatches : 42;
-  const feesCollected = data?.feesCollectedThisMonth && data.feesCollectedThisMonth > 0 ? `৳ ${Number(data.feesCollectedThisMonth).toLocaleString("en-BD")}` : "৳ 5,42,000";
-  const outstandingFees = data?.pendingFees && data.pendingFees > 0 ? `৳ ${Number(data.pendingFees).toLocaleString("en-BD")}` : "৳ 1,28,500";
+  // Honest production data: zero fake numbers
+  const totalStudents = data?.totalStudents ?? 0;
+  const activeBatches = data?.activeBatches ?? 0;
+  const feesCollected = `৳ ${(data?.feesCollectedThisMonth ?? 0).toLocaleString("en-BD")}`;
+  const outstandingFees = `৳ ${(data?.pendingFees ?? 0).toLocaleString("en-BD")}`;
 
   const cards = [
     {
       label: "Total Students",
       value: totalStudents.toLocaleString(),
-      trend: "12% from last month",
+      trend: "Enrolled in institute",
       trendType: "up",
       color: "blue" as const,
       icon: "group",
@@ -69,7 +72,7 @@ export default async function OwnerDashboardPage() {
     {
       label: "Active Batches",
       value: activeBatches.toLocaleString(),
-      trend: "5% from last month",
+      trend: "Scheduled classes",
       trendType: "up",
       color: "green" as const,
       icon: "menu_book",
@@ -80,7 +83,7 @@ export default async function OwnerDashboardPage() {
     {
       label: "Fees Collected",
       value: feesCollected,
-      trend: "18% from last month",
+      trend: "This month",
       trendType: "up",
       color: "orange" as const,
       icon: "credit_card",
@@ -91,7 +94,7 @@ export default async function OwnerDashboardPage() {
     {
       label: "Outstanding Fees",
       value: outstandingFees,
-      trend: "8% from last month",
+      trend: "Pending / overdue",
       trendType: "danger",
       color: "purple" as const,
       icon: "schedule",
@@ -101,118 +104,9 @@ export default async function OwnerDashboardPage() {
     },
   ];
 
-  const todaysClasses = [
-    {
-      time: "08:00 AM – 09:30 AM",
-      title: "HSC 2026 – Physics",
-      batch: "Batch A",
-      barColor: "bg-[#1570EF]",
-      teacher: "Dr. Rahman",
-      room: "Room 201",
-      status: "In progress",
-      statusType: "progress",
-    },
-    {
-      time: "10:00 AM – 11:30 AM",
-      title: "SSC 2025 – Mathematics",
-      batch: "Batch B",
-      barColor: "bg-[#7E22CE]",
-      teacher: "Ms. Farzana",
-      room: "Room 105",
-      status: "Upcoming",
-      statusType: "upcoming",
-    },
-    {
-      time: "01:00 PM – 02:30 PM",
-      title: "Admission – Biology",
-      batch: "Batch A",
-      barColor: "bg-[#EA580C]",
-      teacher: "Mr. Tanvir",
-      room: "Room 301",
-      status: "Upcoming",
-      statusType: "upcoming",
-    },
-    {
-      time: "03:00 PM – 04:30 PM",
-      title: "HSC 2026 – Chemistry",
-      batch: "Batch C",
-      barColor: "bg-[#16A34A]",
-      teacher: "Dr. Rahman",
-      room: "Room 202",
-      status: "Upcoming",
-      statusType: "upcoming",
-    },
-  ];
-
-  const recentStudents = [
-    {
-      id: "#1001",
-      name: "Ahmed Rahman",
-      avatar: "/images/avatars/ahmed.png",
-      batch: "HSC 2026 – Science",
-      phone: "01712-345678",
-      status: "Active",
-      statusType: "active",
-    },
-    {
-      id: "#1002",
-      name: "Nusrat Jahan",
-      avatar: "/images/avatars/nusrat.png",
-      batch: "SSC 2025",
-      phone: "01823-456789",
-      status: "Active",
-      statusType: "active",
-    },
-    {
-      id: "#1003",
-      name: "Tanvir Hasan",
-      avatar: "/images/avatars/tanvir.png",
-      batch: "Admission – DU",
-      phone: "01798-765432",
-      status: "Active",
-      statusType: "active",
-    },
-    {
-      id: "#1004",
-      name: "Safa Karim",
-      avatar: "/images/avatars/safa.png",
-      batch: "HSC 2026 – Arts",
-      phone: "01611-223344",
-      status: "Inactive",
-      statusType: "inactive",
-    },
-  ];
-
-  const pendingFees = [
-    {
-      student: "Nusrat Jahan",
-      dueMonth: "January 2025",
-      amount: "৳ 8,000",
-      status: "Overdue",
-      statusType: "overdue",
-    },
-    {
-      student: "Tanvir Hasan",
-      dueMonth: "January 2025",
-      amount: "৳ 6,500",
-      status: "Overdue",
-      statusType: "overdue",
-    },
-    {
-      student: "Rafi Ahmed",
-      dueMonth: "January 2025",
-      amount: "৳ 5,000",
-      status: "Due Soon",
-      statusType: "dueSoon",
-    },
-    {
-      student: "Safa Karim",
-      dueMonth: "February 2025",
-      amount: "৳ 8,000",
-      status: "Due Soon",
-      statusType: "dueSoon",
-    },
-  ];
+  const todaysClasses = data?.todaysClasses || [];
+  const recentStudents = data?.recentStudents || [];
+  const pendingFees = data?.pendingFeeRecords || [];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans">
@@ -282,20 +176,7 @@ export default async function OwnerDashboardPage() {
 
         {/* Center: Search input with Ctrl+K shortcut */}
         <div className="mx-4 hidden max-w-[500px] flex-1 md:block">
-          <div className="relative w-full">
-            <Icon
-              name="search"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400"
-            />
-            <input
-              type="text"
-              placeholder="Search students, batches, teachers, or pages"
-              className="h-10 w-full rounded-lg border border-[#D0D5DD] bg-[#F9FAFB] pl-10 pr-20 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#1570EF] focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
-            />
-            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] font-medium text-slate-500 shadow-2xs">
-              Ctrl + K
-            </span>
-          </div>
+          <GlobalSearch />
         </div>
 
         {/* Right: Notifications, Settings, Help, User Avatar */}
@@ -408,24 +289,11 @@ export default async function OwnerDashboardPage() {
                 <span>Record Fee</span>
               </Link>
 
-              {/* More Actions Button */}
-              <button
-                type="button"
-                aria-label="More actions"
-                className="inline-flex items-center justify-center rounded-lg border border-[#D0D5DD] bg-white px-2.5 py-2 text-slate-700 hover:bg-slate-50 shadow-2xs transition-colors"
-              >
-                <Icon name="more_horiz" className="text-lg text-slate-600" />
-              </button>
-
-              {/* Date Filter Button */}
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-lg border border-[#D0D5DD] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-2xs transition-colors"
-              >
+              {/* Date Indicator Badge */}
+              <div className="inline-flex items-center gap-2 rounded-lg border border-[#D0D5DD] bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-2xs">
                 <Icon name="calendar_today" className="text-base text-slate-500" />
-                <span>Today, 10 Jan 2025</span>
-                <Icon name="keyboard_arrow_down" className="text-base text-slate-400" />
-              </button>
+                <span>{data?.todayDhaka || "Today"}</span>
+              </div>
             </div>
           </div>
 
@@ -501,45 +369,56 @@ export default async function OwnerDashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F2F4F7] text-sm">
-                      {todaysClasses.map((item, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
-                          <td className="py-3.5 pr-4 text-xs font-normal text-[#475467] whitespace-nowrap">
-                            {item.time}
-                          </td>
-                          <td className="py-3.5 px-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <span
-                                className={`w-1 h-7 ${item.barColor} rounded-full mr-2.5 shrink-0`}
-                              />
-                              <div>
-                                <p className="font-semibold text-slate-900 text-xs md:text-sm leading-tight">
-                                  {item.title}
-                                </p>
-                                <p className="text-xs text-[#475467] mt-0.5">{item.batch}</p>
+                      {todaysClasses.length > 0 ? (
+                        todaysClasses.map((item, idx) => (
+                          <tr key={item.id || idx} className="hover:bg-slate-50/60 transition-colors">
+                            <td className="py-3.5 pr-4 text-xs font-normal text-[#475467] whitespace-nowrap">
+                              {item.time}
+                            </td>
+                            <td className="py-3.5 px-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <span className="w-1 h-7 bg-[#1570EF] rounded-full mr-2.5 shrink-0" />
+                                <div>
+                                  <p className="font-semibold text-slate-900 text-xs md:text-sm leading-tight">
+                                    {item.title}
+                                  </p>
+                                  <p className="text-xs text-[#475467] mt-0.5">{item.batch}</p>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="py-3.5 px-4 text-xs md:text-sm text-slate-800 font-normal whitespace-nowrap">
-                            {item.teacher}
-                          </td>
-                          <td className="py-3.5 px-4 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
-                            {item.room}
-                          </td>
-                          <td className="py-3.5 pl-4 whitespace-nowrap">
-                            {item.statusType === "progress" ? (
-                              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-0.5 text-xs font-medium text-[#15803D] border border-[#A7F3D0]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[#12B76A]" />
-                                In progress
-                              </span>
-                            ) : (
+                            </td>
+                            <td className="py-3.5 px-4 text-xs md:text-sm text-slate-800 font-normal whitespace-nowrap">
+                              {item.teacher}
+                            </td>
+                            <td className="py-3.5 px-4 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
+                              {item.room || "Room 101"}
+                            </td>
+                            <td className="py-3.5 pl-4 whitespace-nowrap">
                               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-2.5 py-0.5 text-xs font-medium text-[#1D4ED8] border border-[#BFDBFE]">
                                 <span className="h-1.5 w-1.5 rounded-full bg-[#2563EB]" />
-                                Upcoming
+                                {item.status || "Upcoming"}
                               </span>
-                            )}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="py-10 text-center text-slate-500">
+                            <div className="flex flex-col items-center justify-center gap-1.5">
+                              <Icon name="event_busy" className="text-3xl text-slate-400" />
+                              <p className="text-sm font-medium text-slate-800">No classes scheduled for today</p>
+                              <p className="text-xs text-slate-500 max-w-sm">
+                                Batches configured with schedules for {data?.todayDhaka?.split(",")[0] || "today"} will appear here automatically.
+                              </p>
+                              <Link
+                                href="/batches"
+                                className="mt-2 text-xs font-semibold text-[#1570EF] hover:underline"
+                              >
+                                View all batches &rarr;
+                              </Link>
+                            </div>
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -555,9 +434,9 @@ export default async function OwnerDashboardPage() {
                 </div>
 
                 <AttendanceDonut
-                  present={data?.attendance?.present && data.attendance.present > 0 ? data.attendance.present : 1180}
-                  absent={data?.attendance?.absent && data.attendance.absent > 0 ? data.attendance.absent : 86}
-                  late={data?.attendance?.late && data.attendance.late > 0 ? data.attendance.late : 18}
+                  present={data?.attendance?.present ?? 0}
+                  absent={data?.attendance?.absent ?? 0}
+                  late={data?.attendance?.late ?? 0}
                   totalStudents={totalStudents}
                 />
               </div>
@@ -585,78 +464,65 @@ export default async function OwnerDashboardPage() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-b border-[#F2F4F7] text-xs font-semibold text-[#475467]">
-                      <th className="py-2.5 pr-2 w-7 font-normal">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-slate-300 text-[#1570EF] focus:ring-[#1570EF] cursor-pointer"
-                        />
-                      </th>
-                      <th className="py-2.5 px-2 font-semibold text-[#475467]">ID</th>
+                      <th className="py-2.5 px-3 font-semibold text-[#475467]">Roll</th>
                       <th className="py-2.5 px-3 font-semibold text-[#475467]">Name</th>
-                      <th className="py-2.5 px-3 font-semibold text-[#475467]">Batch</th>
-                      <th className="py-2.5 px-3 font-semibold text-[#475467]">Phone</th>
                       <th className="py-2.5 px-3 font-semibold text-[#475467]">Status</th>
                       <th className="py-2.5 pl-2 w-8 font-normal"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F2F4F7] text-sm">
-                    {recentStudents.map((st) => (
-                      <tr key={st.id} className="hover:bg-slate-50/60 transition-colors">
-                        <td className="py-3 pr-2 w-7">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-slate-300 text-[#1570EF] focus:ring-[#1570EF] cursor-pointer"
-                          />
-                        </td>
-                        <td className="py-3 px-2 text-xs md:text-sm text-slate-600 font-normal whitespace-nowrap">
-                          {st.id}
-                        </td>
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <div className="flex items-center gap-2.5">
-                            <div className="relative h-6 w-6 rounded-full overflow-hidden shrink-0 border border-slate-200">
-                              <Image
-                                src={st.avatar}
-                                alt={st.name}
-                                width={24}
-                                height={24}
-                                className="h-full w-full object-cover"
-                              />
+                    {recentStudents.length > 0 ? (
+                      recentStudents.map((st) => (
+                        <tr key={st.id} className="hover:bg-slate-50/60 transition-colors">
+                          <td className="py-3 px-3 text-xs md:text-sm text-slate-600 font-normal whitespace-nowrap">
+                            {st.rollNo || st.id.slice(0, 8)}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-700 text-xs font-bold shrink-0 border border-slate-200">
+                                {st.name.charAt(0).toUpperCase()}
+                              </div>
+                              <span className="font-semibold text-xs md:text-sm text-slate-900">
+                                {st.name}
+                              </span>
                             </div>
-                            <span className="font-semibold text-xs md:text-sm text-slate-900">
-                              {st.name}
-                            </span>
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            {st.status === "ACTIVE" ? (
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-0.5 text-xs font-medium text-[#15803D] border border-[#A7F3D0]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#12B76A]" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FEF2F2] px-2.5 py-0.5 text-xs font-medium text-[#B91C1C] border border-[#FECACA]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#F04438]" />
+                                {st.status || "Inactive"}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 pl-2 text-right whitespace-nowrap">
+                            <Link
+                              href="/students"
+                              aria-label={`View ${st.name}`}
+                              className="p-1 text-slate-400 hover:text-slate-600 rounded inline-block"
+                            >
+                              <Icon name="arrow_forward" className="text-base" />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="py-8 text-center text-slate-500">
+                          <div className="flex flex-col items-center justify-center gap-1">
+                            <Icon name="group" className="text-2xl text-slate-400" />
+                            <p className="text-sm font-medium text-slate-700">No students enrolled yet</p>
+                            <p className="text-xs text-slate-500">Admit students to see them in this directory.</p>
+                            <Link href="/students?action=new" className="mt-2 text-xs font-medium text-[#1570EF] hover:underline">Add First Student &rarr;</Link>
                           </div>
                         </td>
-                        <td className="py-3 px-3 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
-                          {st.batch}
-                        </td>
-                        <td className="py-3 px-3 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
-                          {st.phone}
-                        </td>
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          {st.statusType === "active" ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-0.5 text-xs font-medium text-[#15803D] border border-[#A7F3D0]">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#12B76A]" />
-                              Active
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FEF2F2] px-2.5 py-0.5 text-xs font-medium text-[#B91C1C] border border-[#FECACA]">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#F04438]" />
-                              Inactive
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 pl-2 text-right whitespace-nowrap">
-                          <button
-                            type="button"
-                            aria-label={`Actions for ${st.name}`}
-                            className="p-1 text-slate-400 hover:text-slate-600 rounded"
-                          >
-                            <Icon name="more_horiz" className="text-base" />
-                          </button>
-                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -681,12 +547,6 @@ export default async function OwnerDashboardPage() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-b border-[#F2F4F7] text-xs font-semibold text-[#475467]">
-                      <th className="py-2.5 pr-2 w-7 font-normal">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-slate-300 text-[#1570EF] focus:ring-[#1570EF] cursor-pointer"
-                        />
-                      </th>
                       <th className="py-2.5 px-3 font-semibold text-[#475467]">Student</th>
                       <th className="py-2.5 px-3 font-semibold text-[#475467]">Due Month</th>
                       <th className="py-2.5 px-3 font-semibold text-[#475467]">Amount</th>
@@ -695,45 +555,51 @@ export default async function OwnerDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F2F4F7] text-sm">
-                    {pendingFees.map((fee, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
-                        <td className="py-3 pr-2 w-7">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-slate-300 text-[#1570EF] focus:ring-[#1570EF] cursor-pointer"
-                          />
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-xs md:text-sm text-slate-900 whitespace-nowrap">
-                          {fee.student}
-                        </td>
-                        <td className="py-3 px-3 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
-                          {fee.dueMonth}
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-xs md:text-sm text-slate-900 whitespace-nowrap">
-                          {fee.amount}
-                        </td>
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          {fee.statusType === "overdue" ? (
-                            <span className="inline-flex items-center justify-center rounded-full bg-[#FEF2F2] px-3 py-0.5 text-xs font-medium text-[#B91C1C] border border-[#FECACA]">
-                              Overdue
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center justify-center rounded-full bg-[#FEF3C7] px-3 py-0.5 text-xs font-medium text-[#B45309] border border-[#FDE68A]">
-                              Due Soon
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 pl-2 text-right whitespace-nowrap">
-                          <button
-                            type="button"
-                            aria-label={`Actions for ${fee.student}`}
-                            className="p-1 text-slate-400 hover:text-slate-600 rounded"
-                          >
-                            <Icon name="more_horiz" className="text-base" />
-                          </button>
+                    {pendingFees.length > 0 ? (
+                      pendingFees.map((fee, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+                          <td className="py-3 px-3 font-semibold text-xs md:text-sm text-slate-900 whitespace-nowrap">
+                            {fee.studentName}
+                          </td>
+                          <td className="py-3 px-3 text-xs md:text-sm text-[#475467] font-normal whitespace-nowrap">
+                            {fee.monthYear || "Current"}
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-xs md:text-sm text-slate-900 whitespace-nowrap">
+                            ৳ {fee.amount}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            {fee.status === "OVERDUE" ? (
+                              <span className="inline-flex items-center justify-center rounded-full bg-[#FEF2F2] px-3 py-0.5 text-xs font-medium text-[#B91C1C] border border-[#FECACA]">
+                                Overdue
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center rounded-full bg-[#FEF3C7] px-3 py-0.5 text-xs font-medium text-[#B45309] border border-[#FDE68A]">
+                                Pending
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 pl-2 text-right whitespace-nowrap">
+                            <Link
+                              href="/fees"
+                              className="p-1 text-slate-400 hover:text-slate-600 rounded inline-block"
+                            >
+                              <Icon name="arrow_forward" className="text-base" />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-slate-500">
+                          <div className="flex flex-col items-center justify-center gap-1">
+                            <Icon name="check_circle" className="text-2xl text-emerald-500" />
+                            <p className="text-sm font-medium text-slate-700">All fees up to date</p>
+                            <p className="text-xs text-slate-500">No pending or overdue fee records for this institute.</p>
+                            <Link href="/fees" className="mt-2 text-xs font-medium text-[#1570EF] hover:underline">Open Fees &rarr;</Link>
+                          </div>
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

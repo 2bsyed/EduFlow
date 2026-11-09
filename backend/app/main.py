@@ -8,17 +8,36 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.api.routers import api_router
-from app.db.database import get_db, engine
+from app.db.database import get_db, engine, Base
+import app.models.models  # ensure models are registered
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Pre-warm DB connection on application startup
+    # Pre-warm DB connection and execute safe idempotent migrations on application startup
     try:
+        Base.metadata.create_all(bind=engine)
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
             print("INFO: Database connection pre-warmed successfully on startup.")
+            migration_statements = [
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS hero_headline VARCHAR",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS hero_subhead VARCHAR",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS hero_image_url VARCHAR",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS about_text TEXT",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS contact_phone VARCHAR",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS contact_email VARCHAR",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS features_json TEXT",
+                "ALTER TABLE institutes ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT TRUE",
+            ]
+            for stmt in migration_statements:
+                try:
+                    conn.execute(text(stmt))
+                    conn.commit()
+                except Exception as ex:
+                    print(f"DEBUG: Migration stmt notice: {ex}")
     except Exception as e:
-        print(f"INFO: Database pre-warm check on startup: {e}")
+        print(f"INFO: Database pre-warm/migration check on startup: {e}")
     yield
 
 app = FastAPI(

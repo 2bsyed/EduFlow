@@ -128,6 +128,13 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
         
+    if not getattr(user, "is_active", True):
+        record_failed_attempt(email, now)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is deactivated. Contact your institute administrator.",
+        )
+        
     # Reset on success
     if email in failed_attempts_store:
         del failed_attempts_store[email]

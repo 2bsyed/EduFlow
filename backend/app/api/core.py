@@ -1,15 +1,42 @@
-from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, HTTPException, Form, Response
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, or_
 from app.db.database import get_db
 from app.core.security import get_current_user
-from app.models.models import User, Institute, Student, Fee, Attendance, ActivityLog, Teacher, Batch
+from app.models.models import User, Institute, Student, Fee, Attendance, ActivityLog, Teacher, Batch, StudentBatch
 from datetime import datetime, date, timedelta, timezone
+from zoneinfo import ZoneInfo
 from pydantic import BaseModel
 from typing import Optional, List
 import json
+import re
+import csv
+import io
 
 router = APIRouter()
+
+DAY_TOKENS = {
+    "SUN": ["SUN", "SUNDAY", "রবি"],
+    "MON": ["MON", "MONDAY", "সোম"],
+    "TUE": ["TUE", "TUESDAY", "মঙ্গল"],
+    "WED": ["WED", "WEDNESDAY", "বুধ"],
+    "THU": ["THU", "THURSDAY", "বৃহস্পতি"],
+    "FRI": ["FRI", "FRIDAY", "শুক্র"],
+    "SAT": ["SAT", "SATURDAY", "শনি"],
+}
+
+def is_batch_scheduled_today(schedule_str: Optional[str], target_weekday: str) -> bool:
+    if not schedule_str:
+        return True
+    s = schedule_str.upper()
+    tokens = DAY_TOKENS.get(target_weekday, [target_weekday])
+    for tok in tokens:
+        if re.search(r'\b' + re.escape(tok) + r'\b', s) or tok in s:
+            return True
+    if any(k in s for k in ["DAILY", "EVERYDAY", "প্রতিদিন", "WEEKDAY"]):
+        return True
+    return False
 
 @router.get("/dashboard/kpi")
 def get_dashboard_kpis(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -62,22 +89,48 @@ def get_dashboard_kpis(db: Session = Depends(get_db), current_user: User = Depen
     recent_students = db.query(Student).filter(
         Student.institute_id == institute_id
     ).order_by(Student.admission_date.desc()).limit(5).all()
-    active_batches = db.query(Batch).filter(Batch.institute_id == institute_id).order_by(Batch.name).limit(6).all()
+    active_batches = db.query(Batch).filter(Batch.institute_id == institute_id).order_by(Batch.name).all()
     batch_rows = []
+    todays_classes_rows = []
+    now_dhaka = datetime.now(ZoneInfo("Asia/Dhaka"))
+    weekday_dhaka = now_dhaka.strftime("%a").upper()
+
     for batch in active_batches:
         teacher_name = None
         if batch.teacher_id:
             teacher = db.query(Teacher).filter(Teacher.id == batch.teacher_id, Teacher.institute_id == institute_id).first()
             teacher_name = teacher.user.name if teacher and teacher.user else None
-        batch_rows.append({"id": batch.id, "name": batch.name, "subject": batch.subject, "schedule": batch.schedule, "teacher": teacher_name})
+        
+        row_info = {
+            "id": batch.id,
+            "name": batch.name,
+            "subject": batch.subject,
+            "schedule": batch.schedule,
+            "teacher": teacher_name
+        }
+        batch_rows.append(row_info)
+
+        if is_batch_scheduled_today(batch.schedule, weekday_dhaka):
+            todays_classes_rows.append({
+                "id": batch.id,
+                "title": f"{batch.name} – {batch.subject}" if batch.subject else batch.name,
+                "batch": batch.name,
+                "teacher": teacher_name or "Faculty Assigned",
+                "room": "Room 101",
+                "time": batch.schedule or "Regular Session",
+                "schedule": batch.schedule or "Regular Session",
+                "status": "Upcoming",
+            })
 
     return {
         "totalStudents": total_students,
         "feesCollectedThisMonth": float(revenue_sum),
         "pendingFees": float(pending_sum),
-        "activeBatches": db.query(Batch).filter(Batch.institute_id == institute_id).count(),
+        "activeBatches": len(active_batches),
         "today": today.isoformat(),
-        "batches": batch_rows,
+        "todayDhaka": now_dhaka.strftime("%A, %d %b %Y"),
+        "batches": batch_rows[:6],
+        "todaysClasses": todays_classes_rows,
         "recentStudents": [{"id": st.id, "rollNo": st.roll_no, "name": st.full_name, "status": st.status.value if hasattr(st.status, "value") else st.status} for st in recent_students],
         "attendance": {
             "present": present,
@@ -281,3 +334,126 @@ def update_language(req: LanguageUpdateReq, db: Session = Depends(get_db), curre
     db.add(log)
     db.commit()
     return {"success": True, "message": f"Default language updated to {'বাংলা' if req.language == 'bn' else 'English'} successfully!"}
+
+@router.get("/reports/attendance")
+def get_attendance_report(
+    batch_id: Optional[str] = None,
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    export_csv: bool = False,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    institute_id = current_user.institute_id
+    if not institute_id or current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    today = date.today()
+    if not start_date:
+        start_date = today - timedelta(days=30)
+    if not end_date:
+        end_date = today
+
+    query = db.query(Attendance).filter(
+        Attendance.institute_id == institute_id,
+        Attendance.date >= start_date,
+        Attendance.date <= end_date
+    )
+    if batch_id:
+        query = query.filter(Attendance.batch_id == batch_id)
+
+    records = query.all()
+    distinct_dates = set(r.date for r in records)
+    total_sessions = len(distinct_dates)
+
+    student_stats = {}
+    for r in records:
+        sid = r.student_id
+        if sid not in student_stats:
+            st = db.query(Student).filter(Student.id == sid).first()
+            student_stats[sid] = {
+                "id": sid,
+                "rollNo": st.roll_no if st else "N/A",
+                "name": st.full_name if st else "Unknown",
+                "present": 0,
+                "absent": 0,
+                "late": 0,
+                "total": 0
+            }
+        student_stats[sid]["total"] += 1
+        status_val = r.status.value if hasattr(r.status, "value") else str(r.status)
+        if status_val == "PRESENT":
+            student_stats[sid]["present"] += 1
+        elif status_val == "ABSENT":
+            student_stats[sid]["absent"] += 1
+        elif status_val == "LATE":
+            student_stats[sid]["late"] += 1
+
+    students_list = []
+    for s in student_stats.values():
+        pct = round((s["present"] / s["total"]) * 100) if s["total"] > 0 else 0
+        s["percentage"] = pct
+        students_list.append(s)
+
+    students_list.sort(key=lambda x: x["rollNo"])
+    total_records = len(records)
+    total_present = sum(1 for r in records if (r.status.value if hasattr(r.status, "value") else str(r.status)) == "PRESENT")
+    overall_pct = round((total_present / total_records) * 100) if total_records > 0 else 0
+
+    if export_csv:
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["Roll No", "Student Name", "Present", "Absent", "Late", "Total Sessions", "Attendance %"])
+        for s in students_list:
+            writer.writerow([s["rollNo"], s["name"], s["present"], s["absent"], s["late"], s["total"], f"{s['percentage']}%"])
+        output.seek(0)
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename=attendance_report_{start_date}_{end_date}.csv"}
+        )
+
+    return {
+        "startDate": start_date.isoformat(),
+        "endDate": end_date.isoformat(),
+        "totalSessions": total_sessions,
+        "totalRecords": total_records,
+        "overallPercentage": overall_pct,
+        "students": students_list
+    }
+
+@router.get("/search")
+def quick_search(
+    q: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    institute_id = current_user.institute_id
+    if not institute_id or current_user.role not in ["OWNER", "TEACHER"]:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    cleaned = q.strip()
+    if len(cleaned) < 2:
+        return {"students": [], "teachers": [], "batches": []}
+
+    pattern = f"%{cleaned}%"
+    students = db.query(Student).filter(
+        Student.institute_id == institute_id,
+        or_(Student.full_name.ilike(pattern), Student.roll_no.ilike(pattern))
+    ).limit(5).all()
+
+    teachers = db.query(Teacher).join(User, Teacher.user_id == User.id).filter(
+        Teacher.institute_id == institute_id,
+        or_(User.name.ilike(pattern), Teacher.subject.ilike(pattern))
+    ).limit(5).all()
+
+    batches = db.query(Batch).filter(
+        Batch.institute_id == institute_id,
+        or_(Batch.name.ilike(pattern), Batch.subject.ilike(pattern))
+    ).limit(5).all()
+
+    return {
+        "students": [{"id": s.id, "name": s.full_name, "rollNo": s.roll_no, "href": "/students"} for s in students],
+        "teachers": [{"id": t.id, "name": t.user.name if t.user else "Teacher", "subject": t.subject, "href": "/teachers"} for t in teachers],
+        "batches": [{"id": b.id, "name": b.name, "subject": b.subject, "href": "/batches"} for b in batches]
+    }

@@ -11,20 +11,21 @@ interface AttendanceDonutProps {
 }
 
 export function AttendanceDonut({
-  present = 1180,
-  absent = 86,
-  late = 18,
-  totalStudents = 1284,
+  present = 0,
+  absent = 0,
+  late = 0,
+  totalStudents = 0,
 }: AttendanceDonutProps) {
   const sum = present + absent + late;
-  const total = sum > 0 ? sum : 1284;
-  const p = sum > 0 ? present : 1180;
-  const a = sum > 0 ? absent : 86;
-  const l = sum > 0 ? late : 18;
+  const hasData = sum > 0;
+  const total = hasData ? sum : 0;
+  const p = present;
+  const a = absent;
+  const l = late;
 
-  const presentPct = Math.round((p / total) * 100);
-  const absentPct = Math.round((a / total) * 100);
-  const latePct = Math.max(1, 100 - presentPct - absentPct);
+  const presentPct = hasData ? Math.round((p / total) * 100) : 0;
+  const absentPct = hasData ? Math.round((a / total) * 100) : 0;
+  const latePct = hasData ? Math.max(0, 100 - presentPct - absentPct) : 0;
 
   // SVG circle calculations
   const r = 58;
@@ -87,10 +88,10 @@ export function AttendanceDonut({
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
             <span className="text-3xl font-bold text-slate-900 tracking-tight leading-none">
-              {presentPct}%
+              {hasData ? `${presentPct}%` : "—"}
             </span>
             <span className="text-[11px] font-medium text-slate-500 mt-1">
-              Present Today
+              {hasData ? "Present Today" : "No logs today"}
             </span>
           </div>
         </div>
@@ -155,17 +156,29 @@ export function AttendanceDonut({
           </div>
           <div>
             <p className="text-sm font-bold text-slate-900 leading-tight">
-              {p.toLocaleString()} / {totalStudents.toLocaleString()}
+              {hasData
+                ? `${p.toLocaleString()} / ${totalStudents.toLocaleString()}`
+                : `${totalStudents.toLocaleString()} Enrolled`}
             </p>
-            <p className="text-[11px] text-slate-500">Students present today</p>
+            <p className="text-[11px] text-slate-500">
+              {hasData ? "Students present today" : "Attendance pending today"}
+            </p>
           </div>
         </div>
 
         <div className="text-right">
-          <div className="flex items-center justify-end gap-1 text-sm font-bold text-[#16A34A] leading-tight">
-            <span className="text-base font-bold">↗</span> +5%
-          </div>
-          <p className="text-[11px] text-slate-500">from last week</p>
+          {hasData ? (
+            <>
+              <div className="flex items-center justify-end gap-1 text-sm font-bold text-[#16A34A] leading-tight">
+                <span className="text-base font-bold">↗</span> {presentPct}%
+              </div>
+              <p className="text-[11px] text-slate-500">attendance rate</p>
+            </>
+          ) : (
+            <a href="/attendance" className="text-xs font-semibold text-[#1570EF] hover:underline">
+              Mark now &rarr;
+            </a>
+          )}
         </div>
       </div>
     </div>

@@ -48,9 +48,11 @@ def get_teachers(
             "subject": t.subject,
             "phone": t.phone,
             "batchCount": len(t.batches),
+            "isActive": getattr(t.user, "is_active", True) if t.user else True,
             "user": {
                 "name": t.user.name if t.user else "Unknown",
                 "email": t.user.email if t.user else None,
+                "isActive": getattr(t.user, "is_active", True) if t.user else True,
             }
         })
     return result
@@ -81,7 +83,107 @@ def create_teacher(
     db.commit()
     return {"id": teacher.id, "name": user.name, "email": user.email}
 
-from fastapi import HTTPException
+class TeacherUpdate(BaseModel):
+    name: str = Field(min_length=2, max_length=120)
+    subject: str = Field(min_length=2, max_length=120)
+    phone: str | None = None
+
+class TeacherStatusUpdate(BaseModel):
+    is_active: bool
+
+class TeacherPasswordReset(BaseModel):
+    password: str = Field(min_length=8, max_length=128)
+
+@router.put("/{teacher_id}")
+def update_teacher(
+    teacher_id: str,
+    request: TeacherUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "OWNER" or not current_user.institute_id:
+        raise HTTPException(status_code=403, detail="Only institute owners can update teacher records")
+    
+    teacher = db.query(Teacher).options(joinedload(Teacher.user)).filter(
+        Teacher.id == teacher_id,
+        Teacher.institute_id == current_user.institute_id
+    ).first()
+    if not teacher:
+        raise HTTPException(status_code=404, detail="Teacher not found in your institute")
+        
+    teacher.subject = request.subject.strip()
+    teacher.phone = request.phone.strip() if request.phone else None
+    if teacher.user:
+        teacher.user.name = request.name.strip()
+        
+    db.add(ActivityLog(
+        institute_id=current_user.institute_id,
+        user_id=current_user.id,
+        action="TEACHER_UPDATED",
+        details=f"Updated profile for teacher {teacher.user.name if teacher.user else teacher_id}"
+    ))
+    db.commit()
+    return {
+        "id": teacher.id,
+        "name": teacher.user.name if teacher.user else "",
+        "subject": teacher.subject,
+        "phone": teacher.phone,
+        "isActive": getattr(teacher.user, "is_active", True)
+    }
+
+@router.post("/{teacher_id}/status")
+def toggle_teacher_status(
+    teacher_id: str,
+    request: TeacherStatusUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "OWNER" or not current_user.institute_id:
+        raise HTTPException(status_code=403, detail="Only institute owners can update teacher status")
+        
+    teacher = db.query(Teacher).options(joinedload(Teacher.user)).filter(
+        Teacher.id == teacher_id,
+        Teacher.institute_id == current_user.institute_id
+    ).first()
+    if not teacher or not teacher.user:
+        raise HTTPException(status_code=404, detail="Teacher not found in your institute")
+        
+    teacher.user.is_active = request.is_active
+    db.add(ActivityLog(
+        institute_id=current_user.institute_id,
+        user_id=current_user.id,
+        action="TEACHER_STATUS_CHANGED",
+        details=f"Teacher {teacher.user.name} status changed to {'Active' if request.is_active else 'Inactive'}"
+    ))
+    db.commit()
+    return {"id": teacher.id, "isActive": teacher.user.is_active}
+
+@router.post("/{teacher_id}/reset-password")
+def reset_teacher_password(
+    teacher_id: str,
+    request: TeacherPasswordReset,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role.value != "OWNER" or not current_user.institute_id:
+        raise HTTPException(status_code=403, detail="Only institute owners can reset teacher passwords")
+        
+    teacher = db.query(Teacher).options(joinedload(Teacher.user)).filter(
+        Teacher.id == teacher_id,
+        Teacher.institute_id == current_user.institute_id
+    ).first()
+    if not teacher or not teacher.user:
+        raise HTTPException(status_code=404, detail="Teacher not found in your institute")
+        
+    teacher.user.password_hash = get_password_hash(request.password)
+    db.add(ActivityLog(
+        institute_id=current_user.institute_id,
+        user_id=current_user.id,
+        action="TEACHER_PASSWORD_RESET",
+        details=f"Password reset by owner for teacher {teacher.user.name}"
+    ))
+    db.commit()
+    return {"success": True, "message": f"Password reset successfully for {teacher.user.name}"}
 
 @router.get("/me")
 def get_my_teacher_profile(

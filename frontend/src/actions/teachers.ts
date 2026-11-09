@@ -24,3 +24,36 @@ export async function createTeacherAction(_state: TeacherFormState, formData: Fo
     return { error: error instanceof Error ? error.message : "Could not create the teacher account." };
   }
 }
+
+export async function updateTeacherAction(teacherId: string, data: { name: string; subject: string; phone?: string | null }) {
+  const session = await auth();
+  if (session?.user?.role !== "OWNER") throw new Error("Unauthorized");
+  await fetchApi(`/api/v1/teachers/${teacherId}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  revalidatePath("/teachers");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function toggleTeacherStatusAction(teacherId: string, isActive: boolean) {
+  const session = await auth();
+  if (session?.user?.role !== "OWNER") throw new Error("Unauthorized");
+  await fetchApi(`/api/v1/teachers/${teacherId}/status`, {
+    method: "POST",
+    body: JSON.stringify({ is_active: isActive }),
+  });
+  revalidatePath("/teachers");
+  return { success: true };
+}
+
+export async function resetTeacherPasswordAction(teacherId: string, newPassword: string) {
+  const session = await auth();
+  if (session?.user?.role !== "OWNER") throw new Error("Unauthorized");
+  await fetchApi(`/api/v1/teachers/${teacherId}/reset-password`, {
+    method: "POST",
+    body: JSON.stringify({ password: newPassword }),
+  });
+  return { success: true };
+}

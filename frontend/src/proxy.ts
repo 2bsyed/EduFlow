@@ -51,6 +51,7 @@ export async function proxy(req: NextRequest) {
     nextUrl.pathname.startsWith("/results") ||
     nextUrl.pathname.startsWith("/reports") ||
     nextUrl.pathname.startsWith("/notices") ||
+    nextUrl.pathname.startsWith("/admissions") ||
     nextUrl.pathname.startsWith("/settings");
 
   // 1. Unauthenticated users trying to access protected routes -> redirect to /login
@@ -122,6 +123,7 @@ export const config = {
     "/results/:path*",
     "/reports/:path*",
     "/notices/:path*",
+    "/admissions/:path*",
     "/settings/:path*",
     "/login",
   ],
